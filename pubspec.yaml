@@ -1,0 +1,53 @@
+name: Eatic
+description: "Eatic Desktop App"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  dio:  
+  dartz:  
+  get_it: 
+  flutter_bloc: 
+  go_router:  
+  pretty_dio_logger: 
+  permission_handler: 
+  easy_localization: 
+  sqflite:  
+  timeago: ^3.7.0
+  flutter_secure_storage:
+  encrypt:
+  intl:
+  flutter_svg:
+  animate_do:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/translations/
+    - assets/fonts/
+    - assets/images/
+
+  fonts:
+    - family: ar
+      fonts:
+        - asset: assets/fonts/ar.ttf
+    - family: en
+      fonts:
+        - asset: assets/fonts/en.ttf

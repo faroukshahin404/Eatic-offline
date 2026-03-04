@@ -1,0 +1,114 @@
+{
+  "hello": "مرحبا",
+  "settings": "الإعدادات",
+  "home": "الرئيسية",
+  "home.mobile": "الرئيسية - جوال",
+  "home.desktop": "الرئيسية - سطح المكتب",
+  "home.tablet": "الرئيسية - تابلت",
+  "login": "تسجيل الدخول",
+  "login.invalid_credentials": "الكود أو كلمة المرور غير صحيحة",
+  "users": "المستخدمين",
+  "retry_button": "إعادة المحاولة",
+  "add_branch_form.success": "تم إنشاء الفرع بنجاح",
+  "logout": "تسجيل الخروج",
+  "delivery-men": "مندوبو التوصيل",
+  "table": {
+    "id": "الرقم",
+    "name": "الاسم",
+    "code": "الكود",
+    "role": "الدور",
+    "actions": "الإجراءات",
+    "no_users": "لا يوجد مستخدمين",
+    "branch_name": "اسم الفرع",
+    "created_at": "تاريخ الإنشاء",
+    "created_by": "أنشئ بواسطة",
+    "no_branches": "لا يوجد فروع",
+    "phone": "الهاتف",
+    "no_delivery_men": "لا يوجد مندوبي توصيل",
+    "zone": "المنطقة",
+    "last_update": "آخر تحديث",
+    "no_zones": "لا يوجد مناطق"
+  },
+  "zones": "المناطق",
+  "add_zone": "إضافة منطقة جديدة",
+  "delivery_men": "مندوبو التوصيل",
+  "add_delivery": "إضافة مندوب توصيل",
+  "branches": "الفروع",
+  "add_branch": "إضافة فرع",
+  "branches.delete_confirm": "هل أنت متأكد من حذف \"{{name}}\"؟",
+  "dialog": {
+    "cancel": "إلغاء",
+    "confirm": "تأكيد"
+  },
+  "add_user": "إضافة مستخدم",
+  "add_zone_form": {
+    "name": "اسم المنطقة",
+    "branch": "الفرع",
+    "delivery_cost": "تكلفة التوصيل",
+    "save": "حفظ",
+    "update": "تحديث",
+    "success": "تم إضافة المنطقة بنجاح",
+    "update_success": "تم تحديث المنطقة بنجاح"
+  },
+  "add_branch_form": {
+    "name": "الاسم",
+    "save": "حفظ",
+    "created_at": "تاريخ الإنشاء",
+    "updated_at": "تاريخ التحديث",
+    "created_by": "أنشئ بواسطة"
+  },
+  "add_user_form": {
+    "code": "الكود",
+    "name": "الاسم",
+    "password": "كلمة المرور",
+    "role": "الدور",
+    "save": "حفظ",
+    "update": "تحديث"
+  },
+  "add_delivery_form": {
+    "name": "الاسم",
+    "phone_1": "الهاتف 1",
+    "phone_2": "الهاتف 2",
+    "address": "العنوان",
+    "national_id": "الرقم الوطني",
+    "branch": "الفرع",
+    "save": "حفظ",
+    "update": "تحديث",
+    "success": "تم إضافة مندوب التوصيل بنجاح",
+    "update_success": "تم تحديث مندوب التوصيل بنجاح"
+  },
+  "reset_password": {
+    "title": "تغيير كلمة المرور",
+    "current_password": "كلمة المرور الحالية",
+    "new_password": "كلمة المرور الجديدة",
+    "confirm_password": "تأكيد كلمة المرور الجديدة",
+    "password_mismatch": "كلمة المرور الجديدة والتأكيد غير متطابقتين",
+    "submit": "تغيير كلمة المرور",
+    "success": "تم تغيير كلمة المرور بنجاح",
+    "error_session_not_found": "لم يتم العثور على الجلسة. يرجى تسجيل الدخول مرة أخرى.",
+    "error_current_password_incorrect": "كلمة المرور الحالية غير صحيحة."
+  },
+  "validation": {
+    "required": "مطلوب"
+  },
+  "actions": {
+    "edit": "تعديل",
+    "delete": "حذف",
+    "view": "عرض"
+  },
+  "copy": "نسخ",
+  "create_order": "إنشاء طلب",
+  "errors": {
+    "db_not_init": "قاعدة البيانات غير مهيأة",
+    "insert_failed": "فشل الإدراج",
+    "update_failed": "فشل التحديث",
+    "delete_failed": "فشل الحذف",
+    "query_failed": "فشل الاستعلام",
+    "unique_constraint": "هذه القيمة موجودة مسبقاً",
+    "foreign_key": "مرجع غير صالح",
+    "no_such_table": "الجدول غير موجود",
+    "invalid_argument": "بيانات غير صالحة",
+    "sqlite_unknown": "خطأ في قاعدة البيانات",
+    "unknown": "حدث خطأ ما"
+  }
+}

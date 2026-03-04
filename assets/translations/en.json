@@ -1,0 +1,114 @@
+{
+  "hello": "Hello",
+  "settings": "Settings",
+  "home": "Home",
+  "home.mobile": "Home Mobile",
+  "home.desktop": "Home Desktop",
+  "home.tablet": "Home Tablet",
+  "login": "Login",
+  "login.invalid_credentials": "Invalid code or password",
+  "users": "Users",
+  "retry_button": "Retry",
+  "add_branch_form.success": "Branch created successfully",
+  "logout": "Logout",
+  "delivery-men": "Delivery Men",
+  "table": {
+    "id": "Id",
+    "name": "Name",
+    "code": "Code",
+    "role": "Role",
+    "actions": "Actions",
+    "no_users": "No users yet",
+    "branch_name": "Branch Name",
+    "created_at": "Created At",
+    "created_by": "Created By",
+    "no_branches": "No branches yet",
+    "phone": "Phone",
+    "no_delivery_men": "No delivery men yet",
+    "zone": "Zone",
+    "last_update": "Last Update",
+    "no_zones": "No zones yet"
+  },
+  "zones": "Zones",
+  "add_zone": "Add New Zone",
+  "delivery_men": "Delivery Men",
+  "add_delivery": "Add New Delivery",
+  "add_user": "Add User",
+  "branches": "Branches",
+  "add_branch": "Add Branch",
+  "branches.delete_confirm": "Are you sure you want to delete \"{{name}}\"?",
+  "dialog": {
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "add_zone_form": {
+    "name": "Zone Name",
+    "branch": "Branch",
+    "delivery_cost": "Delivery Cost",
+    "save": "Save",
+    "update": "Update",
+    "success": "Zone added successfully",
+    "update_success": "Zone updated successfully"
+  },
+  "add_branch_form": {
+    "name": "Name",
+    "save": "Save",
+    "created_at": "Created At",
+    "updated_at": "Updated At",
+    "created_by": "Created By"
+  },
+  "add_user_form": {
+    "code": "Code",
+    "name": "Name",
+    "password": "Password",
+    "role": "Role",
+    "save": "Save",
+    "update": "Update"
+  },
+  "add_delivery_form": {
+    "name": "Name",
+    "phone_1": "Phone 1",
+    "phone_2": "Phone 2",
+    "address": "Address",
+    "national_id": "National ID",
+    "branch": "Branch",
+    "save": "Save",
+    "update": "Update",
+    "success": "Delivery man added successfully",
+    "update_success": "Delivery man updated successfully"
+  },
+  "reset_password": {
+    "title": "Reset Password",
+    "current_password": "Current Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm New Password",
+    "password_mismatch": "New password and confirmation do not match",
+    "submit": "Change Password",
+    "success": "Password changed successfully",
+    "error_session_not_found": "User session not found. Please log in again.",
+    "error_current_password_incorrect": "Current password is incorrect."
+  },
+  "validation": {
+    "required": "is required"
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View"
+  },
+  "copy": "Copy",
+  "create_order": "Create Order",
+  "errors": {
+    "db_not_init": "Database is not initialized",
+    "insert_failed": "Insert failed",
+    "update_failed": "Update failed",
+    "delete_failed": "Delete failed",
+    "query_failed": "Query failed",
+    "unique_constraint": "This value already exists",
+    "foreign_key": "Invalid reference",
+    "no_such_table": "Table not found",
+    "invalid_argument": "Invalid data",
+    "sqlite_unknown": "Database error",
+    "unknown": "Something went wrong"
+  }
+}
