@@ -9,6 +9,7 @@ import 'dining_areas_schema.dart';
 
 abstract class DiningAreasOfflineRepository {
   DbCall<List<DiningAreaModel>> getAll();
+  DbCall<List<DiningAreaModel>> getByBranchId(int branchId);
   DbCall<int> deleteById(int id);
 }
 
@@ -19,6 +20,27 @@ class DiningAreasOfflineRepoImpl implements DiningAreasOfflineRepository {
   Future<Either<OfflineFailure, List<DiningAreaModel>>> getAll() async {
     try {
       final list = await _db.rawQuery(DiningAreasSchema.sqlQuery);
+      return Right(
+          list.map((e) => DiningAreaModel.fromMap(e)).toList());
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, List<DiningAreaModel>>> getByBranchId(
+      int branchId) async {
+    try {
+      final list = await _db.query(
+        DiningAreasSchema.tableDiningAreas,
+        where: '${DiningAreasSchema.colBranchId} = ?',
+        whereArgs: [branchId],
+        orderBy: DiningAreasSchema.colId,
+      );
       return Right(
           list.map((e) => DiningAreaModel.fromMap(e)).toList());
     } catch (e) {

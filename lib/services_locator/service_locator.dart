@@ -27,6 +27,10 @@ import '../features/add_new_dining_area/cubit/add_new_dining_area_cubit.dart';
 import '../features/add_new_dining_area/repos/offline/add_new_dining_area_offline_repos.dart';
 import '../features/dining_areas/cubit/dining_areas_cubit.dart';
 import '../features/dining_areas/repos/offline/dining_areas_offline_repos.dart';
+import '../features/add_new_restaurant_table/cubit/add_new_restaurant_table_cubit.dart';
+import '../features/add_new_restaurant_table/repos/offline/add_new_restaurant_table_offline_repos.dart';
+import '../features/restaurant_tables/cubit/restaurant_tables_cubit.dart';
+import '../features/restaurant_tables/repos/offline/restaurant_tables_offline_repos.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/repos/offline/zones_offline_repos.dart';
 import '../features/login/cubit/login_cubit.dart';
@@ -145,6 +149,24 @@ Future<void> setupDI() async {
   );
   getIt.registerFactory<DiningAreasCubit>(
     () => DiningAreasCubit(getIt<DiningAreasOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<RestaurantTablesOfflineRepository>(
+    () => RestaurantTablesOfflineRepoImpl(),
+  );
+  getIt.registerFactory<RestaurantTablesCubit>(
+    () => RestaurantTablesCubit(getIt<RestaurantTablesOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<AddNewRestaurantTableOfflineRepository>(
+    () => AddNewRestaurantTableOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddNewRestaurantTableCubit>(
+    () => AddNewRestaurantTableCubit(
+      getIt<BranchesOfflineRepository>(),
+      getIt<DiningAreasOfflineRepository>(),
+      getIt<AddNewRestaurantTableOfflineRepository>(),
+    ),
   );
 
   getIt.registerLazySingleton<AddNewDiningAreaOfflineRepository>(

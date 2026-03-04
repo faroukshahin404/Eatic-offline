@@ -94,5 +94,10 @@ class DatabaseService {
         await db.execute(sql);
       }
     }
+    if (oldVersion < 8) {
+      for (final sql in DatabaseUtils.migrationFrom7To8) {
+        await db.execute(sql);
+      }
+    }
   }
 }

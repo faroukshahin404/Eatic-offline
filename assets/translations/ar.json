@@ -32,10 +32,26 @@
     "no_currencies": "لا يوجد عملات",
     "no_payment_methods": "لا يوجد طرق دفع",
     "dining_area": "صالة الطعام",
-    "no_dining_areas": "لا يوجد صالات طعام"
+    "no_dining_areas": "لا يوجد صالات طعام",
+    "dining_area_name": "اسم صالة الطعام",
+    "no_restaurant_tables": "لا يوجد طاولات مطعم"
   },
   "currencies": "العملات",
   "dining_areas": "صالات الطعام",
+  "restaurant_tables": "طاولات المطعم",
+  "restaurant-tables": "طاولات المطعم",
+  "add_restaurant_table": "إضافة طاولة مطعم",
+  "add_restaurant_table_form": {
+    "name": "اسم الطاولة",
+    "branch": "الفرع",
+    "dining_area": "صالة الطعام",
+    "loading_dining_areas": "جاري تحميل صالات الطعام...",
+    "no_dining_areas": "لا توجد صالات طعام لهذا الفرع",
+    "save": "حفظ",
+    "update": "تحديث",
+    "success": "تم إضافة طاولة المطعم بنجاح",
+    "update_success": "تم تحديث طاولة المطعم بنجاح"
+  },
   "dining-areas": "صالات الطعام",
   "payment_methods": "طرق الدفع",
   "payment-methods": "طرق الدفع",

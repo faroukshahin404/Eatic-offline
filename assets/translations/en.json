@@ -32,10 +32,26 @@
     "no_currencies": "No currencies yet",
     "no_payment_methods": "No payment methods yet",
     "dining_area": "Dining Area",
-    "no_dining_areas": "No dining areas yet"
+    "no_dining_areas": "No dining areas yet",
+    "dining_area_name": "Dining Area Name",
+    "no_restaurant_tables": "No restaurant tables yet"
   },
   "currencies": "Currencies",
   "dining_areas": "Dining Areas",
+  "restaurant_tables": "Restaurant Tables",
+  "restaurant-tables": "Restaurant Tables",
+  "add_restaurant_table": "Add Restaurant Table",
+  "add_restaurant_table_form": {
+    "name": "Table Name",
+    "branch": "Branch",
+    "dining_area": "Dining Area",
+    "loading_dining_areas": "Loading dining areas...",
+    "no_dining_areas": "No dining areas for this branch",
+    "save": "Save",
+    "update": "Update",
+    "success": "Restaurant table added successfully",
+    "update_success": "Restaurant table updated successfully"
+  },
   "dining-areas": "Dining Areas",
   "payment_methods": "Payment Methods",
   "payment-methods": "Payment Methods",

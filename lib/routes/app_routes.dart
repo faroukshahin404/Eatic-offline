@@ -23,6 +23,8 @@ import '../features/payment_methods/cubit/payment_methods_cubit.dart';
 import '../features/payment_methods/payment_methods_screen.dart';
 import '../features/dining_areas/cubit/dining_areas_cubit.dart';
 import '../features/dining_areas/dining_areas_screen.dart';
+import '../features/restaurant_tables/cubit/restaurant_tables_cubit.dart';
+import '../features/restaurant_tables/restaurant_tables_screen.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/zones_screen.dart';
 import '../features/login/login_screen.dart';
@@ -185,6 +187,14 @@ class AppPages {
         builder: (context, state) => BlocProvider<DiningAreasCubit>(
           create: (context) => getIt<DiningAreasCubit>()..getAll(),
           child: const DiningAreasScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.restaurantTables,
+        builder: (context, state) => BlocProvider<RestaurantTablesCubit>(
+          create: (context) => getIt<RestaurantTablesCubit>()..getAll(),
+          child: const RestaurantTablesScreen(),
         ),
       ),
 

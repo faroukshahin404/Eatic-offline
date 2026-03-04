@@ -21,6 +21,7 @@ class SettingScreen extends StatelessWidget {
     "currencies",
     "payment-methods",
     "dining-areas",
+    "restaurant-tables",
   ];
 
   @override
