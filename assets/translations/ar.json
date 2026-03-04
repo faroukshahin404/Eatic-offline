@@ -27,8 +27,19 @@
     "no_delivery_men": "لا يوجد مندوبي توصيل",
     "zone": "المنطقة",
     "last_update": "آخر تحديث",
-    "no_zones": "لا يوجد مناطق"
+    "no_zones": "لا يوجد مناطق",
+    "symbol": "الرمز",
+    "no_currencies": "لا يوجد عملات",
+    "no_payment_methods": "لا يوجد طرق دفع",
+    "dining_area": "صالة الطعام",
+    "no_dining_areas": "لا يوجد صالات طعام"
   },
+  "currencies": "العملات",
+  "dining_areas": "صالات الطعام",
+  "dining-areas": "صالات الطعام",
+  "payment_methods": "طرق الدفع",
+  "payment-methods": "طرق الدفع",
+  "add_currency": "إضافة عملة جديدة",
   "zones": "المناطق",
   "add_zone": "إضافة منطقة جديدة",
   "delivery_men": "مندوبو التوصيل",
@@ -50,12 +61,38 @@
     "success": "تم إضافة المنطقة بنجاح",
     "update_success": "تم تحديث المنطقة بنجاح"
   },
+  "add_currency_form": {
+    "name": "الاسم",
+    "code": "الكود",
+    "symbol": "الرمز",
+    "save": "حفظ",
+    "update": "تحديث",
+    "success": "تم إضافة العملة بنجاح",
+    "update_success": "تم تحديث العملة بنجاح"
+  },
   "add_branch_form": {
     "name": "الاسم",
     "save": "حفظ",
     "created_at": "تاريخ الإنشاء",
     "updated_at": "تاريخ التحديث",
     "created_by": "أنشئ بواسطة"
+  },
+  "add_payment_method": "إضافة طريقة دفع",
+  "add_payment_method_form": {
+    "name": "الاسم",
+    "save": "حفظ",
+    "update": "تحديث",
+    "success": "تم إضافة طريقة الدفع بنجاح",
+    "update_success": "تم تحديث طريقة الدفع بنجاح"
+  },
+  "add_dining_area": "إضافة صالة طعام",
+  "add_dining_area_form": {
+    "name": "اسم صالة الطعام",
+    "branch": "الفرع",
+    "save": "حفظ",
+    "update": "تحديث",
+    "success": "تم إضافة صالة الطعام بنجاح",
+    "update_success": "تم تحديث صالة الطعام بنجاح"
   },
   "add_user_form": {
     "code": "الكود",

@@ -27,8 +27,19 @@
     "no_delivery_men": "No delivery men yet",
     "zone": "Zone",
     "last_update": "Last Update",
-    "no_zones": "No zones yet"
+    "no_zones": "No zones yet",
+    "symbol": "Symbol",
+    "no_currencies": "No currencies yet",
+    "no_payment_methods": "No payment methods yet",
+    "dining_area": "Dining Area",
+    "no_dining_areas": "No dining areas yet"
   },
+  "currencies": "Currencies",
+  "dining_areas": "Dining Areas",
+  "dining-areas": "Dining Areas",
+  "payment_methods": "Payment Methods",
+  "payment-methods": "Payment Methods",
+  "add_currency": "Add New Currency",
   "zones": "Zones",
   "add_zone": "Add New Zone",
   "delivery_men": "Delivery Men",
@@ -50,12 +61,38 @@
     "success": "Zone added successfully",
     "update_success": "Zone updated successfully"
   },
+  "add_currency_form": {
+    "name": "Name",
+    "code": "Code",
+    "symbol": "Symbol",
+    "save": "Save",
+    "update": "Update",
+    "success": "Currency added successfully",
+    "update_success": "Currency updated successfully"
+  },
   "add_branch_form": {
     "name": "Name",
     "save": "Save",
     "created_at": "Created At",
     "updated_at": "Updated At",
     "created_by": "Created By"
+  },
+  "add_payment_method": "Add Payment Method",
+  "add_payment_method_form": {
+    "name": "Name",
+    "save": "Save",
+    "update": "Update",
+    "success": "Payment method added successfully",
+    "update_success": "Payment method updated successfully"
+  },
+  "add_dining_area": "Add Dining Area",
+  "add_dining_area_form": {
+    "name": "Dining Area Name",
+    "branch": "Branch",
+    "save": "Save",
+    "update": "Update",
+    "success": "Dining area added successfully",
+    "update_success": "Dining area updated successfully"
   },
   "add_user_form": {
     "code": "Code",

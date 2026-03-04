@@ -79,5 +79,20 @@ class DatabaseService {
         await db.execute(sql);
       }
     }
+    if (oldVersion < 5) {
+      for (final sql in DatabaseUtils.migrationFrom4To5) {
+        await db.execute(sql);
+      }
+    }
+    if (oldVersion < 6) {
+      for (final sql in DatabaseUtils.migrationFrom5To6) {
+        await db.execute(sql);
+      }
+    }
+    if (oldVersion < 7) {
+      for (final sql in DatabaseUtils.migrationFrom6To7) {
+        await db.execute(sql);
+      }
+    }
   }
 }

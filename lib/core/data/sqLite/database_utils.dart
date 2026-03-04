@@ -3,22 +3,28 @@ import '../../../../features/branches/repos/offline/branches_schema.dart';
 import '../../../../features/users/repos/offline/users_schema.dart';
 import '../../../../features/deliveries/repos/offline/deliveries_schema.dart';
 import '../../../../features/zones/repos/offline/zones_schema.dart';
+import '../../../../features/currencies/repos/offline/currencies_schema.dart';
+import '../../../../features/payment_methods/repos/offline/payment_methods_schema.dart';
+import '../../../../features/dining_areas/repos/offline/dining_areas_schema.dart';
 
 /// Central configuration for SQLite database.
-/// Aggregates createTableStatements from core/feature models. Roles first, then users, branches, delivery_men, zones.
+/// Aggregates createTableStatements from core/feature models. Roles first, then users, branches, delivery_men, zones, currencies.
 abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 4;
+  static const int databaseVersion = 7;
 
-  /// Run in order: roles, users, branches, delivery_men, zones (zones.branch_id references branches).
+  /// Run in order: roles, users, branches, delivery_men, zones, currencies, payment_methods, dining_areas.
   static const List<String> createTableStatements = [
     RolesStatement.createTableRoles,
     UsersSchema.createTableUsers,
     BranchesSchema.createTableBranches,
     DeliveryMenSchema.createTableDeliveryMen,
     ZonesSchema.createTableZones,
+    CurrenciesSchema.createTableCurrencies,
+    PaymentMethodsSchema.createTablePaymentMethods,
+    DiningAreasSchema.createTableDiningAreas,
   ];
 
   /// Run after createTableStatements in onCreate (e.g. seed default roles).
@@ -37,5 +43,20 @@ abstract class DatabaseUtils {
   /// Migrations for existing DBs that were created before zones table existed.
   static List<String> get migrationFrom3To4 => [
         ZonesSchema.createTableZones,
+      ];
+
+  /// Migrations for existing DBs that were created before currencies table existed.
+  static List<String> get migrationFrom4To5 => [
+        CurrenciesSchema.createTableCurrencies,
+      ];
+
+  /// Migrations for existing DBs that were created before payment_methods table existed.
+  static List<String> get migrationFrom5To6 => [
+        PaymentMethodsSchema.createTablePaymentMethods,
+      ];
+
+  /// Migrations for existing DBs that were created before dining_areas table existed.
+  static List<String> get migrationFrom6To7 => [
+        DiningAreasSchema.createTableDiningAreas,
       ];
 }

@@ -15,6 +15,18 @@ import '../features/deliveries/repos/offline/deliveries_offline_repos.dart';
 import '../features/drawer/cubit/drawer_cubit.dart';
 import '../features/add_new_zone/cubit/add_new_zone_cubit.dart';
 import '../features/add_new_zone/repos/offline/add_new_zone_offline_repos.dart';
+import '../features/add_new_currency/cubit/add_new_currency_cubit.dart';
+import '../features/add_new_currency/repos/offline/add_new_currency_offline_repos.dart';
+import '../features/currencies/cubit/currencies_cubit.dart';
+import '../features/currencies/repos/offline/currencies_offline_repos.dart';
+import '../features/add_new_payment_method/cubit/add_new_payment_method_cubit.dart';
+import '../features/add_new_payment_method/repos/offline/add_new_payment_method_offline_repos.dart';
+import '../features/payment_methods/cubit/payment_methods_cubit.dart';
+import '../features/payment_methods/repos/offline/payment_methods_offline_repos.dart';
+import '../features/add_new_dining_area/cubit/add_new_dining_area_cubit.dart';
+import '../features/add_new_dining_area/repos/offline/add_new_dining_area_offline_repos.dart';
+import '../features/dining_areas/cubit/dining_areas_cubit.dart';
+import '../features/dining_areas/repos/offline/dining_areas_offline_repos.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/repos/offline/zones_offline_repos.dart';
 import '../features/login/cubit/login_cubit.dart';
@@ -105,5 +117,50 @@ Future<void> setupDI() async {
       getIt<BranchesOfflineRepository>(),
       getIt<AddNewZoneOfflineRepository>(),
     ),
+  );
+
+  getIt.registerLazySingleton<CurrenciesOfflineRepository>(
+    () => CurrenciesOfflineRepoImpl(),
+  );
+  getIt.registerFactory<CurrenciesCubit>(
+    () => CurrenciesCubit(getIt<CurrenciesOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<AddNewCurrencyOfflineRepository>(
+    () => AddNewCurrencyOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddNewCurrencyCubit>(
+    () => AddNewCurrencyCubit(getIt<AddNewCurrencyOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<PaymentMethodsOfflineRepository>(
+    () => PaymentMethodsOfflineRepoImpl(),
+  );
+  getIt.registerFactory<PaymentMethodsCubit>(
+    () => PaymentMethodsCubit(getIt<PaymentMethodsOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<DiningAreasOfflineRepository>(
+    () => DiningAreasOfflineRepoImpl(),
+  );
+  getIt.registerFactory<DiningAreasCubit>(
+    () => DiningAreasCubit(getIt<DiningAreasOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<AddNewDiningAreaOfflineRepository>(
+    () => AddNewDiningAreaOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddNewDiningAreaCubit>(
+    () => AddNewDiningAreaCubit(
+      getIt<BranchesOfflineRepository>(),
+      getIt<AddNewDiningAreaOfflineRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<AddNewPaymentMethodOfflineRepository>(
+    () => AddNewPaymentMethodOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddNewPaymentMethodCubit>(
+    () => AddNewPaymentMethodCubit(getIt<AddNewPaymentMethodOfflineRepository>()),
   );
 }

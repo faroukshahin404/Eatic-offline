@@ -15,7 +15,14 @@ import '../features/add_new_delivery/add_new_delivery_screen.dart';
 import '../features/deliveries/cubit/delivery_men_cubit.dart';
 import '../features/deliveries/delivery_men_screen.dart';
 import '../features/login/cubit/login_cubit.dart';
+import '../features/add_new_currency/add_new_currency_screen.dart';
 import '../features/add_new_zone/add_new_zone_screen.dart';
+import '../features/currencies/cubit/currencies_cubit.dart';
+import '../features/currencies/currencies_screen.dart';
+import '../features/payment_methods/cubit/payment_methods_cubit.dart';
+import '../features/payment_methods/payment_methods_screen.dart';
+import '../features/dining_areas/cubit/dining_areas_cubit.dart';
+import '../features/dining_areas/dining_areas_screen.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/zones_screen.dart';
 import '../features/login/login_screen.dart';
@@ -147,6 +154,37 @@ class AppPages {
         path: AppPaths.addZone,
         builder: (context, state) => AddNewZoneScreen(
           zoneId: state.extra as int?,
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.currencies,
+        builder: (context, state) => BlocProvider<CurrenciesCubit>(
+          create: (context) => getIt<CurrenciesCubit>()..getAll(),
+          child: const CurrenciesScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.addCurrency,
+        builder: (context, state) => AddNewCurrencyScreen(
+          currencyId: state.extra as int?,
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.paymentMethods,
+        builder: (context, state) => BlocProvider<PaymentMethodsCubit>(
+          create: (context) => getIt<PaymentMethodsCubit>()..getAll(),
+          child: const PaymentMethodsScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.diningAreas,
+        builder: (context, state) => BlocProvider<DiningAreasCubit>(
+          create: (context) => getIt<DiningAreasCubit>()..getAll(),
+          child: const DiningAreasScreen(),
         ),
       ),
 

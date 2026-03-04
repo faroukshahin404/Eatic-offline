@@ -13,7 +13,15 @@ import '../../routes/app_paths.dart';
 class SettingScreen extends StatelessWidget {
   SettingScreen({super.key});
 
-  final List<String> settings = ["users", "branches", "delivery-men", "zones"];
+  final List<String> settings = [
+    "users",
+    "branches",
+    "delivery-men",
+    "zones",
+    "currencies",
+    "payment-methods",
+    "dining-areas",
+  ];
 
   @override
   Widget build(BuildContext context) {
