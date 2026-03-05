@@ -16,7 +16,6 @@ import 'services_locator/service_locator.dart';
 //   print(stackTrace);
 // });
 
-
 // 12321312
 // 123123123
 Future<void> main() async {
