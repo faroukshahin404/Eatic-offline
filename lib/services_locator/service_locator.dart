@@ -31,6 +31,18 @@ import '../features/add_new_restaurant_table/cubit/add_new_restaurant_table_cubi
 import '../features/add_new_restaurant_table/repos/offline/add_new_restaurant_table_offline_repos.dart';
 import '../features/restaurant_tables/cubit/restaurant_tables_cubit.dart';
 import '../features/restaurant_tables/repos/offline/restaurant_tables_offline_repos.dart';
+import '../features/categories/cubit/categories_cubit.dart';
+import '../features/categories/repos/offline/categories_offline_repos.dart';
+import '../features/add_new_category/cubit/add_new_category_cubit.dart';
+import '../features/add_new_category/repos/offline/add_new_category_offline_repos.dart';
+import '../features/addons/cubit/addons_cubit.dart';
+import '../features/addons/repos/offline/addons_offline_repos.dart';
+import '../features/add_new_addon/cubit/add_new_addon_cubit.dart';
+import '../features/add_new_addon/repos/offline/add_new_addon_offline_repos.dart';
+import '../features/add_new_price_list/cubit/add_new_price_list_cubit.dart';
+import '../features/add_new_price_list/repos/offline/add_new_price_list_offline_repos.dart';
+import '../features/price_lists/cubit/price_lists_cubit.dart';
+import '../features/price_lists/repos/offline/price_lists_offline_repos.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/repos/offline/zones_offline_repos.dart';
 import '../features/login/cubit/login_cubit.dart';
@@ -156,6 +168,54 @@ Future<void> setupDI() async {
   );
   getIt.registerFactory<RestaurantTablesCubit>(
     () => RestaurantTablesCubit(getIt<RestaurantTablesOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<CategoriesOfflineRepository>(
+    () => CategoriesOfflineRepoImpl(),
+  );
+  getIt.registerFactory<CategoriesCubit>(
+    () => CategoriesCubit(getIt<CategoriesOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<AddNewCategoryOfflineRepository>(
+    () => AddNewCategoryOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddNewCategoryCubit>(
+    () => AddNewCategoryCubit(
+      getIt<CategoriesOfflineRepository>(),
+      getIt<AddNewCategoryOfflineRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<AddonsOfflineRepository>(
+    () => AddonsOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddonsCubit>(
+    () => AddonsCubit(getIt<AddonsOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<AddNewAddonOfflineRepository>(
+    () => AddNewAddonOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddNewAddonCubit>(
+    () => AddNewAddonCubit(getIt<AddNewAddonOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<PriceListsOfflineRepository>(
+    () => PriceListsOfflineRepoImpl(),
+  );
+  getIt.registerFactory<PriceListsCubit>(
+    () => PriceListsCubit(getIt<PriceListsOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<AddNewPriceListOfflineRepository>(
+    () => AddNewPriceListOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddNewPriceListCubit>(
+    () => AddNewPriceListCubit(
+      getIt<CurrenciesOfflineRepository>(),
+      getIt<AddNewPriceListOfflineRepository>(),
+    ),
   );
 
   getIt.registerLazySingleton<AddNewRestaurantTableOfflineRepository>(

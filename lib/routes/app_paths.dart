@@ -17,5 +17,8 @@ abstract class AppPaths {
   static const String paymentMethods = '/payment-methods';
   static const String diningAreas = '/dining-areas';
   static const String restaurantTables = '/restaurant-tables';
+  static const String categories = '/categories';
+  static const String addons = '/addons';
+  static const String priceLists = '/price-lists';
   static const String resetPassword = '/reset-password';
 }

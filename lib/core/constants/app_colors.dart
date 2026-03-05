@@ -27,6 +27,9 @@ abstract class AppColors {
   /// Background fill color for text fields.
   static const Color fillColor = Color(0xFFF5F5F5);
 
+  /// Background color for modal bottom sheets (avoids theme surface tint).
+  static const Color sheetBackground = Color(0xFFFFFFFF);
+
   static ThemeData androidTheme = ThemeData(
     scaffoldBackgroundColor: Color(0xffffffff),
     useMaterial3: false,

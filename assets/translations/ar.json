@@ -34,9 +34,47 @@
     "dining_area": "صالة الطعام",
     "no_dining_areas": "لا يوجد صالات طعام",
     "dining_area_name": "اسم صالة الطعام",
-    "no_restaurant_tables": "لا يوجد طاولات مطعم"
+    "no_restaurant_tables": "لا يوجد طاولات مطعم",
+    "category_parent_name": "اسم التصنيف الأب",
+    "no_categories": "لا يوجد تصنيفات",
+    "price": "السعر",
+    "no_addons": "لا يوجد إضافات",
+    "price_type": "نوع السعر",
+    "no_price_lists": "لا يوجد قوائم أسعار"
   },
   "currencies": "العملات",
+  "price_lists": "قوائم الأسعار",
+  "price-lists": "قوائم الأسعار",
+  "add_price_list": "إضافة سعر جديد",
+  "add_price_list_form": {
+    "name": "الاسم",
+    "currency": "العملة",
+    "save": "حفظ",
+    "update": "تحديث",
+    "success": "تم إضافة قائمة الأسعار بنجاح",
+    "update_success": "تم تحديث قائمة الأسعار بنجاح"
+  },
+  "categories": "التصنيفات",
+  "addons": "الإضافات",
+  "add_addon": "إضافة إضافة",
+  "add_addon_form": {
+    "name": "الاسم",
+    "price": "السعر",
+    "save": "حفظ",
+    "update": "تحديث",
+    "success": "تم إضافة الإضافة بنجاح",
+    "update_success": "تم تحديث الإضافة بنجاح"
+  },
+  "add_category": "إضافة تصنيف",
+  "add_category_form": {
+    "name": "اسم التصنيف",
+    "parent_category": "التصنيف الأب",
+    "no_parent": "بدون (رئيسي)",
+    "save": "حفظ",
+    "update": "تحديث",
+    "success": "تم إضافة التصنيف بنجاح",
+    "update_success": "تم تحديث التصنيف بنجاح"
+  },
   "dining_areas": "صالات الطعام",
   "restaurant_tables": "طاولات المطعم",
   "restaurant-tables": "طاولات المطعم",

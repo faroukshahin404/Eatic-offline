@@ -7,6 +7,9 @@ import '../../../../features/currencies/repos/offline/currencies_schema.dart';
 import '../../../../features/payment_methods/repos/offline/payment_methods_schema.dart';
 import '../../../../features/dining_areas/repos/offline/dining_areas_schema.dart';
 import '../../../../features/restaurant_tables/repos/offline/restaurant_tables_schema.dart';
+import '../../../../features/categories/repos/offline/categories_schema.dart';
+import '../../../../features/addons/repos/offline/addons_schema.dart';
+import '../../../../features/price_lists/repos/offline/price_lists_schema.dart';
 
 /// Central configuration for SQLite database.
 /// Aggregates createTableStatements from core/feature models. Roles first, then users, branches, delivery_men, zones, currencies.
@@ -14,9 +17,9 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 8;
+  static const int databaseVersion = 11;
 
-  /// Run in order: roles, users, branches, delivery_men, zones, currencies, payment_methods, dining_areas, restaurant_tables.
+  /// Run in order: roles, users, branches, delivery_men, zones, currencies, payment_methods, dining_areas, restaurant_tables, categories, addons, price_lists.
   static const List<String> createTableStatements = [
     RolesStatement.createTableRoles,
     UsersSchema.createTableUsers,
@@ -27,6 +30,9 @@ abstract class DatabaseUtils {
     PaymentMethodsSchema.createTablePaymentMethods,
     DiningAreasSchema.createTableDiningAreas,
     RestaurantTablesSchema.createTableRestaurantTables,
+    CategoriesSchema.createTableCategories,
+    AddonsSchema.createTableAddons,
+    PriceListsSchema.createTablePriceLists,
   ];
 
   /// Run after createTableStatements in onCreate (e.g. seed default roles).
@@ -65,5 +71,20 @@ abstract class DatabaseUtils {
   /// Migrations for existing DBs that were created before restaurant_tables table existed.
   static List<String> get migrationFrom7To8 => [
         RestaurantTablesSchema.createTableRestaurantTables,
+      ];
+
+  /// Migrations for existing DBs that were created before categories table existed.
+  static List<String> get migrationFrom8To9 => [
+        CategoriesSchema.createTableCategories,
+      ];
+
+  /// Migrations for existing DBs that were created before addons table existed.
+  static List<String> get migrationFrom9To10 => [
+        AddonsSchema.createTableAddons,
+      ];
+
+  /// Migrations for existing DBs that were created before price_lists table existed.
+  static List<String> get migrationFrom10To11 => [
+        PriceListsSchema.createTablePriceLists,
       ];
 }

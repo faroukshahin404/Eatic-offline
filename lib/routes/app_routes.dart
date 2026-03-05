@@ -25,6 +25,12 @@ import '../features/dining_areas/cubit/dining_areas_cubit.dart';
 import '../features/dining_areas/dining_areas_screen.dart';
 import '../features/restaurant_tables/cubit/restaurant_tables_cubit.dart';
 import '../features/restaurant_tables/restaurant_tables_screen.dart';
+import '../features/categories/cubit/categories_cubit.dart';
+import '../features/categories/categories_screen.dart';
+import '../features/addons/cubit/addons_cubit.dart';
+import '../features/addons/addons_screen.dart';
+import '../features/price_lists/cubit/price_lists_cubit.dart';
+import '../features/price_lists/price_lists_screen.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/zones_screen.dart';
 import '../features/login/login_screen.dart';
@@ -195,6 +201,30 @@ class AppPages {
         builder: (context, state) => BlocProvider<RestaurantTablesCubit>(
           create: (context) => getIt<RestaurantTablesCubit>()..getAll(),
           child: const RestaurantTablesScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.categories,
+        builder: (context, state) => BlocProvider<CategoriesCubit>(
+          create: (context) => getIt<CategoriesCubit>()..getAll(),
+          child: const CategoriesScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.addons,
+        builder: (context, state) => BlocProvider<AddonsCubit>(
+          create: (context) => getIt<AddonsCubit>()..getAll(),
+          child: const AddonsScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.priceLists,
+        builder: (context, state) => BlocProvider<PriceListsCubit>(
+          create: (context) => getIt<PriceListsCubit>()..getAll(),
+          child: const PriceListsScreen(),
         ),
       ),
 

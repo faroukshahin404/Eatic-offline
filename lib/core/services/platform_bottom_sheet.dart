@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/app_colors.dart';
+
 class PlatformSheet {
   /// Opens a platform-adaptive bottom sheet.
   /// - Mobile (Android/iOS): showModalBottomSheet
@@ -25,7 +27,7 @@ class PlatformSheet {
       enableDrag: enableDrag,
       useSafeArea: useSafeArea,
       showDragHandle: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: AppColors.sheetBackground,
       shape: RoundedRectangleBorder(borderRadius: borderRadius),
       builder: (_) => child,
     );

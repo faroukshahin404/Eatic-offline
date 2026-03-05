@@ -22,6 +22,9 @@ class SettingScreen extends StatelessWidget {
     "payment-methods",
     "dining-areas",
     "restaurant-tables",
+    "categories",
+    "addons",
+    "price-lists",
   ];
 
   @override
@@ -31,7 +34,7 @@ class SettingScreen extends StatelessWidget {
       body: CustomPadding(
         child: Column(
           children: [
-            ListOfSettings(settings: settings),
+            Expanded(child: ListOfSettings(settings: settings)),
             const SizedBox(height: 20),
             TextButton(
               style: ButtonStyle(

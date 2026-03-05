@@ -34,9 +34,47 @@
     "dining_area": "Dining Area",
     "no_dining_areas": "No dining areas yet",
     "dining_area_name": "Dining Area Name",
-    "no_restaurant_tables": "No restaurant tables yet"
+    "no_restaurant_tables": "No restaurant tables yet",
+    "category_parent_name": "Category Parent Name",
+    "no_categories": "No categories yet",
+    "price": "Price",
+    "no_addons": "No addons yet",
+    "price_type": "Price Type",
+    "no_price_lists": "No price lists yet"
   },
   "currencies": "Currencies",
+  "price_lists": "Price Lists",
+  "price-lists": "Price Lists",
+  "add_price_list": "Add New Price",
+  "add_price_list_form": {
+    "name": "Name",
+    "currency": "Currency",
+    "save": "Save",
+    "update": "Update",
+    "success": "Price list added successfully",
+    "update_success": "Price list updated successfully"
+  },
+  "categories": "Categories",
+  "addons": "Addons",
+  "add_addon": "Add Addon",
+  "add_addon_form": {
+    "name": "Name",
+    "price": "Price",
+    "save": "Save",
+    "update": "Update",
+    "success": "Addon added successfully",
+    "update_success": "Addon updated successfully"
+  },
+  "add_category": "Add Category",
+  "add_category_form": {
+    "name": "Category Name",
+    "parent_category": "Parent Category",
+    "no_parent": "None (top-level)",
+    "save": "Save",
+    "update": "Update",
+    "success": "Category added successfully",
+    "update_success": "Category updated successfully"
+  },
   "dining_areas": "Dining Areas",
   "restaurant_tables": "Restaurant Tables",
   "restaurant-tables": "Restaurant Tables",
