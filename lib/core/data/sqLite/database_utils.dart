@@ -10,6 +10,7 @@ import '../../../../features/restaurant_tables/repos/offline/restaurant_tables_s
 import '../../../../features/categories/repos/offline/categories_schema.dart';
 import '../../../../features/addons/repos/offline/addons_schema.dart';
 import '../../../../features/price_lists/repos/offline/price_lists_schema.dart';
+import '../../../../features/add_new_product/repos/offline/products_schema.dart';
 
 /// Central configuration for SQLite database.
 /// Aggregates createTableStatements from core/feature models. Roles first, then users, branches, delivery_men, zones, currencies.
@@ -17,9 +18,9 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 11;
+  static const int databaseVersion = 12;
 
-  /// Run in order: roles, users, branches, delivery_men, zones, currencies, payment_methods, dining_areas, restaurant_tables, categories, addons, price_lists.
+  /// Run in order: roles, users, branches, ..., price_lists, products, category_product, product_variables, product_variable_values, product_variants, product_variant_values, product_addon, product_variant_addon, product_price_list_prices, product_variant_price_list_prices.
   static const List<String> createTableStatements = [
     RolesStatement.createTableRoles,
     UsersSchema.createTableUsers,
@@ -33,6 +34,16 @@ abstract class DatabaseUtils {
     CategoriesSchema.createTableCategories,
     AddonsSchema.createTableAddons,
     PriceListsSchema.createTablePriceLists,
+    ProductsSchema.createTableProducts,
+    ProductsSchema.createTableCategoryProduct,
+    ProductsSchema.createTableProductVariables,
+    ProductsSchema.createTableProductVariableValues,
+    ProductsSchema.createTableProductVariants,
+    ProductsSchema.createTableProductVariantValues,
+    ProductsSchema.createTableProductAddon,
+    ProductsSchema.createTableProductVariantAddon,
+    ProductsSchema.createTableProductPriceListPrices,
+    ProductsSchema.createTableProductVariantPriceListPrices,
   ];
 
   /// Run after createTableStatements in onCreate (e.g. seed default roles).
@@ -86,5 +97,19 @@ abstract class DatabaseUtils {
   /// Migrations for existing DBs that were created before price_lists table existed.
   static List<String> get migrationFrom10To11 => [
         PriceListsSchema.createTablePriceLists,
+      ];
+
+  /// Migrations for existing DBs that were created before product tables existed.
+  static List<String> get migrationFrom11To12 => [
+        ProductsSchema.createTableProducts,
+        ProductsSchema.createTableCategoryProduct,
+        ProductsSchema.createTableProductVariables,
+        ProductsSchema.createTableProductVariableValues,
+        ProductsSchema.createTableProductVariants,
+        ProductsSchema.createTableProductVariantValues,
+        ProductsSchema.createTableProductAddon,
+        ProductsSchema.createTableProductVariantAddon,
+        ProductsSchema.createTableProductPriceListPrices,
+        ProductsSchema.createTableProductVariantPriceListPrices,
       ];
 }

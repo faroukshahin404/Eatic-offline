@@ -25,6 +25,7 @@ class SettingScreen extends StatelessWidget {
     "categories",
     "addons",
     "price-lists",
+    "products",
   ];
 
   @override

@@ -114,5 +114,10 @@ class DatabaseService {
         await db.execute(sql);
       }
     }
+    if (oldVersion < 12) {
+      for (final sql in DatabaseUtils.migrationFrom11To12) {
+        await db.execute(sql);
+      }
+    }
   }
 }

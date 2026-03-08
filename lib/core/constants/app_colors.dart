@@ -44,7 +44,15 @@ abstract class AppColors {
       strokeCap: StrokeCap.round,
     ),
     checkboxTheme: CheckboxThemeData(
-      fillColor: WidgetStateColor.resolveWith((states) => AppColors.primary),
+      fillColor: WidgetStateColor.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.primary;
+        }
+        return Colors.transparent;
+      }),
+      checkColor: WidgetStateProperty.all(Colors.white),
+      side: BorderSide(color: AppColors.oppositeColor.withOpacity(0.6), width: 1.5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
     ),
   );
 

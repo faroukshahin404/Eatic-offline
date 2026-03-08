@@ -43,6 +43,9 @@ import '../features/add_new_price_list/cubit/add_new_price_list_cubit.dart';
 import '../features/add_new_price_list/repos/offline/add_new_price_list_offline_repos.dart';
 import '../features/price_lists/cubit/price_lists_cubit.dart';
 import '../features/price_lists/repos/offline/price_lists_offline_repos.dart';
+import '../features/add_new_product/cubit/add_new_product_cubit.dart';
+import '../features/add_new_product/repos/offline/add_new_product_offline_repos.dart';
+import '../features/products/cubit/products_cubit.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/repos/offline/zones_offline_repos.dart';
 import '../features/login/cubit/login_cubit.dart';
@@ -216,6 +219,22 @@ Future<void> setupDI() async {
       getIt<CurrenciesOfflineRepository>(),
       getIt<AddNewPriceListOfflineRepository>(),
     ),
+  );
+
+  getIt.registerLazySingleton<AddNewProductOfflineRepository>(
+    () => AddNewProductOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddNewProductCubit>(
+    () => AddNewProductCubit(
+      getIt<CategoriesOfflineRepository>(),
+      getIt<AddonsOfflineRepository>(),
+      getIt<PriceListsOfflineRepository>(),
+      getIt<AddNewProductOfflineRepository>(),
+    ),
+  );
+
+  getIt.registerFactory<ProductsCubit>(
+    () => ProductsCubit(getIt<AddNewProductOfflineRepository>()),
   );
 
   getIt.registerLazySingleton<AddNewRestaurantTableOfflineRepository>(

@@ -31,6 +31,10 @@ import '../features/addons/cubit/addons_cubit.dart';
 import '../features/addons/addons_screen.dart';
 import '../features/price_lists/cubit/price_lists_cubit.dart';
 import '../features/price_lists/price_lists_screen.dart';
+import '../features/add_new_product/add_new_product_screen.dart';
+import '../features/add_new_product/cubit/add_new_product_cubit.dart';
+import '../features/products/products_screen.dart';
+import '../features/products/cubit/products_cubit.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/zones_screen.dart';
 import '../features/login/login_screen.dart';
@@ -142,7 +146,8 @@ class AppPages {
         builder: (context, state) => BlocProvider<AddNewDeliveryCubit>(
           create: (context) {
             final cubit = getIt<AddNewDeliveryCubit>();
-            if (state.extra != null) cubit.setDeliveryIdForEdit(state.extra as int);
+            if (state.extra != null)
+              cubit.setDeliveryIdForEdit(state.extra as int);
             cubit.loadBranches();
             return cubit;
           },
@@ -160,9 +165,8 @@ class AppPages {
 
       GoRoute(
         path: AppPaths.addZone,
-        builder: (context, state) => AddNewZoneScreen(
-          zoneId: state.extra as int?,
-        ),
+        builder: (context, state) =>
+            AddNewZoneScreen(zoneId: state.extra as int?),
       ),
 
       GoRoute(
@@ -175,9 +179,8 @@ class AppPages {
 
       GoRoute(
         path: AppPaths.addCurrency,
-        builder: (context, state) => AddNewCurrencyScreen(
-          currencyId: state.extra as int?,
-        ),
+        builder: (context, state) =>
+            AddNewCurrencyScreen(currencyId: state.extra as int?),
       ),
 
       GoRoute(
@@ -225,6 +228,22 @@ class AppPages {
         builder: (context, state) => BlocProvider<PriceListsCubit>(
           create: (context) => getIt<PriceListsCubit>()..getAll(),
           child: const PriceListsScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.addProduct,
+        builder: (context, state) => BlocProvider<AddNewProductCubit>(
+          create: (context) => getIt<AddNewProductCubit>()..loadData(productId: state.extra as int?),
+          child: const AddNewProductScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.products,
+        builder: (context, state) => BlocProvider<ProductsCubit>(
+          create: (context) => getIt<ProductsCubit>()..loadProducts(),
+          child: const ProductsScreen(),
         ),
       ),
 
