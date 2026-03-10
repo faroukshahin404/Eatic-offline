@@ -1,3 +1,4 @@
+import 'package:Eatic/core/widgets/custom_button_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,16 +32,28 @@ class CreateOrderScreen extends StatelessWidget {
           }
           if (state is CreateOrderProductLoaded) {
             return CustomPadding(
-              child: ListView(
+              child: Column(
                 children: [
-                  OrderProductCard(),
-                  const SizedBox(height: 16),
-                  PriceListDropdown(cubit: cubit),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        OrderProductCard(),
+                        const SizedBox(height: 16),
+                        PriceListDropdown(cubit: cubit),
 
-                  const SizedBox(height: 16),
-                  CreateOrderVariantsSection(cubit: cubit),
-                  const SizedBox(height: 16),
-                  CreateOrderAddonsSection(cubit: cubit),
+                        const SizedBox(height: 16),
+                        CreateOrderVariantsSection(cubit: cubit),
+                        const SizedBox(height: 16),
+                        CreateOrderAddonsSection(cubit: cubit),
+                      ],
+                    ),
+                  ),
+                  CustomButtonWidget(
+                    
+                    text: 'create_order.add_to_order'.tr(),
+                    onPressed: () {},
+                  ),
                 ],
               ),
             );

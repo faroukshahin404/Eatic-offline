@@ -96,11 +96,7 @@ class CustomButtonWidget extends StatelessWidget {
       ),
     );
     if (width != null || height != null) {
-      return SizedBox(
-        width: width,
-        height: height,
-        child: button,
-      );
+      return SizedBox(width: width, height: height, child: button);
     }
     return button;
   }

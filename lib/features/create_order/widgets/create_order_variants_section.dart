@@ -37,18 +37,23 @@ class CreateOrderVariantsSection extends StatelessWidget {
           onSelectionChanged: (v) => cubit.setSelectedVariant(v),
           itemEquals: (a, b) => a.id == b.id,
           itemBuilder: (context, v) {
-            final index = cubit.variants.indexOf(v);
-            final name = v.variableLabels.isEmpty
-                ? 'create_order.variant_n'.tr(namedArgs: {'n': '${index + 1}'})
-                : v.variableLabels.join(' · ');
-            final priceForSelectedList = cubit.selectedPriceListId != null
-                ? v.priceListPrices[cubit.selectedPriceListId]
-                : null;
-            return CreateOrderVariantCard(
-              variant: v,
-              name: name,
-              priceForSelectedList: priceForSelectedList,
-            );
+            if (v.isActive == true) {
+              final index = cubit.variants.indexOf(v);
+              final name = v.variableLabels.isEmpty
+                  ? 'create_order.variant_n'.tr(
+                      namedArgs: {'n': '${index + 1}'},
+                    )
+                  : v.variableLabels.join(' · ');
+              final priceForSelectedList = cubit.selectedPriceListId != null
+                  ? v.priceListPrices[cubit.selectedPriceListId]
+                  : null;
+              return CreateOrderVariantCard(
+                variant: v,
+                name: name,
+                priceForSelectedList: priceForSelectedList,
+              );
+            }
+            return const SizedBox.shrink();
           },
         ),
       ],
