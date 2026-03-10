@@ -48,6 +48,8 @@ import '../features/add_new_product/cubit/add_new_product_cubit.dart';
 import '../features/add_new_product/repos/offline/add_new_product_offline_repos.dart';
 import '../features/products/cubit/products_cubit.dart';
 import '../features/products/repos/offline/products_offline_repos.dart';
+import '../features/create_order/cubit/create_order_cubit.dart';
+import '../features/create_order/repos/offline/create_order_offline_repos.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/repos/offline/zones_offline_repos.dart';
 import '../features/login/cubit/login_cubit.dart';
@@ -240,6 +242,16 @@ Future<void> setupDI() async {
 
   getIt.registerFactory<ProductsCubit>(
     () => ProductsCubit(getIt<ProductsOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<CreateOrderOfflineRepository>(
+    () => CreateOrderOfflineRepoImpl(),
+  );
+  getIt.registerFactory<CreateOrderCubit>(
+    () => CreateOrderCubit(
+      getIt<CreateOrderOfflineRepository>(),
+      getIt<PriceListsOfflineRepository>(),
+    ),
   );
 
   getIt.registerFactory<HomeCubit>(

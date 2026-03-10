@@ -22,5 +22,6 @@ abstract class AppPaths {
   static const String priceLists = '/price-lists';
   static const String addProduct = '/add-product';
   static const String products = '/products';
+  static const String createOrder = '/create-order';
   static const String resetPassword = '/reset-password';
 }

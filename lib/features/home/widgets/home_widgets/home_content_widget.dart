@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/widgets/custom_failed_widget.dart';
+import '../../../../core/widgets/custom_grid_view.dart';
+import '../../../add_new_product/model/product_model.dart';
 import '../../cubit/home_cubit.dart';
 import '../../cubit/home_state.dart';
 import 'categories_row_widget.dart';
@@ -53,43 +55,10 @@ class HomeContentWidget extends StatelessWidget {
                           ),
                         ),
                       )
-                    : LayoutBuilder(
-                        builder: (context, constraints) {
-                          const horizontalPadding = 16.0;
-                          const spacing = 8.0;
-                          // Max width per card; more columns on wider screens so cards stay within this
-                          const maxCardWidth = 280.0;
-                          final width = constraints.maxWidth;
-                          final crossAxisCount =
-                              ((width - horizontalPadding + spacing) /
-                                      (maxCardWidth + spacing))
-                                  .ceil()
-                                  .clamp(2, 8);
-                          final itemWidth =
-                              (width -
-                                  horizontalPadding -
-                                  (crossAxisCount - 1) * spacing) /
-                              crossAxisCount;
-                          return SingleChildScrollView(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            child: Wrap(
-                              spacing: spacing,
-                              runSpacing: spacing,
-                              children: [
-                                for (var i = 0; i < state.products.length; i++)
-                                  SizedBox(
-                                    width: itemWidth,
-                                    child: HomeProductCard(
-                                      product: state.products[i],
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          );
-                        },
+                    : CustomGridView<ProductModel>(
+                        items: state.products,
+                        itemBuilder: (context, product) =>
+                            HomeProductCard(product: product),
                       ),
               ),
             ],

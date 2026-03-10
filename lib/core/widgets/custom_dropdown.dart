@@ -24,6 +24,7 @@ class CustomDropDown<T> extends StatelessWidget {
   final String Function(T) itemLabelBuilder;
   final String? label;
   final String? Function(T?)? validator;
+
   /// When true, returns [SizedBox.shrink] when [items] is empty. When false, shows label and optional [emptyMessage].
   final bool hideWhenEmpty;
   final String? emptyMessage;
@@ -101,16 +102,13 @@ class CustomDropDown<T> extends StatelessWidget {
           const SizedBox(height: 5),
         ],
         DropdownButtonFormField<T>(
-          value: effectiveValue,
+          initialValue: effectiveValue,
           decoration: _dropdownDecoration(),
           dropdownColor: AppColors.fillColor,
           style: AppFonts.styleRegular18.copyWith(
             color: AppColors.oppositeColor,
           ),
-          icon: Icon(
-            Icons.keyboard_arrow_down,
-            color: AppColors.greyA4ACAD,
-          ),
+          icon: Icon(Icons.keyboard_arrow_down, color: AppColors.greyA4ACAD),
           isExpanded: true,
           items: items
               .map(

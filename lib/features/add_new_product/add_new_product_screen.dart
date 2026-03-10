@@ -7,7 +7,6 @@ import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
 import '../../core/widgets/custom_padding.dart';
-import '../../services_locator/service_locator.dart';
 import 'cubit/add_new_product_cubit.dart';
 import 'widgets/add_new_product_form_widget.dart';
 

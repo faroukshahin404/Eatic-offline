@@ -35,6 +35,8 @@ import '../features/add_new_product/add_new_product_screen.dart';
 import '../features/add_new_product/cubit/add_new_product_cubit.dart';
 import '../features/products/products_screen.dart';
 import '../features/products/cubit/products_cubit.dart';
+import '../features/create_order/create_order_screen.dart';
+import '../features/create_order/cubit/create_order_cubit.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/zones_screen.dart';
 import '../features/login/login_screen.dart';
@@ -234,7 +236,9 @@ class AppPages {
       GoRoute(
         path: AppPaths.addProduct,
         builder: (context, state) => BlocProvider<AddNewProductCubit>(
-          create: (context) => getIt<AddNewProductCubit>()..loadData(productId: state.extra as int?),
+          create: (context) =>
+              getIt<AddNewProductCubit>()
+                ..loadData(productId: state.extra as int?),
           child: const AddNewProductScreen(),
         ),
       ),
@@ -246,6 +250,15 @@ class AppPages {
           child: const ProductsScreen(),
         ),
       ),
+
+      // GoRoute(
+      //   path: AppPaths.createOrder,
+      //   builder: (context, state) => BlocProvider<CreateOrderCubit>(
+      //     create: (context) =>
+      //         getIt<CreateOrderCubit>()..loadProductById(state.extra as int),
+      //     child: const CreateOrderScreen(),
+      //   ),
+      // ),
 
       GoRoute(
         path: AppPaths.resetPassword,
