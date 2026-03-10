@@ -13,6 +13,7 @@ import '../features/add_new_delivery/repos/offline/add_new_delivery_offline_repo
 import '../features/deliveries/cubit/delivery_men_cubit.dart';
 import '../features/deliveries/repos/offline/deliveries_offline_repos.dart';
 import '../features/drawer/cubit/drawer_cubit.dart';
+import '../features/home/cubit/home_cubit.dart';
 import '../features/add_new_zone/cubit/add_new_zone_cubit.dart';
 import '../features/add_new_zone/repos/offline/add_new_zone_offline_repos.dart';
 import '../features/add_new_currency/cubit/add_new_currency_cubit.dart';
@@ -46,6 +47,7 @@ import '../features/price_lists/repos/offline/price_lists_offline_repos.dart';
 import '../features/add_new_product/cubit/add_new_product_cubit.dart';
 import '../features/add_new_product/repos/offline/add_new_product_offline_repos.dart';
 import '../features/products/cubit/products_cubit.dart';
+import '../features/products/repos/offline/products_offline_repos.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/repos/offline/zones_offline_repos.dart';
 import '../features/login/cubit/login_cubit.dart';
@@ -224,6 +226,9 @@ Future<void> setupDI() async {
   getIt.registerLazySingleton<AddNewProductOfflineRepository>(
     () => AddNewProductOfflineRepoImpl(),
   );
+  getIt.registerLazySingleton<ProductsOfflineRepository>(
+    () => ProductsOfflineRepoImpl(),
+  );
   getIt.registerFactory<AddNewProductCubit>(
     () => AddNewProductCubit(
       getIt<CategoriesOfflineRepository>(),
@@ -234,7 +239,14 @@ Future<void> setupDI() async {
   );
 
   getIt.registerFactory<ProductsCubit>(
-    () => ProductsCubit(getIt<AddNewProductOfflineRepository>()),
+    () => ProductsCubit(getIt<ProductsOfflineRepository>()),
+  );
+
+  getIt.registerFactory<HomeCubit>(
+    () => HomeCubit(
+      getIt<CategoriesOfflineRepository>(),
+      getIt<ProductsOfflineRepository>(),
+    ),
   );
 
   getIt.registerLazySingleton<AddNewRestaurantTableOfflineRepository>(

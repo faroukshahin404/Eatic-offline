@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_fonts.dart';
+import '../../../core/widgets/action_icon_widget.dart';
 import '../../../core/widgets/custom_text.dart';
 import '../cubit/branches_cubit.dart';
 import '../model/branch_model.dart';
@@ -159,7 +160,7 @@ class _BranchesTableWidgetState extends State<BranchesTableWidget> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   if (widget.onEdit != null)
-                                    _ActionIcon(
+                                    ActionIcon(
                                       icon: Icons.edit_outlined,
                                       tooltip: 'actions.edit'.tr(),
                                       onTap: () =>
@@ -167,7 +168,7 @@ class _BranchesTableWidgetState extends State<BranchesTableWidget> {
                                     ),
 
                                   const SizedBox(width: 4),
-                                  _ActionIcon(
+                                  ActionIcon(
                                     icon: Icons.delete_outline,
                                     tooltip: 'actions.delete'.tr(),
                                     onTap: () =>
@@ -186,30 +187,6 @@ class _BranchesTableWidgetState extends State<BranchesTableWidget> {
           ),
         );
       },
-    );
-  }
-}
-
-class _ActionIcon extends StatelessWidget {
-  const _ActionIcon({
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: IconButton(
-        onPressed: onTap,
-        icon: Icon(icon, size: 22, color: AppColors.primary),
-        style: IconButton.styleFrom(minimumSize: const Size(36, 36)),
-      ),
     );
   }
 }

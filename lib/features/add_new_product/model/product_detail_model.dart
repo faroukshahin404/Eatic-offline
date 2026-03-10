@@ -1,9 +1,11 @@
+import 'add_product_input.dart';
 import 'product_variable_row.dart';
 import 'variant_prices_row.dart';
 
-/// Input DTO for adding a new product (form data).
-class AddProductInput {
-  AddProductInput({
+/// Full product data for get-by-id and update (same shape as AddProductInput with id).
+class ProductDetailModel {
+  ProductDetailModel({
+    required this.id,
     required this.name,
     this.nameEn,
     this.description,
@@ -19,6 +21,7 @@ class AddProductInput {
         productPriceListPrices = productPriceListPrices ?? {},
         variantPricesRows = variantPricesRows ?? [];
 
+  final int id;
   final String name;
   final String? nameEn;
   final String? description;
@@ -26,8 +29,20 @@ class AddProductInput {
   final bool hasVariants;
   final List<ProductVariableRow> variableRows;
   final List<int> addonIds;
-  /// Product-level price list prices (when no variants or default).
   final Map<int, double> productPriceListPrices;
-  /// Per-variant prices (order = cartesian product of variable values).
   final List<VariantPricesRow> variantPricesRows;
+
+  AddProductInput toAddProductInput() {
+    return AddProductInput(
+      name: name,
+      nameEn: nameEn,
+      description: description,
+      categoryIds: List.from(categoryIds),
+      hasVariants: hasVariants,
+      variableRows: variableRows,
+      addonIds: List.from(addonIds),
+      productPriceListPrices: Map.from(productPriceListPrices),
+      variantPricesRows: variantPricesRows,
+    );
+  }
 }

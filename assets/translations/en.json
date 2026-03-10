@@ -2,6 +2,8 @@
   "hello": "Hello",
   "settings": "Settings",
   "home": "Home",
+  "home.all": "All",
+  "home.no_products": "No products in this category",
   "home.mobile": "Home Mobile",
   "home.desktop": "Home Desktop",
   "home.tablet": "Home Tablet",

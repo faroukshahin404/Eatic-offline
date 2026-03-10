@@ -10,6 +10,9 @@ import '../../addons/repos/offline/addons_offline_repos.dart';
 import '../../price_lists/model/price_list_model.dart';
 import '../../price_lists/repos/offline/price_lists_offline_repos.dart';
 import '../model/add_product_input.dart';
+import '../model/product_detail_model.dart';
+import '../model/product_variable_row.dart';
+import '../model/variant_prices_row.dart';
 import '../repos/offline/add_new_product_offline_repos.dart';
 
 part 'add_new_product_state.dart';

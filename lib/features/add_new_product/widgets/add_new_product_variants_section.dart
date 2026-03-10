@@ -5,7 +5,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_fonts.dart';
 import '../../../core/widgets/custom_button_widget.dart';
 import '../cubit/add_new_product_cubit.dart';
-import '../model/add_product_input.dart';
+import '../model/product_variable_row.dart';
 
 class AddNewProductVariantsSection extends StatelessWidget {
   const AddNewProductVariantsSection({super.key, required this.cubit});

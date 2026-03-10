@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/action_icon_widget.dart';
 import '../../../core/widgets/custom_text.dart';
 import '../model/user_model.dart';
 
@@ -114,7 +115,7 @@ class _ListOfUserWidgetState extends State<ListOfUserWidget> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   if (widget.onEdit != null)
-                                    _ActionIcon(
+                                    ActionIcon(
                                       icon: Icons.edit_outlined,
                                       tooltip: 'actions.edit'.tr(),
                                       onTap: () =>
@@ -122,7 +123,7 @@ class _ListOfUserWidgetState extends State<ListOfUserWidget> {
                                     ),
                                   if (widget.onDelete != null) ...[
                                     const SizedBox(width: 4),
-                                    _ActionIcon(
+                                    ActionIcon(
                                       icon: Icons.delete_outline,
                                       tooltip: 'actions.delete'.tr(),
                                       onTap: () =>
@@ -131,7 +132,7 @@ class _ListOfUserWidgetState extends State<ListOfUserWidget> {
                                   ],
                                   if (widget.onView != null) ...[
                                     const SizedBox(width: 4),
-                                    _ActionIcon(
+                                    ActionIcon(
                                       icon: Icons.visibility_outlined,
                                       tooltip: 'actions.view'.tr(),
                                       onTap: () =>
@@ -151,30 +152,6 @@ class _ListOfUserWidgetState extends State<ListOfUserWidget> {
           ),
         );
       },
-    );
-  }
-}
-
-class _ActionIcon extends StatelessWidget {
-  const _ActionIcon({
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: IconButton(
-        onPressed: onTap,
-        icon: Icon(icon, size: 22, color: AppColors.primary),
-        style: IconButton.styleFrom(minimumSize: const Size(36, 36)),
-      ),
     );
   }
 }

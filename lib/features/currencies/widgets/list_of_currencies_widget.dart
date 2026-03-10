@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/action_icon_widget.dart';
 import '../../../core/widgets/custom_text.dart';
 import '../model/currency_model.dart';
 
@@ -124,7 +125,7 @@ class _ListOfCurrenciesWidgetState extends State<ListOfCurrenciesWidget> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   if (widget.onEdit != null)
-                                    _ActionIcon(
+                                    ActionIcon(
                                       icon: Icons.edit_outlined,
                                       tooltip: 'actions.edit'.tr(),
                                       onTap: () =>
@@ -133,7 +134,7 @@ class _ListOfCurrenciesWidgetState extends State<ListOfCurrenciesWidget> {
                                   if (widget.onDelete != null) ...[
                                     if (widget.onEdit != null)
                                       const SizedBox(width: 4),
-                                    _ActionIcon(
+                                    ActionIcon(
                                       icon: Icons.delete_outline,
                                       tooltip: 'actions.delete'.tr(),
                                       onTap: () => widget
@@ -153,30 +154,6 @@ class _ListOfCurrenciesWidgetState extends State<ListOfCurrenciesWidget> {
           ),
         );
       },
-    );
-  }
-}
-
-class _ActionIcon extends StatelessWidget {
-  const _ActionIcon({
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: IconButton(
-        onPressed: onTap,
-        icon: Icon(icon, size: 22, color: AppColors.primary),
-        style: IconButton.styleFrom(minimumSize: const Size(36, 36)),
-      ),
     );
   }
 }

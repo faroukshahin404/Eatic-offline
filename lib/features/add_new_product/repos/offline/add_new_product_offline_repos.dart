@@ -5,15 +5,15 @@ import '../../../../core/data/sqLite/database_service.dart';
 import '../../../../core/error/offline_error.dart';
 import '../../../../services_locator/service_locator.dart';
 import '../../model/add_product_input.dart';
-import '../../model/product_model.dart';
+import '../../model/product_detail_model.dart';
+import '../../model/product_variable_row.dart';
+import '../../model/variant_prices_row.dart';
 import 'products_schema.dart';
 
 abstract class AddNewProductOfflineRepository {
   DbCall<int> insertProduct(AddProductInput input);
   DbCall<ProductDetailModel> getProductById(int productId);
   DbCall<void> updateProduct(ProductDetailModel detail);
-  DbCall<List<ProductModel>> getAllProducts();
-  DbCall<void> deleteProduct(int productId);
 }
 
 /// Returns all combinations of one element from each list (cartesian product).
@@ -533,58 +533,6 @@ class AddNewProductOfflineRepoImpl implements AddNewProductOfflineRepository {
         e is DatabaseException
             ? OfflineFailure.fromSqliteException(e)
             : OfflineFailure.updateFailed(e),
-      );
-    }
-  }
-
-  @override
-  Future<Either<OfflineFailure, List<ProductModel>>> getAllProducts() async {
-    try {
-      final rows = await _db.query(
-        ProductsSchema.tableProducts,
-        orderBy: '${ProductsSchema.colSortOrder} ASC, ${ProductsSchema.colId} ASC',
-      );
-      final list = rows.map((m) => ProductModel.fromMap(m)).toList();
-      return Right(list);
-    } catch (e) {
-      return Left(
-        e is DatabaseException
-            ? OfflineFailure.fromSqliteException(e)
-            : OfflineFailure.queryFailed(e),
-      );
-    }
-  }
-
-  @override
-  Future<Either<OfflineFailure, void>> deleteProduct(int productId) async {
-    try {
-      await _deleteProductVariantsAndVariables(productId);
-      await _db.delete(
-        ProductsSchema.tableProductAddon,
-        where: '${ProductsSchema.colProductId} = ?',
-        whereArgs: [productId],
-      );
-      await _db.delete(
-        ProductsSchema.tableCategoryProduct,
-        where: '${ProductsSchema.colProductId} = ?',
-        whereArgs: [productId],
-      );
-      await _db.delete(
-        ProductsSchema.tableProductPriceListPrices,
-        where: '${ProductsSchema.colProductId} = ?',
-        whereArgs: [productId],
-      );
-      await _db.delete(
-        ProductsSchema.tableProducts,
-        where: '${ProductsSchema.colId} = ?',
-        whereArgs: [productId],
-      );
-      return const Right(null);
-    } catch (e) {
-      return Left(
-        e is DatabaseException
-            ? OfflineFailure.fromSqliteException(e)
-            : OfflineFailure.deleteFailed(e),
       );
     }
   }

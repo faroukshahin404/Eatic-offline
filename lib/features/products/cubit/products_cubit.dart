@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../add_new_product/model/product_model.dart';
-import '../../add_new_product/repos/offline/add_new_product_offline_repos.dart';
+import '../repos/offline/products_offline_repos.dart';
 import 'products_state.dart';
 
 class ProductsCubit extends Cubit<ProductsState> {
   ProductsCubit(this._productRepo) : super(ProductsInitial());
 
-  final AddNewProductOfflineRepository _productRepo;
+  final ProductsOfflineRepository _productRepo;
 
   List<ProductModel> _products = [];
   List<ProductModel> get products => _products;
