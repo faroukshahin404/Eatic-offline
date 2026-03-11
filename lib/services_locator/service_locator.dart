@@ -264,7 +264,9 @@ Future<void> setupDI() async {
     () => CustodyCubit(getIt<CustodyOfflineRepository>()),
   );
 
-  getIt.registerFactory<CartCubit>(() => CartCubit());
+  getIt.registerFactory<CartCubit>(
+    () => CartCubit(getIt<CustodyOfflineRepository>()),
+  );
 
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(

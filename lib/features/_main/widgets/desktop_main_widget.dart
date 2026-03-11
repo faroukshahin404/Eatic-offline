@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/widgets/custom_app_bar.dart';
 import '../../cart/cart_screen.dart';
 import '../../drawer/drawer_screen.dart';
 import '_current_screen.dart';
@@ -11,8 +12,22 @@ class DesktopMainWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        DrawerScreen(),
-        Expanded(flex: 2, child: CurrentScreen()),
+        Expanded(
+          flex: 3,
+          child: Column(
+            children: [
+              CustomAppBar(title: "Eatic"),
+              Expanded(
+                child: Row(
+                  children: [
+                    DrawerScreen(),
+                    Expanded(flex: 2, child: CurrentScreen()),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
         Expanded(child: CartScreen()),
       ],
     );

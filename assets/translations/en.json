@@ -220,6 +220,7 @@
     "success": "Product added successfully"
   },
   "cart.no_items": "No items in the cart",
+  "cart.open_custody": "Open Custody",
   "reset_password": {
     "title": "Reset Password",
     "current_password": "Current Password",

@@ -220,6 +220,7 @@
     "success": "تم إضافة المنتج بنجاح"
   },
   "cart.no_items": "لا يوجد عناصر في السلة",
+  "cart.open_custody": "فتح عهدة",
   "reset_password": {
     "title": "تغيير كلمة المرور",
     "current_password": "كلمة المرور الحالية",

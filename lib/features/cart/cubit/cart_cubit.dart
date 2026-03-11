@@ -1,10 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../create_order/model/create_order_line_model.dart';
+import '../../custody/repos/offline/custody_offline_repos.dart';
 import 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
-  CartCubit() : super(const CartState());
+  CartCubit(this._custodyRepo) : super(const CartState());
+
+  final CustodyOfflineRepository _custodyRepo;
 
   void clearCart() {
     emit(state.copyWith(items: []));
@@ -43,7 +46,10 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(items: newItems));
   }
 
-  void setHasOpenCustody(bool value) {
-    emit(state.copyWith(hasOpenCustody: value));
+  /// Refreshes [hasOpenCustody] from [CustodyOfflineRepository.getLastOpenCustody]. Call after cart is shown or after open/close custody dialogs complete.
+  Future<void> refreshHasOpenCustody() async {
+    final result = await _custodyRepo.getLastOpenCustody();
+    final hasOpen = result.fold((_) => false, (v) => v != null);
+    emit(state.copyWith(hasOpenCustody: hasOpen));
   }
 }

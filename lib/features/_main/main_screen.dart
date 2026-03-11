@@ -16,21 +16,12 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<CartCubit>(create: (_) => getIt<CartCubit>()),
-        BlocProvider<CustodyCubit>(create: (_) => getIt<CustodyCubit>()),
-      ],
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: "Eatic",
-        ),
-        drawer: DrawerScreen(),
-        body: AdaptiveLayoutWidget(
-          mobile: (context) => const MobileMainWidget(),
-          tablet: (context) => const TabletMainWidget(),
-          desktop: (context) => const DesktopMainWidget(),
-        ),
+    return Scaffold(
+      drawer: DrawerScreen(),
+      body: AdaptiveLayoutWidget(
+        mobile: (context) => const MobileMainWidget(),
+        tablet: (context) => const TabletMainWidget(),
+        desktop: (context) => const DesktopMainWidget(),
       ),
     );
   }

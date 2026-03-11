@@ -17,7 +17,9 @@ class CartCloseCustodyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomButtonWidget(
-      text: 'cart.close_custody'.tr(),
+      text: hasOpenCustody
+          ? 'custody.close_custody'.tr()
+          : 'custody.open_new'.tr(),
       onPressed: () => _onPressed(context),
       backgroundColor: Colors.white,
       foregroundColor: AppColors.primary,
@@ -28,10 +30,14 @@ class CartCloseCustodyButton extends StatelessWidget {
     final cartCubit = context.read<CartCubit>();
     if (hasOpenCustody) {
       final result = await showCustodyConfirmCloseDialog(context);
-      if (context.mounted && result == true) cartCubit.setHasOpenCustody(false);
+      if (context.mounted && result == true) {
+        await cartCubit.refreshHasOpenCustody();
+      }
     } else {
       final result = await showCustodyConfirmOpenDialog(context);
-      if (context.mounted && result == true) cartCubit.setHasOpenCustody(true);
+      if (context.mounted && result == true) {
+        await cartCubit.refreshHasOpenCustody();
+      }
     }
   }
 }

@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/constants/app_colors.dart';
 import 'core/utils/app_utils.dart';
 import 'features/_main/cubit/main_cubit.dart';
+import 'features/cart/cubit/cart_cubit.dart';
+import 'features/custody/cubit/custody_cubit.dart';
 import 'features/drawer/cubit/drawer_cubit.dart';
 import 'routes/app_routes.dart';
 import 'services_locator/service_locator.dart';
@@ -44,6 +46,8 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<MainCubit>(create: (context) => getIt<MainCubit>()),
         BlocProvider<DrawerCubit>(create: (context) => getIt<DrawerCubit>()),
+        BlocProvider<CartCubit>(create: (_) => getIt<CartCubit>()),
+        BlocProvider<CustodyCubit>(create: (_) => getIt<CustodyCubit>()),
       ],
       child: MaterialApp.router(
         title: "Eatic",
