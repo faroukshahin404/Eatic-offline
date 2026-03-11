@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../cart/cart_screen.dart';
 import '../../drawer/drawer_screen.dart';
 import '_current_screen.dart';
 
@@ -11,8 +12,8 @@ class DesktopMainWidget extends StatelessWidget {
     return Row(
       children: [
         DrawerScreen(),
-        Expanded(child: CurrentScreen()),
-        // CreateOrderScreen(),
+        Expanded(flex: 2, child: CurrentScreen()),
+        Expanded(child: CartScreen()),
       ],
     );
   }

@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/widgets/custom_button_widget.dart';
+import '../../cart/cubit/cart_cubit.dart';
 import '../cubit/create_order_cubit.dart';
 import 'create_order_body_widget.dart';
 
@@ -24,6 +26,7 @@ class CreateOrderViewWidget extends StatelessWidget {
             }
             final orderLine = cubit.buildOrderLineModel();
             if (orderLine != null) {
+              context.read<CartCubit>().addItem(orderLine);
               cubit.clearAllSelection();
             }
           },

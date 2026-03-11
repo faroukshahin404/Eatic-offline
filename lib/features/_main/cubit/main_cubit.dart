@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../routes/app_paths.dart';
 import '../../../services_locator/service_locator.dart';
+import '../../cart/cart_screen.dart';
 import '../../create_order/create_order_screen.dart';
 import '../../create_order/cubit/create_order_cubit.dart';
 import '../../home/home_screen.dart';
@@ -29,6 +30,8 @@ class MainCubit extends Cubit<MainState> {
     switch (currentScreen) {
       case AppPaths.home:
         return const HomeScreen();
+      case AppPaths.cart:
+        return const CartScreen();
       case AppPaths.createOrder:
         log('data: ${data.toString()}');
         return BlocProvider<CreateOrderCubit>(
@@ -36,7 +39,6 @@ class MainCubit extends Cubit<MainState> {
               getIt<CreateOrderCubit>()..loadProductById(data as int),
           child: CreateOrderScreen(),
         );
-
       default:
         return const HomeScreen();
     }

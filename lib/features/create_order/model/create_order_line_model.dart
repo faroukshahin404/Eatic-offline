@@ -65,4 +65,37 @@ class CreateOrderLineModel {
 
   /// Grand total: (variantUnitPrice * quantity) + addonsTotal (or equivalent).
   final double lineTotal;
+
+  CreateOrderLineModel copyWith({
+    int? productId,
+    String? productName,
+    int? variantId,
+    String? variantLabel,
+    List<SelectedVariantOption>? selectedOptions,
+    String? notes,
+    int? quantity,
+    int? priceListId,
+    double? variantUnitPrice,
+    Map<int, int>? addonQuantities,
+    double? addonsTotal,
+    double? lineTotal,
+  }) {
+    final q = quantity ?? this.quantity;
+    final unit = variantUnitPrice ?? this.variantUnitPrice ?? 0;
+    final addons = addonsTotal ?? this.addonsTotal;
+    return CreateOrderLineModel(
+      productId: productId ?? this.productId,
+      productName: productName ?? this.productName,
+      variantId: variantId ?? this.variantId,
+      variantLabel: variantLabel ?? this.variantLabel,
+      selectedOptions: selectedOptions ?? this.selectedOptions,
+      notes: notes ?? this.notes,
+      quantity: q,
+      priceListId: priceListId ?? this.priceListId,
+      variantUnitPrice: variantUnitPrice ?? this.variantUnitPrice,
+      addonQuantities: addonQuantities ?? this.addonQuantities,
+      addonsTotal: addons,
+      lineTotal: lineTotal ?? (unit * q + addons),
+    );
+  }
 }

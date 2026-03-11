@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_fonts.dart';
+import '../../../../routes/app_paths.dart';
+import '../../../_main/cubit/main_cubit.dart';
 import '../../../add_new_product/model/product_model.dart';
-import '../../../custody/close_custody_screen.dart';
 
 class HomeProductCard extends StatelessWidget {
   const HomeProductCard({super.key, required this.product});
@@ -12,15 +14,12 @@ class HomeProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return InkWell(
       onTap: () {
         // context.push(AppPaths.createOrder, extra: product.id);
-        // context.read<MainCubit>().setCurrentScreen(AppPaths.createOrder , data: product.id);
-        showDialog<bool>(
-          context: context,
-          barrierDismissible: false,
-          builder: (dialogContext) => CloseCustodyScreen(),
+        context.read<MainCubit>().setCurrentScreen(
+          AppPaths.createOrder,
+          data: product.id,
         );
       },
       child: Card(
