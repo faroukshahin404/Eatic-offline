@@ -11,6 +11,7 @@ import '../../../../features/categories/repos/offline/categories_schema.dart';
 import '../../../../features/addons/repos/offline/addons_schema.dart';
 import '../../../../features/price_lists/repos/offline/price_lists_schema.dart';
 import '../../../../features/add_new_product/repos/offline/products_schema.dart';
+import '../../../../features/custody/repos/offline/custody_schema.dart';
 
 /// Central configuration for SQLite database.
 /// Aggregates createTableStatements from core/feature models. Roles first, then users, branches, delivery_men, zones, currencies.
@@ -18,7 +19,7 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 12;
+  static const int databaseVersion = 13;
 
   /// Run in order: roles, users, branches, ..., price_lists, products, category_product, product_variables, product_variable_values, product_variants, product_variant_values, product_addon, product_variant_addon, product_price_list_prices, product_variant_price_list_prices.
   static const List<String> createTableStatements = [
@@ -44,6 +45,7 @@ abstract class DatabaseUtils {
     ProductsSchema.createTableProductVariantAddon,
     ProductsSchema.createTableProductPriceListPrices,
     ProductsSchema.createTableProductVariantPriceListPrices,
+    CustodySchema.createTableCustody,
   ];
 
   /// Run after createTableStatements in onCreate (e.g. seed default roles).
@@ -111,5 +113,9 @@ abstract class DatabaseUtils {
         ProductsSchema.createTableProductVariantAddon,
         ProductsSchema.createTableProductPriceListPrices,
         ProductsSchema.createTableProductVariantPriceListPrices,
+      ];
+
+  static List<String> get migrationFrom12To13 => [
+        CustodySchema.createTableCustody,
       ];
 }
