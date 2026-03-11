@@ -8,6 +8,7 @@ import '../../add_new_product/model/product_model.dart';
 import '../../price_lists/model/price_list_model.dart';
 import '../../price_lists/repos/offline/price_lists_offline_repos.dart';
 import '../model/create_order_addon_model.dart';
+import '../model/create_order_line_model.dart';
 import '../model/create_order_variant_model.dart';
 import '../repos/offline/create_order_offline_repos.dart';
 import 'create_order_state.dart';
@@ -35,6 +36,9 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
 
   /// Addon id -> quantity (0 = not selected). Used for add-to-order addons with quantity.
   final Map<int, int> addonQuantities = {};
+
+  /// Set to true when user taps "Add to order"; used to show validation errors (red borders).
+  bool validationRequested = false;
 
   /// Price lists with non-null id, for dropdown items.
   List<PriceListModel> get validPriceLists =>
@@ -122,6 +126,32 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
   /// True when the given variable option is selected (for radio state).
   bool isVariableValueSelected(int variableId, int valueId) {
     return selectedValueIds[variableId] == valueId;
+  }
+
+  /// Variable IDs that have no selection (required but missing). Empty when [variableGroups] is empty.
+  Set<int> get invalidVariableIds {
+    final invalid = <int>{};
+    for (final g in variableGroups) {
+      if (!selectedValueIds.containsKey(g.variableId) ||
+          selectedValueIds[g.variableId] == null) {
+        invalid.add(g.variableId);
+      }
+    }
+    return invalid;
+  }
+
+  /// True when every variant group has a selected option (or there are no variant groups).
+  bool get areAllVariantsSelected {
+    if (variableGroups.isEmpty) return true;
+    return invalidVariableIds.isEmpty;
+  }
+
+  /// Call when user taps "Add to order". Sets [validationRequested] so invalid variant groups show red borders.
+  void requestValidation() {
+    validationRequested = true;
+    if (state is CreateOrderProductLoaded) {
+      emit(CreateOrderProductLoaded());
+    }
   }
 
   /// Resolves selected variant from [selectedValueIds] by matching variant [valueIds] in variable order.
@@ -215,6 +245,49 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     if (qty > 0) setAddonQuantity(addonId, qty - 1);
   }
 
+  /// Builds [CreateOrderLineModel] from current selection. Returns null if variants are required but not all selected.
+  /// Use this when submitting "Add to order" (e.g. to cart). Notes are read from [notesController].
+  CreateOrderLineModel? buildOrderLineModel() {
+    if (product == null) return null;
+    if (variableGroups.isNotEmpty && !areAllVariantsSelected) return null;
+
+    final selectedOptions = <SelectedVariantOption>[];
+    for (final g in variableGroups) {
+      final valueId = selectedValueIds[g.variableId];
+      if (valueId == null) continue;
+      CreateOrderVariableOption? chosen;
+      for (final opt in g.options) {
+        if (opt.valueId == valueId) {
+          chosen = opt;
+          break;
+        }
+      }
+      if (chosen != null) {
+        selectedOptions.add(SelectedVariantOption(
+          variableId: g.variableId,
+          variableName: g.name,
+          valueId: valueId,
+          valueLabel: chosen.label,
+        ));
+      }
+    }
+
+    return CreateOrderLineModel(
+      productId: product!.id!,
+      productName: product!.name,
+      variantId: selectedVariant?.id,
+      variantLabel: selectedVariantLabel,
+      selectedOptions: selectedOptions,
+      notes: notesController.text.trim(),
+      quantity: 1,
+      priceListId: selectedPriceListId,
+      variantUnitPrice: selectedVariantPrice,
+      addonQuantities: Map.from(addonQuantities),
+      addonsTotal: selectedAddonsTotal,
+      lineTotal: orderLineTotal,
+    );
+  }
+
   void _clearProductData() {
     errorMessage = null;
     product = null;
@@ -226,6 +299,8 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     selectedVariant = null;
     selectedValueIds.clear();
     addonQuantities.clear();
+    validationRequested = false;
+    notesController.clear();
   }
 
   String priceListName(int id) {

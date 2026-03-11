@@ -19,12 +19,18 @@ class VariantColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isInvalid = cubit.validationRequested &&
+        cubit.invalidVariableIds.contains(group.variableId);
+
     return Container(
       constraints: const BoxConstraints(minWidth: 160, maxWidth: 220),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.greyE6E9EA),
+        border: Border.all(
+          color: isInvalid ? AppColors.validationError : AppColors.greyE6E9EA,
+          width: isInvalid ? 2 : 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -46,6 +52,7 @@ class VariantColumn extends StatelessWidget {
                 option: option,
                 selectedValueId: cubit.selectedValueIds[group.variableId],
                 priceModifier: option.priceModifier,
+                isInvalid: isInvalid,
                 onTap: () => cubit.setSelectedVariableValue(
                   group.variableId,
                   option.valueId,

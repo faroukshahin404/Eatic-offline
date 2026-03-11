@@ -30,6 +30,9 @@ abstract class AppColors {
   /// Background color for modal bottom sheets (avoids theme surface tint).
   static const Color sheetBackground = Color(0xFFFFFFFF);
 
+  /// Validation error state (e.g. required variant not selected).
+  static const Color validationError = Color(0xFFD32F2F);
+
   static ThemeData androidTheme = ThemeData(
     scaffoldBackgroundColor: Color(0xffffffff),
     useMaterial3: false,

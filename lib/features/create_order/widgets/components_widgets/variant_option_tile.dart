@@ -12,12 +12,14 @@ class VariantOptionTile extends StatelessWidget {
     required this.selectedValueId,
     required this.onTap,
     this.priceModifier,
+    this.isInvalid = false,
   });
 
   final CreateOrderVariableOption option;
   final int? selectedValueId;
   final VoidCallback onTap;
   final double? priceModifier;
+  final bool isInvalid;
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +44,17 @@ class VariantOptionTile extends StatelessWidget {
                   value: option.valueId,
                   groupValue: selectedValueId,
                   onChanged: (_) => onTap(),
-                  activeColor: AppColors.primary,
+                  activeColor:
+                      isInvalid ? AppColors.validationError : AppColors.primary,
                   fillColor: WidgetStateProperty.resolveWith((states) {
                     if (states.contains(WidgetState.selected)) {
-                      return AppColors.primary;
+                      return isInvalid
+                          ? AppColors.validationError
+                          : AppColors.primary;
                     }
-                    return AppColors.oppositeColor.withValues(alpha: 0.6);
+                    return isInvalid
+                        ? AppColors.validationError.withValues(alpha: 0.6)
+                        : AppColors.oppositeColor.withValues(alpha: 0.6);
                   }),
                 ),
               ),
