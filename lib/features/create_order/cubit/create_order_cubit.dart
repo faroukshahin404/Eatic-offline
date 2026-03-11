@@ -62,7 +62,7 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     log('product: ${product.toString()}');
     if (product != null) return;
     emit(CreateOrderLoading());
-    _clearProductData();
+    clearProductData();
 
     final productVal = await _loadProduct(productId);
     if (productVal == null) return;
@@ -141,6 +141,7 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
   }
 
   /// True when every variant group has a selected option (or there are no variant groups).
+  /// Pure getter: no side effects. Do not emit state from here.
   bool get areAllVariantsSelected {
     if (variableGroups.isEmpty) return true;
     return invalidVariableIds.isEmpty;
@@ -152,6 +153,13 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     if (state is CreateOrderProductLoaded) {
       emit(CreateOrderProductLoaded());
     }
+  }
+
+  /// Call when "Add to order" is pressed and validation fails. Emits [ValidationRequested] for listener
+  /// (e.g. SnackBar), then [CreateOrderProductLoaded] so the form stays visible and selection keeps working.
+  void notifyValidationFailed() {
+    emit(ValidationRequested());
+    emit(CreateOrderProductLoaded());
   }
 
   /// Resolves selected variant from [selectedValueIds] by matching variant [valueIds] in variable order.
@@ -263,12 +271,14 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
         }
       }
       if (chosen != null) {
-        selectedOptions.add(SelectedVariantOption(
-          variableId: g.variableId,
-          variableName: g.name,
-          valueId: valueId,
-          valueLabel: chosen.label,
-        ));
+        selectedOptions.add(
+          SelectedVariantOption(
+            variableId: g.variableId,
+            variableName: g.name,
+            valueId: valueId,
+            valueLabel: chosen.label,
+          ),
+        );
       }
     }
 
@@ -288,7 +298,21 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     );
   }
 
-  void _clearProductData() {
+  /// Clears all selection (variants, addons, notes) so the form is like first open.
+  /// Keeps product and price list dropdown selection unchanged.
+  void clearAllSelection() {
+    selectedVariant = null;
+    selectedValueIds.clear();
+    addonQuantities.clear();
+    validationRequested = false;
+    notesController.clear();
+    if (state is CreateOrderProductLoaded) {
+      emit(CreateOrderProductLoaded());
+    }
+  }
+
+  void clearProductData() {
+    emit(CreateOrderInitial());
     errorMessage = null;
     product = null;
     variants = [];
@@ -301,6 +325,7 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     addonQuantities.clear();
     validationRequested = false;
     notesController.clear();
+    emit(ClearProductData());
   }
 
   String priceListName(int id) {

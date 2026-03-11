@@ -23,12 +23,13 @@ class OrderProductCardBackTitle extends StatelessWidget {
           context.read<MainCubit>().setCurrentScreen(AppPaths.home);
         },
         child: Row(
+          spacing: 5,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
-              Icons.arrow_back_ios_new_rounded,
+              Icons.arrow_back_rounded,
               color: AppColors.oppositeColor,
-              size: 30,
+              size: 35,
             ),
             Text(
               title,

@@ -11,7 +11,24 @@ class CreateOrderScreen extends StatelessWidget {
   const CreateOrderScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CreateOrderCubit, CreateOrderState>(
+    return BlocConsumer<CreateOrderCubit, CreateOrderState>(
+      listener: (context, state) {
+        if (state is ClearProductData) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('create_order.added_to_order'.tr()),
+              backgroundColor: Colors.green.shade700,
+            ),
+          );
+        } else if (state is ValidationRequested) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('create_order.select_all_variants'.tr()),
+              backgroundColor: Colors.red.shade700,
+            ),
+          );
+        }
+      },
       builder: (context, state) {
         final cubit = context.read<CreateOrderCubit>();
         if (state is CreateOrderLoading) {
@@ -20,10 +37,7 @@ class CreateOrderScreen extends StatelessWidget {
         if (state is CreateOrderError) {
           return Center(child: Text(cubit.errorMessage ?? ''));
         }
-        if (state is CreateOrderProductLoaded) {
-          return CustomPadding(child: CreateOrderViewWidget(cubit: cubit));
-        }
-        return Center(child: Text('create_order.select_product_to_start'.tr()));
+        return CustomPadding(child: CreateOrderViewWidget(cubit: cubit));
       },
     );
   }

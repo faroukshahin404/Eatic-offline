@@ -19,23 +19,12 @@ class CreateOrderViewWidget extends StatelessWidget {
           onPressed: () {
             cubit.requestValidation();
             if (!cubit.areAllVariantsSelected) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('create_order.select_all_variants'.tr()),
-                  backgroundColor: Colors.red.shade700,
-                ),
-              );
+              cubit.notifyValidationFailed();
               return;
             }
             final orderLine = cubit.buildOrderLineModel();
             if (orderLine != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('create_order.added_to_order'.tr()),
-                  backgroundColor: Colors.green.shade700,
-                ),
-              );
-              // TODO: add orderLine to cart when cart feature is ready
+              cubit.clearAllSelection();
             }
           },
         ),
