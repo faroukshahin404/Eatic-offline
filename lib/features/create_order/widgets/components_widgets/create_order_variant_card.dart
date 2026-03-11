@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_fonts.dart';
-import '../model/create_order_variant_model.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_fonts.dart';
+import '../../model/create_order_variant_model.dart';
 
 /// Card showing variant name and price. Price is from [priceForSelectedList] when set.
 class CreateOrderVariantCard extends StatelessWidget {

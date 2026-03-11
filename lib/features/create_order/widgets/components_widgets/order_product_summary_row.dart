@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'dart:ui' as ui;
 
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_fonts.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_fonts.dart';
 
 /// A row showing a label and value (e.g. "Selected variant" / "Large - 25.0").
 class OrderProductSummaryRow extends StatelessWidget {

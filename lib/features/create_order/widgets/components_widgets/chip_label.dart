@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_fonts.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_fonts.dart';
 
 /// Small chip showing a label and value (e.g. "Default price: 10").
 class ChipLabel extends StatelessWidget {

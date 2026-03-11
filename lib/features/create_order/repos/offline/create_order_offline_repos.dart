@@ -14,8 +14,11 @@ abstract class CreateOrderOfflineRepository {
   /// Fetches a product by id; returns null if not found.
   DbCall<ProductModel?> getProductById(int productId);
 
-  /// Fetches all variants for a product (with variable labels for display).
+  /// Fetches all variants for a product (with variable labels and value IDs).
   DbCall<List<CreateOrderVariantModel>> getVariantsByProductId(int productId);
+
+  /// Fetches variable groups (name + options) for a product; used for column-based variant UI.
+  DbCall<List<CreateOrderVariableGroup>> getProductVariableGroups(int productId);
 
   /// Fetches addons linked to a product (with product-level price).
   DbCall<List<CreateOrderAddonModel>> getAddonsByProductId(int productId);
@@ -64,6 +67,7 @@ class CreateOrderOfflineRepoImpl implements CreateOrderOfflineRepository {
         final sortOrder = v[ProductsSchema.colSortOrder] as int? ?? 0;
 
         final labels = await _getVariantVariableLabels(variantId);
+        final valueIds = await _getVariantValueIds(variantId);
         final priceListPrices = await _getVariantPriceListPrices(variantId);
         final addonPrices = await _getVariantAddonPrices(variantId);
         list.add(CreateOrderVariantModel(
@@ -73,6 +77,7 @@ class CreateOrderOfflineRepoImpl implements CreateOrderOfflineRepository {
           isActive: isActive,
           sortOrder: sortOrder,
           variableLabels: labels,
+          valueIds: valueIds,
           priceListPrices: priceListPrices,
           addonPrices: addonPrices,
         ));
@@ -89,8 +94,25 @@ class CreateOrderOfflineRepoImpl implements CreateOrderOfflineRepository {
 
   /// Returns variable value labels for a variant, ordered by variable then value sort order.
   Future<List<String>> _getVariantVariableLabels(int variantId) async {
-    final rows = await _db.rawQuery('''
-      SELECT pvval.${ProductsSchema.colValue}
+    final rows = await _getVariantValueRows(variantId);
+    return rows
+        .map((r) => (r[ProductsSchema.colValue] as String?) ?? '')
+        .toList();
+  }
+
+  /// Returns variable value IDs for a variant, in variable then value sort order.
+  Future<List<int>> _getVariantValueIds(int variantId) async {
+    final rows = await _getVariantValueRows(variantId);
+    return rows
+        .map((r) => r[ProductsSchema.colId] as int? ?? 0)
+        .where((id) => id != 0)
+        .toList();
+  }
+
+  /// Shared query for variant values (id + value text), ordered by variable then value sort.
+  Future<List<Map<String, dynamic>>> _getVariantValueRows(int variantId) async {
+    return _db.rawQuery('''
+      SELECT pvval.${ProductsSchema.colId}, pvval.${ProductsSchema.colValue}
       FROM ${ProductsSchema.tableProductVariantValues} pvv
       INNER JOIN ${ProductsSchema.tableProductVariableValues} pvval
         ON pvval.${ProductsSchema.colId} = pvv.${ProductsSchema.colProductVariableValueId}
@@ -99,9 +121,6 @@ class CreateOrderOfflineRepoImpl implements CreateOrderOfflineRepository {
       WHERE pvv.${ProductsSchema.colProductVariantId} = ?
       ORDER BY pvar.${ProductsSchema.colSortOrder}, pvval.${ProductsSchema.colSortOrder}
     ''', [variantId]);
-    return rows
-        .map((r) => (r[ProductsSchema.colValue] as String?) ?? '')
-        .toList();
   }
 
   /// Returns price list id -> price for a variant.
@@ -136,6 +155,53 @@ class CreateOrderOfflineRepoImpl implements CreateOrderOfflineRepository {
       }
     }
     return map;
+  }
+
+  @override
+  Future<Either<OfflineFailure, List<CreateOrderVariableGroup>>>
+      getProductVariableGroups(int productId) async {
+    try {
+      final varRows = await _db.query(
+        ProductsSchema.tableProductVariables,
+        where: '${ProductsSchema.colProductId} = ?',
+        whereArgs: [productId],
+        orderBy: '${ProductsSchema.colSortOrder} ASC, ${ProductsSchema.colId} ASC',
+      );
+      final groups = <CreateOrderVariableGroup>[];
+      for (final vr in varRows) {
+        final varId = vr[ProductsSchema.colId] as int;
+        final varName =
+            (vr[ProductsSchema.colVariableName] as String?)?.trim() ?? '';
+        final sortOrder = vr[ProductsSchema.colSortOrder] as int? ?? 0;
+        final valueRows = await _db.query(
+          ProductsSchema.tableProductVariableValues,
+          where: '${ProductsSchema.colProductVariableId} = ?',
+          whereArgs: [varId],
+          orderBy: '${ProductsSchema.colSortOrder} ASC',
+        );
+        final options = valueRows
+            .map((r) => CreateOrderVariableOption(
+                  valueId: r[ProductsSchema.colId] as int,
+                  label: (r[ProductsSchema.colValue] as String?) ?? '',
+                ))
+            .toList();
+        if (options.isNotEmpty) {
+          groups.add(CreateOrderVariableGroup(
+            variableId: varId,
+            name: varName.isEmpty ? ' ' : varName,
+            sortOrder: sortOrder,
+            options: options,
+          ));
+        }
+      }
+      return Right(groups);
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
   }
 
   @override

@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../routes/app_paths.dart';
+import '../../../services_locator/service_locator.dart';
 import '../../create_order/create_order_screen.dart';
+import '../../create_order/cubit/create_order_cubit.dart';
 import '../../home/home_screen.dart';
 
 part 'main_state.dart';
@@ -26,7 +30,12 @@ class MainCubit extends Cubit<MainState> {
       case AppPaths.home:
         return const HomeScreen();
       case AppPaths.createOrder:
-        return CreateOrderScreen(productId: data as int);
+        log('data: ${data.toString()}');
+        return BlocProvider<CreateOrderCubit>(
+          create: (context) =>
+              getIt<CreateOrderCubit>()..loadProductById(data as int),
+          child: CreateOrderScreen(),
+        );
 
       default:
         return const HomeScreen();

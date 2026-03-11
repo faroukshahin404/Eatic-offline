@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'dart:ui' as ui;
 
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_fonts.dart';
-import '../../../routes/app_paths.dart';
-import '../../_main/cubit/main_cubit.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_fonts.dart';
+import '../../../../routes/app_paths.dart';
+import '../../../_main/cubit/main_cubit.dart';
 
 /// Header row: product title on one side, total price on the other (RTL).
 class OrderProductCardHeader extends StatelessWidget {

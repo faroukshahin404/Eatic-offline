@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/widgets/custom_dropdown.dart';
-import '../../price_lists/model/price_list_model.dart';
-import '../cubit/create_order_cubit.dart';
+import '../../../../core/widgets/custom_dropdown.dart';
+import '../../../price_lists/model/price_list_model.dart';
+import '../../cubit/create_order_cubit.dart';
 
 /// Price list dropdown driven by [CreateOrderCubit]. All logic lives in cubit.
 class PriceListDropdown extends StatelessWidget {

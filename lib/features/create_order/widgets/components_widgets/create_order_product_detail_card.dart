@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_fonts.dart';
-import '../../add_new_product/model/product_model.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_fonts.dart';
+import '../../../add_new_product/model/product_model.dart';
 import 'chip_label.dart';
 
 /// Card showing product name, description, and summary chips (default price, has variants, counts).

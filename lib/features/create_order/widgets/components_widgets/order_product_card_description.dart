@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'dart:ui' as ui;
 
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_fonts.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_fonts.dart';
 
 /// Product description text block for the order card.
 class OrderProductCardDescription extends StatelessWidget {

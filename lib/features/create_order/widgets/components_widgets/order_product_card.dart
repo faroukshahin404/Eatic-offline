@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../cubit/create_order_cubit.dart';
+import '../../cubit/create_order_cubit.dart';
 import 'order_product_card_description.dart';
 import 'order_product_card_header.dart';
 

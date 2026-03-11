@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,13 +21,17 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
   String? errorMessage;
   ProductModel? product;
   List<CreateOrderVariantModel> variants = [];
+  List<CreateOrderVariableGroup> variableGroups = [];
   List<CreateOrderAddonModel> addons = [];
   List<PriceListModel> priceLists = [];
   int? selectedPriceListId;
   CreateOrderVariantModel? selectedVariant;
 
-  /// Addon ids added to the meal (no quantity; add/remove only).
-  final Set<int> selectedAddonIds = {};
+  /// Per-variable selection (variableId -> valueId). Used when [variableGroups] is non-empty.
+  final Map<int, int> selectedValueIds = {};
+
+  /// Addon id -> quantity (0 = not selected). Used for add-to-order addons with quantity.
+  final Map<int, int> addonQuantities = {};
 
   /// Price lists with non-null id, for dropdown items.
   List<PriceListModel> get validPriceLists =>
@@ -46,6 +52,8 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
 
   /// Loads product by id; if found, loads its variants and addons and emits [CreateOrderProductLoaded].
   Future<void> loadProductById(int productId) async {
+    log('product: ${product.toString()}');
+    if (product != null) return;
     emit(CreateOrderLoading());
     _clearProductData();
 
@@ -54,6 +62,12 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
 
     final variantsList = await _loadVariants(productId);
     if (variantsList == null) return;
+
+    final groupsResult = await _repo.getProductVariableGroups(productId);
+    variableGroups = groupsResult.fold(
+      (_) => <CreateOrderVariableGroup>[],
+      (list) => list,
+    );
 
     final addonsList = await _loadAddons(productId);
     if (addonsList == null) return;
@@ -84,6 +98,7 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
   }
 
   /// Selects or clears the selected variant. Notifies listeners so grid rebuilds.
+  /// Use this when using the legacy grid UI (no variable groups).
   void setSelectedVariant(CreateOrderVariantModel? variant) {
     selectedVariant = variant;
     if (state is CreateOrderProductLoaded) {
@@ -91,14 +106,59 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     }
   }
 
-  /// Whether this addon is added to the meal.
-  bool isAddonSelected(int addonId) => selectedAddonIds.contains(addonId);
+  /// Selects an option for a variable (column-based UI). Resolves [selectedVariant] when
+  /// all variables have a selection. Persists selection for the next step.
+  void setSelectedVariableValue(int variableId, int valueId) {
+    selectedValueIds[variableId] = valueId;
+    selectedVariant = _resolveVariantFromSelection();
+    if (state is CreateOrderProductLoaded) {
+      emit(CreateOrderProductLoaded());
+    }
+  }
+
+  /// True when the given variable option is selected (for radio state).
+  bool isVariableValueSelected(int variableId, int valueId) {
+    return selectedValueIds[variableId] == valueId;
+  }
+
+  /// Resolves selected variant from [selectedValueIds] by matching variant [valueIds] in variable order.
+  CreateOrderVariantModel? _resolveVariantFromSelection() {
+    if (variableGroups.isEmpty ||
+        selectedValueIds.length != variableGroups.length) {
+      return null;
+    }
+    final orderedValueIds = <int>[];
+    for (final g in variableGroups) {
+      final valueId = selectedValueIds[g.variableId];
+      if (valueId == null) return null;
+      orderedValueIds.add(valueId);
+    }
+    for (final v in variants) {
+      if (v.valueIds.length != orderedValueIds.length) continue;
+      var match = true;
+      for (var i = 0; i < orderedValueIds.length; i++) {
+        if (v.valueIds[i] != orderedValueIds[i]) {
+          match = false;
+          break;
+        }
+      }
+      if (match && v.isActive) return v;
+    }
+    return null;
+  }
+
+  /// Quantity of this addon in the order (0 if not selected).
+  int getAddonQuantity(int addonId) => addonQuantities[addonId] ?? 0;
+
+  /// Whether this addon is added to the meal (quantity > 0).
+  bool isAddonSelected(int addonId) => getAddonQuantity(addonId) > 0;
 
   /// Selected variant price for the current price list (or base price if no price list / not in map).
   double? get selectedVariantPrice {
     if (selectedVariant == null) return null;
     final v = selectedVariant!;
-    if (selectedPriceListId != null && v.priceListPrices.containsKey(selectedPriceListId)) {
+    if (selectedPriceListId != null &&
+        v.priceListPrices.containsKey(selectedPriceListId)) {
       return v.priceListPrices[selectedPriceListId];
     }
     return v.basePrice;
@@ -106,51 +166,63 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
 
   /// Display label for the selected variant (e.g. "Large, Red").
   String? get selectedVariantLabel {
-    if (selectedVariant == null || selectedVariant!.variableLabels.isEmpty) return null;
+    if (selectedVariant == null || selectedVariant!.variableLabels.isEmpty)
+      return null;
     return selectedVariant!.variableLabels.join(', ');
   }
 
-  /// Total price of all selected addons (variant-specific price when variant selected, else product addon price).
+  /// Total price of all selected addons (quantity * unit price per addon).
   double get selectedAddonsTotal {
     double total = 0;
     for (final addon in addons) {
-      if (!selectedAddonIds.contains(addon.addonId)) continue;
-      final price = selectedVariant != null
+      final qty = getAddonQuantity(addon.addonId);
+      if (qty <= 0) continue;
+      final unitPrice = selectedVariant != null
           ? (selectedVariant!.addonPrices[addon.addonId] ?? addon.price)
           : addon.price;
-      total += price;
+      total += unitPrice * qty;
     }
     return total;
   }
 
   /// Grand total: variant price + selected addons total (0 if no variant).
-  double get orderLineTotal => (selectedVariantPrice ?? 0) + selectedAddonsTotal;
+  double get orderLineTotal =>
+      (selectedVariantPrice ?? 0) + selectedAddonsTotal;
 
-  /// Adds addon to the meal (single add, no counter).
-  void addAddon(int addonId) {
-    selectedAddonIds.add(addonId);
+  /// Sets addon quantity (0 = remove). Persists for the next step.
+  void setAddonQuantity(int addonId, int quantity) {
+    if (quantity <= 0) {
+      addonQuantities.remove(addonId);
+    } else {
+      addonQuantities[addonId] = quantity;
+    }
     if (state is CreateOrderProductLoaded) {
       emit(CreateOrderProductLoaded());
     }
   }
 
-  /// Removes addon from the meal.
-  void removeAddon(int addonId) {
-    selectedAddonIds.remove(addonId);
-    if (state is CreateOrderProductLoaded) {
-      emit(CreateOrderProductLoaded());
-    }
+  /// Increments addon quantity by 1.
+  void incrementAddon(int addonId) {
+    setAddonQuantity(addonId, getAddonQuantity(addonId) + 1);
+  }
+
+  /// Decrements addon quantity by 1 (no lower than 0).
+  void decrementAddon(int addonId) {
+    final qty = getAddonQuantity(addonId);
+    if (qty > 0) setAddonQuantity(addonId, qty - 1);
   }
 
   void _clearProductData() {
     errorMessage = null;
     product = null;
     variants = [];
+    variableGroups = [];
     addons = [];
     priceLists = [];
     selectedPriceListId = null;
     selectedVariant = null;
-    selectedAddonIds.clear();
+    selectedValueIds.clear();
+    addonQuantities.clear();
   }
 
   String priceListName(int id) {
