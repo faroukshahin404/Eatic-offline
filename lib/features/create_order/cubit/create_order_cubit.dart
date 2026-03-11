@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../add_new_product/model/product_model.dart';
@@ -26,6 +27,8 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
   List<PriceListModel> priceLists = [];
   int? selectedPriceListId;
   CreateOrderVariantModel? selectedVariant;
+
+  TextEditingController notesController = TextEditingController();
 
   /// Per-variable selection (variableId -> valueId). Used when [variableGroups] is non-empty.
   final Map<int, int> selectedValueIds = {};

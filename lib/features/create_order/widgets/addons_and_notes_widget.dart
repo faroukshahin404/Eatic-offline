@@ -25,6 +25,7 @@ class AddonsAndNotesWidget extends StatelessWidget {
             maxLines: 4,
 
             hint: 'create_order.notes'.tr(),
+            controller: cubit.notesController,
           ),
         ],
       );
@@ -41,7 +42,7 @@ class AddonsAndNotesWidget extends StatelessWidget {
               title: "${'create_order.notes'.tr()}:",
               hint: 'create_order.notes'.tr(),
               maxLines: 4,
-              controller: TextEditingController(),
+              controller: cubit.notesController,
             ),
           ),
         ],
