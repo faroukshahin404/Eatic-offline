@@ -233,7 +233,7 @@
   "customers.title": "بيانات العميل",
   "customers.no_results": "لا توجد نتائج",
   "customers.add_customer": "إضافة عميل",
-  
+
   "select_waiter.title": "اختر الويتر",
   "cart.no_items": "لا يوجد عناصر في السلة",
   "cart.open_custody": "فتح عهدة",
@@ -262,6 +262,7 @@
     "search": "بحث",
     "no_results": "لا توجد نتائج",
     "table": {
+      "select": "اختر",
       "name": "الاسم",
       "phone": "الهاتف",
       "zone": "المنطقة",
@@ -278,7 +279,9 @@
     "floor": "الطابق",
     "building_number": "رقم المبنى",
     "is_default": "العنوان الافتراضي",
-    "save": "حفظ"
+    "save": "حفظ",
+    "delete_confirm": "هل أنت متأكد من حذف العميل \"{{name}}\"؟",
+    "deleted": "تم حذف العميل"
   },
   "actions": {
     "edit": "تعديل",

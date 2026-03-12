@@ -63,7 +63,11 @@ class MainCubit extends Cubit<MainState> {
         );
       case AppPaths.addCustomer:
         return BlocProvider<AddCustomerCubit>(
-          create: (context) => getIt<AddCustomerCubit>()..loadZones(),
+          create: (context) {
+            log(data.toString());
+            return getIt<AddCustomerCubit>()
+              ..loadZones(customerId: data as int?);
+          },
           child: const AddCustomerScreen(),
         );
       default:

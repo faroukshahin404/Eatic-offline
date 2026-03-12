@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,12 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
     }
   }
 
-  Future<void> loadZones() async {
+  int? customerId;
+
+  Future<void> loadZones({int? customerId}) async {
+    if (customerId != null) {
+      this.customerId = customerId;
+    }
     emit(AddCustomerLoading());
     final branchId = await _getUserBranchId();
     if (branchId == null) {
@@ -77,6 +83,49 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
       (f) => emit(AddCustomerError(message: f.failureMessage ?? 'Error')),
       (list) {
         zones = list;
+        _ensureOneAddress();
+
+        if (customerId != null) {
+          loadCustomerById();
+        } else {
+          emit(AddCustomerReady());
+        }
+      },
+    );
+  }
+
+  /// Loads customer by id and fills the form. Call after [loadZones] (zones must be loaded).
+  Future<void> loadCustomerById() async {
+    if (zones.isEmpty) {
+      emit(AddCustomerError(message: 'Zones not loaded'));
+      return;
+    }
+    final result = await _customersRepo.getCustomerById(customerId!);
+    result.fold(
+      (f) {
+        log(f.failureMessage ?? 'Error');
+        emit(AddCustomerError(message: f.failureMessage ?? 'Error'));
+      },
+      (customer) {
+        nameController.text = customer.name?.trim() ?? '';
+        phoneController.text = customer.phone.trim();
+        secondPhoneController.text = customer.secondPhone?.trim() ?? '';
+        for (final e in addressEntries) {
+          e.dispose();
+        }
+        addressEntries.clear();
+        for (final addr in customer.addresses) {
+          final entry = AddressFormEntry();
+          entry.selectedZone = zones
+              .where((z) => z.id == addr.zoneId)
+              .firstOrNull;
+          entry.apartmentController.text = addr.apartment?.trim() ?? '';
+          entry.floorController.text = addr.floor?.trim() ?? '';
+          entry.buildingNumberController.text =
+              addr.buildingNumber?.trim() ?? '';
+          entry.isDefault = addr.isDefault;
+          addressEntries.add(entry);
+        }
         _ensureOneAddress();
         emit(AddCustomerReady());
       },
@@ -148,22 +197,9 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
     return null;
   }
 
-  Future<void> save() async {
-    if (formKey.currentState?.validate() != true) return;
-    final phoneError = validatePhones();
-    if (phoneError != null) {
-      emit(AddCustomerError(message: phoneError));
-      return;
-    }
-    final addressError = validateAddresses();
-    if (addressError != null) {
-      emit(AddCustomerError(message: addressError));
-      return;
-    }
-    final phone = phoneController.text.trim();
-    final name = nameController.text.trim();
-    final secondPhone = secondPhoneController.text.trim();
-    final addresses = addressEntries
+  /// Builds list of addresses from form entries. Returns empty list if none valid.
+  List<AddressModel> _buildAddressesFromForm() {
+    return addressEntries
         .where((e) => e.selectedZone != null)
         .map(
           (e) => AddressModel(
@@ -181,6 +217,28 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
           ),
         )
         .toList();
+  }
+
+  /// Validates form and phones/addresses. Returns true if valid.
+  bool _validateForm() {
+    if (formKey.currentState?.validate() != true) return false;
+    final phoneError = validatePhones();
+    if (phoneError != null) {
+      emit(AddCustomerError(message: phoneError));
+      return false;
+    }
+    final addressError = validateAddresses();
+    if (addressError != null) {
+      emit(AddCustomerError(message: addressError));
+      return false;
+    }
+    return true;
+  }
+
+  /// Saves new customer and their addresses.
+  Future<void> saveNewCustomer() async {
+    if (!_validateForm()) return;
+    final addresses = _buildAddressesFromForm();
     if (addresses.isEmpty) {
       emit(
         AddCustomerError(
@@ -189,6 +247,9 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
       );
       return;
     }
+    final phone = phoneController.text.trim();
+    final name = nameController.text.trim();
+    final secondPhone = secondPhoneController.text.trim();
     final customer = CustomerModel(
       phone: phone,
       name: name.isEmpty ? null : name,
@@ -201,6 +262,52 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
       (f) => emit(AddCustomerError(message: f.failureMessage ?? 'Error')),
       (_) => emit(AddCustomerSaved()),
     );
+  }
+
+  /// Updates existing customer by adding new addresses only.
+  Future<void> updateCustomerAddresses() async {
+    if (!_validateForm()) return;
+    final addresses = _buildAddressesFromForm();
+    if (addresses.isEmpty) {
+      emit(
+        AddCustomerError(
+          message: 'customers.validation.at_least_one_address'.tr(),
+        ),
+      );
+      return;
+    }
+    if (customerId == null) {
+      emit(AddCustomerError(message: 'Customer ID is required for update'));
+      return;
+    }
+    emit(AddCustomerLoading());
+    final result = await _customersRepo.insertAddressesForCustomer(
+      customerId!,
+      addresses,
+    );
+    result.fold(
+      (f) => emit(AddCustomerError(message: f.failureMessage ?? 'Error')),
+      (_) => emit(AddCustomerSaved()),
+    );
+  }
+
+  /// Validates and either saves new customer or updates existing customer addresses.
+  Future<void> save() async {
+    if (!_validateForm()) return;
+    final addresses = _buildAddressesFromForm();
+    if (addresses.isEmpty) {
+      emit(
+        AddCustomerError(
+          message: 'customers.validation.at_least_one_address'.tr(),
+        ),
+      );
+      return;
+    }
+    if (customerId != null) {
+      await updateCustomerAddresses();
+    } else {
+      await saveNewCustomer();
+    }
   }
 
   @override

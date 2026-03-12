@@ -17,7 +17,7 @@ class CustomerSearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPadding(
-      child: BlocListener<CustomerSearchCubit, CustomerSearchState>(
+      child: BlocConsumer<CustomerSearchCubit, CustomerSearchState>(
         listener: (context, state) {
           if (state is CustomerSearchNoResults) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -25,7 +25,7 @@ class CustomerSearchScreen extends StatelessWidget {
             );
           }
         },
-        child: Column(
+        builder: (context, state) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 16,
           children: [

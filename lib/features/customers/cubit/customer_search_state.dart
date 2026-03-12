@@ -6,10 +6,7 @@ final class CustomerSearchInitial extends CustomerSearchState {}
 
 final class CustomerSearchLoading extends CustomerSearchState {}
 
-final class CustomerSearchLoaded extends CustomerSearchState {
-  CustomerSearchLoaded(this.rows);
-  final List<CustomerAddressRow> rows;
-}
+final class CustomerSearchLoaded extends CustomerSearchState {}
 
 final class CustomerSearchError extends CustomerSearchState {
   CustomerSearchError(this.message);

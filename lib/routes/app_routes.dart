@@ -265,12 +265,10 @@ class AppPages {
       //     child: const CreateOrderScreen(),
       //   ),
       // ),
-
       GoRoute(
         path: AppPaths.selectWaiter,
         builder: (context, state) => BlocProvider<SelectWaiterCubit>(
-          create: (context) =>
-              getIt<SelectWaiterCubit>()..getWaiters(),
+          create: (context) => getIt<SelectWaiterCubit>()..getWaiters(),
           child: const SelectWaiterScreen(),
         ),
       ),
@@ -278,20 +276,11 @@ class AppPages {
       GoRoute(
         path: AppPaths.selectTable,
         builder: (context, state) => BlocProvider<SelectTableCubit>(
-          create: (context) =>
-              getIt<SelectTableCubit>()..loadTables(),
+          create: (context) => getIt<SelectTableCubit>()..loadTables(),
           child: const SelectTableScreen(),
         ),
       ),
 
-      GoRoute(
-        path: AppPaths.addCustomer,
-        builder: (context, state) => BlocProvider<AddCustomerCubit>(
-          create: (context) =>
-              getIt<AddCustomerCubit>()..loadZones(),
-          child: const AddCustomerScreen(),
-        ),
-      ),
       GoRoute(
         path: AppPaths.customerSearch,
         builder: (context, state) => BlocProvider<CustomerSearchCubit>(

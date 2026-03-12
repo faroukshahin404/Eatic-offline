@@ -261,6 +261,7 @@
     "search": "Search",
     "no_results": "No results",
     "table": {
+      "select": "Select",
       "name": "Name",
       "phone": "Phone",
       "zone": "Zone",
@@ -277,7 +278,9 @@
     "floor": "Floor",
     "building_number": "Building number",
     "is_default": "Default address",
-    "save": "Save"
+    "save": "Save",
+    "delete_confirm": "Are you sure you want to delete customer \"{{name}}\"?",
+    "deleted": "Customer deleted"
   },
   "actions": {
     "edit": "Edit",
