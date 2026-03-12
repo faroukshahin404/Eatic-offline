@@ -12,6 +12,7 @@ import '../../../../features/addons/repos/offline/addons_schema.dart';
 import '../../../../features/price_lists/repos/offline/price_lists_schema.dart';
 import '../../../../features/add_new_product/repos/offline/products_schema.dart';
 import '../../../../features/custody/repos/offline/custody_schema.dart';
+import '../../../features/customers/repos/offline/customers_schema.dart';
 
 /// Central configuration for SQLite database.
 /// Aggregates createTableStatements from core/feature models. Roles first, then users, branches, delivery_men, zones, currencies.
@@ -19,7 +20,7 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 15;
+  static const int databaseVersion = 16;
 
   /// Run in order: roles, users, branches, ..., price_lists, products, category_product, product_variables, product_variable_values, product_variants, product_variant_values, product_addon, product_variant_addon, product_price_list_prices, product_variant_price_list_prices.
   static const List<String> createTableStatements = [
@@ -46,6 +47,8 @@ abstract class DatabaseUtils {
     ProductsSchema.createTableProductPriceListPrices,
     ProductsSchema.createTableProductVariantPriceListPrices,
     CustodySchema.createTableCustody,
+    CustomersSchema.createTableCustomers,
+    CustomerAddressesSchema.createTableCustomerAddresses,
   ];
 
   /// Run after createTableStatements in onCreate (e.g. seed default roles).
@@ -127,5 +130,11 @@ abstract class DatabaseUtils {
   /// Add is_empty to restaurant_tables (0 = occupied, 1 = empty).
   static List<String> get migrationFrom14To15 => [
         "ALTER TABLE ${RestaurantTablesSchema.tableRestaurantTables} ADD COLUMN ${RestaurantTablesSchema.colIsEmpty} INTEGER NOT NULL DEFAULT 1",
+      ];
+
+  /// Add customers and customer_addresses tables.
+  static List<String> get migrationFrom15To16 => [
+        CustomersSchema.createTableCustomers,
+        CustomerAddressesSchema.createTableCustomerAddresses,
       ];
 }

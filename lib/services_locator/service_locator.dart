@@ -9,6 +9,10 @@ import '../features/add_users/repos/offline/add_user_offline_repos.dart';
 import '../features/branches/cubit/branches_cubit.dart';
 import '../features/select_waiter/cubit/select_waiter_cubit.dart';
 import '../features/select_table/cubit/select_table_cubit.dart';
+import '../features/add_customers/cubit/add_customer_cubit.dart';
+import '../features/add_customers/repos/offline/add_customers_offline_repos.dart';
+import '../features/customers/cubit/customer_search_cubit.dart';
+import '../features/customers/repos/offline/customers_offline_repos.dart';
 import '../features/branches/repos/offline/branches_offline_repos.dart';
 import '../features/add_new_delivery/cubit/add_new_delivery_cubit.dart';
 import '../features/add_new_delivery/repos/offline/add_new_delivery_offline_repos.dart';
@@ -94,6 +98,22 @@ Future<void> setupDI() async {
 
   getIt.registerFactory<SelectTableCubit>(
     () => SelectTableCubit(getIt<RestaurantTablesOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<AddCustomersOfflineRepository>(
+    () => AddCustomersOfflineRepoImpl(),
+  );
+  getIt.registerFactory<AddCustomerCubit>(
+    () => AddCustomerCubit(
+      getIt<AddCustomersOfflineRepository>(),
+      getIt<ZonesOfflineRepository>(),
+    ),
+  );
+  getIt.registerLazySingleton<CustomersOfflineRepository>(
+    () => CustomersOfflineRepoImpl(),
+  );
+  getIt.registerFactory<CustomerSearchCubit>(
+    () => CustomerSearchCubit(getIt<CustomersOfflineRepository>()),
   );
 
   getIt.registerLazySingleton<LoginOfflineRepository>(
@@ -313,6 +333,7 @@ Future<void> setupDI() async {
     () => AddNewPaymentMethodOfflineRepoImpl(),
   );
   getIt.registerFactory<AddNewPaymentMethodCubit>(
-    () => AddNewPaymentMethodCubit(getIt<AddNewPaymentMethodOfflineRepository>()),
+    () =>
+        AddNewPaymentMethodCubit(getIt<AddNewPaymentMethodOfflineRepository>()),
   );
 }

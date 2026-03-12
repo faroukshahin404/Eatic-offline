@@ -9,6 +9,10 @@ import 'zones_schema.dart';
 
 abstract class ZonesOfflineRepository {
   DbCall<List<ZoneModel>> getAllZones();
+
+  /// Zones for the given branch (for user-scoped forms).
+  DbCall<List<ZoneModel>> getZonesByBranchId(int branchId);
+
   DbCall<int> deleteById(int id);
 }
 
@@ -19,6 +23,25 @@ class ZonesOfflineRepoImpl implements ZonesOfflineRepository {
   Future<Either<OfflineFailure, List<ZoneModel>>> getAllZones() async {
     try {
       final list = await _db.rawQuery(ZonesSchema.sqlQuery);
+      return Right(list.map((e) => ZoneModel.fromMap(e)).toList());
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, List<ZoneModel>>> getZonesByBranchId(
+    int branchId,
+  ) async {
+    try {
+      final list = await _db.rawQuery(
+        ZonesSchema.sqlQueryByBranchId,
+        [branchId],
+      );
       return Right(list.map((e) => ZoneModel.fromMap(e)).toList());
     } catch (e) {
       return Left(

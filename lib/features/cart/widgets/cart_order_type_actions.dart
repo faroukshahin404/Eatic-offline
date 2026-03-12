@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/widgets/custom_button_widget.dart';
+import '../../../routes/app_paths.dart';
+import '../../_main/cubit/main_cubit.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
 import 'cart_waiter_table_section.dart';
@@ -20,7 +22,11 @@ class CartOrderTypeActions extends StatelessWidget {
         if (state.selectedOrderTypeIndex == deliveryOrderTypeIndex) {
           return CustomButtonWidget(
             text: 'cart.add_user_info'.tr(),
-            onPressed: () {},
+            onPressed: () {
+              context.read<MainCubit>().setCurrentScreen(
+                screen: AppPaths.customerSearch,
+              );
+            },
           );
         }
         return const CartWaiterTableSection();

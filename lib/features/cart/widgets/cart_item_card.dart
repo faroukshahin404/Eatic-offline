@@ -10,11 +10,7 @@ import 'cart_quantity_button.dart';
 
 /// Single cart line: product name, modifiers, quantity controls, price.
 class CartItemCard extends StatelessWidget {
-  const CartItemCard({
-    super.key,
-    required this.line,
-    required this.index,
-  });
+  const CartItemCard({super.key, required this.line, required this.index});
 
   final CreateOrderLineModel line;
   final int index;
@@ -37,15 +33,17 @@ class CartItemCard extends StatelessWidget {
               children: [
                 Text(
                   line.productName ?? 'Product',
-                  style: AppFonts.styleBold16
-                      .copyWith(color: AppColors.oppositeColor),
+                  style: AppFonts.styleBold16.copyWith(
+                    color: AppColors.oppositeColor,
+                  ),
                 ),
                 if (modifiers.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
                     modifiers,
-                    style: AppFonts.styleMedium14
-                        .copyWith(color: AppColors.greyA4ACAD),
+                    style: AppFonts.styleMedium14.copyWith(
+                      color: AppColors.greyA4ACAD,
+                    ),
                   ),
                 ],
               ],
@@ -64,8 +62,9 @@ class CartItemCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     '${line.quantity}',
-                    style: AppFonts.styleMedium16
-                        .copyWith(color: AppColors.oppositeColor),
+                    style: AppFonts.styleMedium16.copyWith(
+                      color: AppColors.oppositeColor,
+                    ),
                   ),
                   const SizedBox(width: 8),
                   CartQuantityButton(
@@ -79,8 +78,9 @@ class CartItemCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 '${line.lineTotal.toStringAsFixed(0)} ${'products.currency'.tr()}',
-                style: AppFonts.styleMedium14
-                    .copyWith(color: AppColors.oppositeColor),
+                style: AppFonts.styleMedium14.copyWith(
+                  color: AppColors.oppositeColor,
+                ),
               ),
             ],
           ),

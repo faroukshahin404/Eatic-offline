@@ -230,6 +230,9 @@
     "save": "Save",
     "success": "Product added successfully"
   },
+  "customers.title": "Customer Info",
+  "customers.no_results": "No results",
+  "customers.add_customer": "Add Customer",
   "select_waiter.title": "Select Waiter",
   "cart.no_items": "No items in the cart",
   "cart.open_custody": "Open Custody",
@@ -245,7 +248,36 @@
     "error_current_password_incorrect": "Current password is incorrect."
   },
   "validation": {
-    "required": "is required"
+    "required": "is required",
+    "phone_number": "Please enter a valid phone number"
+  },
+  "customers": {
+    "validation": {
+      "at_least_one_address": "At least one address is required",
+      "zone_required": "Please select a zone for each address"
+    },
+    "add_customer": "Add Customer",
+    "search_customers": "Search Customers",
+    "search": "Search",
+    "no_results": "No results",
+    "table": {
+      "name": "Name",
+      "phone": "Phone",
+      "zone": "Zone",
+      "building": "Building",
+      "floor": "Floor",
+      "apartment": "Apartment"
+    },
+    "name": "Name",
+    "phone": "Phone",
+    "second_phone": "Second phone",
+    "add_new_address": "Add New Address",
+    "zone": "Zone",
+    "apartment": "Apartment",
+    "floor": "Floor",
+    "building_number": "Building number",
+    "is_default": "Default address",
+    "save": "Save"
   },
   "actions": {
     "edit": "Edit",

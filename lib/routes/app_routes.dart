@@ -35,8 +35,6 @@ import '../features/add_new_product/add_new_product_screen.dart';
 import '../features/add_new_product/cubit/add_new_product_cubit.dart';
 import '../features/products/products_screen.dart';
 import '../features/products/cubit/products_cubit.dart';
-import '../features/create_order/create_order_screen.dart';
-import '../features/create_order/cubit/create_order_cubit.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/zones_screen.dart';
 import '../features/login/login_screen.dart';
@@ -48,6 +46,10 @@ import '../features/select_waiter/select_waiter_screen.dart';
 import '../features/select_waiter/cubit/select_waiter_cubit.dart';
 import '../features/select_table/select_table_screen.dart';
 import '../features/select_table/cubit/select_table_cubit.dart';
+import '../features/add_customers/add_customer_screen.dart';
+import '../features/add_customers/cubit/add_customer_cubit.dart';
+import '../features/customers/customer_search_screen.dart';
+import '../features/customers/cubit/customer_search_cubit.dart';
 import '../features/users/cubit/users_cubit.dart';
 import '../features/users/users_screen.dart';
 import '../services_locator/service_locator.dart';
@@ -282,6 +284,21 @@ class AppPages {
         ),
       ),
 
+      GoRoute(
+        path: AppPaths.addCustomer,
+        builder: (context, state) => BlocProvider<AddCustomerCubit>(
+          create: (context) =>
+              getIt<AddCustomerCubit>()..loadZones(),
+          child: const AddCustomerScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppPaths.customerSearch,
+        builder: (context, state) => BlocProvider<CustomerSearchCubit>(
+          create: (context) => getIt<CustomerSearchCubit>(),
+          child: const CustomerSearchScreen(),
+        ),
+      ),
       GoRoute(
         path: AppPaths.resetPassword,
         builder: (context, state) => BlocProvider<ResetPasswordCubit>(

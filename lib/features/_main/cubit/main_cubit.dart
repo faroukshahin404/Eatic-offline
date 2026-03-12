@@ -5,9 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../routes/app_paths.dart';
 import '../../../services_locator/service_locator.dart';
+import '../../add_customers/add_customer_screen.dart';
+import '../../add_customers/cubit/add_customer_cubit.dart';
 import '../../cart/cart_screen.dart';
 import '../../create_order/create_order_screen.dart';
 import '../../create_order/cubit/create_order_cubit.dart';
+import '../../customers/cubit/customer_search_cubit.dart';
+import '../../customers/customer_search_screen.dart';
 import '../../home/home_screen.dart';
 import '../../select_waiter/cubit/select_waiter_cubit.dart';
 import '../../select_waiter/select_waiter_screen.dart';
@@ -51,6 +55,16 @@ class MainCubit extends Cubit<MainState> {
         return BlocProvider<SelectTableCubit>(
           create: (context) => getIt<SelectTableCubit>()..loadTables(),
           child: const SelectTableScreen(),
+        );
+      case AppPaths.customerSearch:
+        return BlocProvider<CustomerSearchCubit>(
+          create: (context) => getIt<CustomerSearchCubit>(),
+          child: const CustomerSearchScreen(),
+        );
+      case AppPaths.addCustomer:
+        return BlocProvider<AddCustomerCubit>(
+          create: (context) => getIt<AddCustomerCubit>()..loadZones(),
+          child: const AddCustomerScreen(),
         );
       default:
         return const HomeScreen();

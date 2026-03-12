@@ -36,4 +36,17 @@ abstract class ZonesSchema {
     LEFT JOIN ${BranchesSchema.tableBranches} b ON z.${ZonesSchema.colBranchId} = b.${BranchesSchema.colId}
     ORDER BY z.${ZonesSchema.colId}
   ''';
+
+  /// Zones for a given branch. Use with rawQuery(..., [branchId]).
+  static const String sqlQueryByBranchId = '''
+    SELECT z.${ZonesSchema.colId}, z.${ZonesSchema.colVendorId},
+           z.${ZonesSchema.colBranchId}, z.${ZonesSchema.colName},
+           z.${ZonesSchema.colDeliveryCharge}, z.${ZonesSchema.colCreatedAt},
+           z.${ZonesSchema.colUpdatedAt},
+           b.${BranchesSchema.colName} AS branch_name
+    FROM ${ZonesSchema.tableZones} z
+    LEFT JOIN ${BranchesSchema.tableBranches} b ON z.${ZonesSchema.colBranchId} = b.${BranchesSchema.colId}
+    WHERE z.${ZonesSchema.colBranchId} = ?
+    ORDER BY z.${ZonesSchema.colName}
+  ''';
 }

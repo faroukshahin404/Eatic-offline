@@ -230,6 +230,10 @@
     "save": "حفظ",
     "success": "تم إضافة المنتج بنجاح"
   },
+  "customers.title": "بيانات العميل",
+  "customers.no_results": "لا توجد نتائج",
+  "customers.add_customer": "إضافة عميل",
+  
   "select_waiter.title": "اختر الويتر",
   "cart.no_items": "لا يوجد عناصر في السلة",
   "cart.open_custody": "فتح عهدة",
@@ -245,7 +249,36 @@
     "error_current_password_incorrect": "كلمة المرور الحالية غير صحيحة."
   },
   "validation": {
-    "required": "مطلوب"
+    "required": "مطلوب",
+    "phone_number": "يرجى إدخال رقم هاتف صحيح"
+  },
+  "customers": {
+    "validation": {
+      "at_least_one_address": "عنوان واحد على الأقل مطلوب",
+      "zone_required": "يرجى اختيار المنطقة لكل عنوان"
+    },
+    "add_customer": "إضافة عميل",
+    "search_customers": "بحث العملاء",
+    "search": "بحث",
+    "no_results": "لا توجد نتائج",
+    "table": {
+      "name": "الاسم",
+      "phone": "الهاتف",
+      "zone": "المنطقة",
+      "building": "رقم العقار",
+      "floor": "الدور",
+      "apartment": "رقم الشقة"
+    },
+    "name": "الاسم",
+    "phone": "الهاتف",
+    "second_phone": "الهاتف الثاني",
+    "add_new_address": "إضافة عنوان جديد",
+    "zone": "المنطقة",
+    "apartment": "الشقة",
+    "floor": "الطابق",
+    "building_number": "رقم المبنى",
+    "is_default": "العنوان الافتراضي",
+    "save": "حفظ"
   },
   "actions": {
     "edit": "تعديل",
