@@ -10,6 +10,7 @@ abstract class UsersSchema {
   static const String colName = 'name';
   static const String colPassword = 'password';
   static const String colRoleId = 'role_id';
+  static const String colBranchId = 'branch_id';
   static const String colCreatedBy = 'created_by';
   static const String colUpdatedBy = 'updated_by';
   static const String colCreatedAt = 'created_at';
@@ -23,6 +24,7 @@ abstract class UsersSchema {
       $colName TEXT,
       $colPassword TEXT,
       $colRoleId INTEGER NOT NULL REFERENCES ${RolesStatement.tableRoles}(${RolesStatement.colId}),
+      $colBranchId INTEGER REFERENCES branches(id),
       $colCreatedBy INTEGER REFERENCES $tableUsers($colId),
       $colUpdatedBy INTEGER REFERENCES $tableUsers($colId),
       $colCreatedAt TEXT NOT NULL,

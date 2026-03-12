@@ -179,6 +179,8 @@
     "name": "Name",
     "password": "Password",
     "role": "Role",
+    "branch": "Branch",
+    "branch_hint": "Select branch",
     "save": "Save",
     "update": "Update"
   },

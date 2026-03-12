@@ -10,6 +10,7 @@ import '../../../core/widgets/custom_text.dart';
 import '../../../core/widgets/custom_text_field.dart';
 import '../../../routes/app_paths.dart';
 import '../cubit/add_user_cubit.dart';
+import 'branch_dropdown.dart';
 import 'role_dropdown.dart';
 import '../../users/model/user_model.dart';
 
@@ -67,6 +68,8 @@ class ListFormUserWidget extends StatelessWidget {
             ],
             const SizedBox(height: 16),
             RoleDropdown(cubit: cubit),
+            const SizedBox(height: 16),
+            BranchDropdown(cubit: cubit),
             const SizedBox(height: 24),
             CustomButtonWidget(
               text: isEdit ? 'add_user_form.update' : 'add_user_form.save',
@@ -95,6 +98,7 @@ class ListFormUserWidget extends StatelessWidget {
     final name = cubit.nameController.text.trim();
     final password = cubit.passwordController.text.trim();
     final roleId = cubit.selectedRoleId;
+    final branchId = cubit.selectedBranchId;
 
     if (isEdit && cubit.currentUser != null) {
       final user = cubit.currentUser!.copyWith(
@@ -102,6 +106,7 @@ class ListFormUserWidget extends StatelessWidget {
         name: name.isEmpty ? null : name,
         password: password.isEmpty ? null : password,
         roleId: roleId,
+        branchId: branchId,
         updatedAt: _now,
       );
       cubit.editUser(user);
@@ -111,6 +116,7 @@ class ListFormUserWidget extends StatelessWidget {
         name: name.isEmpty ? null : name,
         password: password.isEmpty ? null : password,
         roleId: roleId,
+        branchId: branchId,
         createdAt: _now,
         updatedAt: _now,
       );

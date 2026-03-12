@@ -8,6 +8,7 @@ class UserModel {
     this.name,
     this.password,
     required this.roleId,
+    this.branchId,
     this.createdBy,
     this.updatedBy,
     required this.createdAt,
@@ -19,6 +20,7 @@ class UserModel {
   final String? name;
   final String? password;
   final int roleId;
+  final int? branchId;
   final int? createdBy;
   final int? updatedBy;
   final String createdAt;
@@ -32,6 +34,7 @@ class UserModel {
       name: map[UsersSchema.colName] as String?,
       password: map[UsersSchema.colPassword] as String?,
       roleId: map[UsersSchema.colRoleId] as int,
+      branchId: map[UsersSchema.colBranchId] as int?,
       createdBy: map[UsersSchema.colCreatedBy] as int?,
       updatedBy: map[UsersSchema.colUpdatedBy] as int?,
       createdAt: map[UsersSchema.colCreatedAt] as String,
@@ -47,6 +50,7 @@ class UserModel {
       name: json['name'] as String?,
       password: json['password'] as String?,
       roleId: json['role_id'] as int,
+      branchId: json['branch_id'] as int?,
       createdBy: json['created_by'] as int?,
       updatedBy: json['updated_by'] as int?,
       createdAt: json['created_at'] as String,
@@ -62,6 +66,7 @@ class UserModel {
       'name': name,
       'password': password,
       'role_id': roleId,
+      if (branchId != null) 'branch_id': branchId,
       'created_by': createdBy,
       'updated_by': updatedBy,
       'created_at': createdAt,
@@ -80,6 +85,7 @@ class UserModel {
     if (id != null) map[UsersSchema.colId] = id;
     if (name != null) map[UsersSchema.colName] = name;
     if (password != null) map[UsersSchema.colPassword] = password;
+    if (branchId != null) map[UsersSchema.colBranchId] = branchId;
     if (createdBy != null) map[UsersSchema.colCreatedBy] = createdBy;
     if (updatedBy != null) map[UsersSchema.colUpdatedBy] = updatedBy;
     return map;
@@ -91,6 +97,7 @@ class UserModel {
       UsersSchema.colName: name,
       UsersSchema.colPassword: password,
       UsersSchema.colRoleId: roleId,
+      UsersSchema.colBranchId: branchId,
       UsersSchema.colCreatedBy: createdBy,
       UsersSchema.colUpdatedBy: updatedBy,
       UsersSchema.colCreatedAt: createdAt,
@@ -105,6 +112,7 @@ class UserModel {
       UsersSchema.colName: name,
       UsersSchema.colPassword: password,
       UsersSchema.colRoleId: roleId,
+      UsersSchema.colBranchId: branchId,
       UsersSchema.colUpdatedBy: updatedBy,
       UsersSchema.colUpdatedAt: updatedAt,
     };
@@ -116,6 +124,7 @@ class UserModel {
     String? name,
     String? password,
     int? roleId,
+    int? branchId,
     int? createdBy,
     int? updatedBy,
     String? createdAt,
@@ -127,6 +136,7 @@ class UserModel {
       name: name ?? this.name,
       password: password ?? this.password,
       roleId: roleId ?? this.roleId,
+      branchId: branchId ?? this.branchId,
       createdBy: createdBy ?? this.createdBy,
       updatedBy: updatedBy ?? this.updatedBy,
       createdAt: createdAt ?? this.createdAt,

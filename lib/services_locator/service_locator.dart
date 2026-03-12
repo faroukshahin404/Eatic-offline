@@ -80,7 +80,10 @@ Future<void> setupDI() async {
     () => AddUserOfflineRepoImpl(),
   );
   getIt.registerFactory<AddUserCubit>(
-    () => AddUserCubit(getIt<AddUserOfflineRepository>()),
+    () => AddUserCubit(
+      getIt<AddUserOfflineRepository>(),
+      getIt<BranchesOfflineRepository>(),
+    ),
   );
 
   getIt.registerLazySingleton<LoginOfflineRepository>(

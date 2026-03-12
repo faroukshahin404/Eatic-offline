@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/core_models/role_model.dart';
+import '../../branches/model/branch_model.dart';
+import '../../branches/repos/offline/branches_offline_repos.dart';
 import '../../users/model/user_model.dart';
 import '../repos/offline/add_user_offline_repos.dart';
 
 part 'add_user_state.dart';
 
 class AddUserCubit extends Cubit<AddUserState> {
-  AddUserCubit(this._repo) : super(AddUserInitial());
+  AddUserCubit(this._repo, this._branchesRepo) : super(AddUserInitial());
 
   final AddUserOfflineRepository _repo;
+  final BranchesOfflineRepository _branchesRepo;
 
   final formKey = GlobalKey<FormState>();
   final codeController = TextEditingController();
@@ -22,6 +25,9 @@ class AddUserCubit extends Cubit<AddUserState> {
   List<RoleModel> roles = [];
   RoleModel? selectedRole;
 
+  List<BranchModel> branches = [];
+  int? selectedBranchId;
+
   void setFromUser(UserModel? user) {
     currentUser = user;
     if (user == null) {
@@ -31,12 +37,14 @@ class AddUserCubit extends Cubit<AddUserState> {
     codeController.text = user.code;
     nameController.text = user.name ?? '';
     selectedRoleId = user.roleId;
+    selectedBranchId = user.branchId;
     _syncSelectedRoleFromId();
   }
 
   void clearControllers() {
     currentUser = null;
     selectedRole = null;
+    selectedBranchId = null;
     codeController.clear();
     nameController.clear();
     passwordController.clear();
@@ -46,6 +54,27 @@ class AddUserCubit extends Cubit<AddUserState> {
   void setSelectedRole(RoleModel? role) {
     selectedRole = role;
     selectedRoleId = role?.id ?? 1;
+    if (_isCashier(role) == false) {
+      selectedBranchId = null;
+    }
+    emit(AddUserLoaded());
+  }
+
+  bool _isCashier(RoleModel? role) =>
+      role?.name.toLowerCase() == 'cashier';
+
+  void setSelectedBranch(BranchModel? branch) {
+    selectedBranchId = branch?.id;
+    emit(AddUserLoaded());
+  }
+
+  BranchModel? get selectedBranch =>
+      selectedBranchId == null
+          ? null
+          : branches.where((b) => b.id == selectedBranchId).firstOrNull;
+
+  void setSelectedBranchId(int? id) {
+    selectedBranchId = id;
     emit(AddUserLoaded());
   }
 
@@ -99,14 +128,20 @@ class AddUserCubit extends Cubit<AddUserState> {
   }
 
   Future<void> getRoles({int? id}) async {
-    final result = await _repo.getRoles();
-    result.fold((f) => emit(AddUserError(f.failureMessage ?? 'Error')), (
-      roles,
-    ) {
-      this.roles = roles;
-      _syncSelectedRoleFromId();
-      if (id != null) getById(id: id);
-      emit(AddUserLoaded());
-    });
+    final rolesResult = await _repo.getRoles();
+    final branchesResult = await _branchesRepo.getAll();
+    rolesResult.fold(
+      (f) => emit(AddUserError(f.failureMessage ?? 'Error')),
+      (roles) {
+        this.roles = roles;
+        branches = branchesResult.getOrElse(() => []);
+        _syncSelectedRoleFromId();
+        if (id != null) {
+          getById(id: id);
+        } else {
+          emit(AddUserLoaded());
+        }
+      },
+    );
   }
 }
