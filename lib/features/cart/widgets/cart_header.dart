@@ -1,3 +1,4 @@
+import 'package:Eatic/core/widgets/custom_padding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,21 +13,24 @@ class CartHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartCubit, CartState>(
-      buildWhen: (p, c) => p.hasOpenCustody != c.hasOpenCustody,
-      builder: (context, state) {
-        return FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const CartAddNewOrderButton(),
-              const SizedBox(width: 12),
-              CartCloseCustodyButton(hasOpenCustody: state.hasOpenCustody),
-            ],
-          ),
-        );
-      },
+    return CustomPadding(
+      
+      child: BlocBuilder<CartCubit, CartState>(
+        buildWhen: (p, c) => p.hasOpenCustody != c.hasOpenCustody,
+        builder: (context, state) {
+          return FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CartAddNewOrderButton(),
+                const SizedBox(width: 12),
+                CartCloseCustodyButton(hasOpenCustody: state.hasOpenCustody),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

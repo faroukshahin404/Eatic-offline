@@ -240,6 +240,11 @@
   "select_waiter.title": "Select Waiter",
   "cart.no_items": "No items in the cart",
   "cart.open_custody": "Open Custody",
+  "cart.total_before_discount": "Total before discount",
+  "cart.add_discount": "Add discount",
+  "cart.discount_type": "Discount type",
+  "cart.total": "Total",
+  "cart.confirm_order": "Confirm Order",
   "reset_password": {
     "title": "Reset Password",
     "current_password": "Current Password",

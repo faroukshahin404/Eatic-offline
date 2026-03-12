@@ -241,6 +241,11 @@
   "select_waiter.title": "اختر الويتر",
   "cart.no_items": "لا يوجد عناصر في السلة",
   "cart.open_custody": "فتح عهدة",
+  "cart.total_before_discount": "الإجمالي قبل الخصم",
+  "cart.add_discount": "اضافة خصم",
+  "cart.discount_type": "نوع الخصم",
+  "cart.total": "الإجمالي",
+  "cart.confirm_order": "تأكيد الطلب",
   "reset_password": {
     "title": "تغيير كلمة المرور",
     "current_password": "كلمة المرور الحالية",
