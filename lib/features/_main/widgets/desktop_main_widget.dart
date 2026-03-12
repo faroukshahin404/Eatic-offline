@@ -12,6 +12,8 @@ class DesktopMainWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        Expanded(child: CartScreen()),
+
         Expanded(
           flex: 3,
           child: Column(
@@ -20,15 +22,14 @@ class DesktopMainWidget extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    DrawerScreen(),
                     Expanded(flex: 2, child: CurrentScreen()),
+                    DrawerScreen(),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        Expanded(child: CartScreen()),
       ],
     );
   }

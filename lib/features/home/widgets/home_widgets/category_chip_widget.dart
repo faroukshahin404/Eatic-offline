@@ -34,10 +34,13 @@ class CategoryChip extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Center(
-              child: Text(
-                label,
-                style: AppFonts.styleMedium18.copyWith(
-                  color: isSelected ? Colors.white : AppColors.oppositeColor,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: AppFonts.styleMedium18.copyWith(
+                    color: isSelected ? Colors.white : AppColors.oppositeColor,
+                  ),
                 ),
               ),
             ),
