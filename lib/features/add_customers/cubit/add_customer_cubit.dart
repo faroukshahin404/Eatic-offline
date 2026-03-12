@@ -26,6 +26,8 @@ class AddressFormEntry {
   final TextEditingController floorController;
   final TextEditingController buildingNumberController;
   bool isDefault = false;
+  /// True when this entry was loaded from DB (existing customer); do not re-insert on update.
+  bool isExisting = false;
 
   void dispose() {
     apartmentController.dispose();
@@ -116,6 +118,7 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
         addressEntries.clear();
         for (final addr in customer.addresses) {
           final entry = AddressFormEntry();
+          entry.isExisting = true;
           entry.selectedZone = zones
               .where((z) => z.id == addr.zoneId)
               .firstOrNull;
@@ -198,9 +201,13 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
   }
 
   /// Builds list of addresses from form entries. Returns empty list if none valid.
-  List<AddressModel> _buildAddressesFromForm() {
-    return addressEntries
-        .where((e) => e.selectedZone != null)
+  /// When [newOnly] is true (update mode), only includes entries that are not loaded from DB.
+  List<AddressModel> _buildAddressesFromForm({bool newOnly = false}) {
+    var entries = addressEntries.where((e) => e.selectedZone != null);
+    if (newOnly) {
+      entries = entries.where((e) => !e.isExisting);
+    }
+    return entries
         .map(
           (e) => AddressModel(
             zoneId: e.selectedZone!.id!,
@@ -264,26 +271,22 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
     );
   }
 
-  /// Updates existing customer by adding new addresses only.
+  /// Updates existing customer by adding new addresses only (no re-insert of existing).
   Future<void> updateCustomerAddresses() async {
     if (!_validateForm()) return;
-    final addresses = _buildAddressesFromForm();
-    if (addresses.isEmpty) {
-      emit(
-        AddCustomerError(
-          message: 'customers.validation.at_least_one_address'.tr(),
-        ),
-      );
-      return;
-    }
     if (customerId == null) {
       emit(AddCustomerError(message: 'Customer ID is required for update'));
+      return;
+    }
+    final newAddresses = _buildAddressesFromForm(newOnly: true);
+    if (newAddresses.isEmpty) {
+      emit(AddCustomerSaved());
       return;
     }
     emit(AddCustomerLoading());
     final result = await _customersRepo.insertAddressesForCustomer(
       customerId!,
-      addresses,
+      newAddresses,
     );
     result.fold(
       (f) => emit(AddCustomerError(message: f.failureMessage ?? 'Error')),
@@ -294,18 +297,18 @@ class AddCustomerCubit extends Cubit<AddCustomerState> {
   /// Validates and either saves new customer or updates existing customer addresses.
   Future<void> save() async {
     if (!_validateForm()) return;
-    final addresses = _buildAddressesFromForm();
-    if (addresses.isEmpty) {
-      emit(
-        AddCustomerError(
-          message: 'customers.validation.at_least_one_address'.tr(),
-        ),
-      );
-      return;
-    }
     if (customerId != null) {
       await updateCustomerAddresses();
     } else {
+      final addresses = _buildAddressesFromForm();
+      if (addresses.isEmpty) {
+        emit(
+          AddCustomerError(
+            message: 'customers.validation.at_least_one_address'.tr(),
+          ),
+        );
+        return;
+      }
       await saveNewCustomer();
     }
   }

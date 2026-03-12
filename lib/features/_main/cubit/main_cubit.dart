@@ -27,6 +27,7 @@ class MainCubit extends Cubit<MainState> {
   dynamic data;
 
   void setCurrentScreen({String? screen, dynamic data}) {
+    if (screen == currentScreen) return;
     emit(MainInitial());
 
     currentScreen = screen ?? AppPaths.home;
