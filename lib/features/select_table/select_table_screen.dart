@@ -55,6 +55,6 @@ class SelectTableScreen extends StatelessWidget {
     context.read<CartCubit>().setTableNumber(
       selected?.name ?? selected?.id?.toString(),
     );
-    context.read<MainCubit>().setCurrentScreen(screen: AppPaths.cart);
+    context.read<MainCubit>().setCurrentScreen();
   }
 }
