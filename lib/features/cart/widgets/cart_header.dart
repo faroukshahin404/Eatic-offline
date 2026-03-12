@@ -15,13 +15,16 @@ class CartHeader extends StatelessWidget {
     return BlocBuilder<CartCubit, CartState>(
       buildWhen: (p, c) => p.hasOpenCustody != c.hasOpenCustody,
       builder: (context, state) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CartAddNewOrderButton(),
-            const SizedBox(width: 12),
-            CartCloseCustodyButton(hasOpenCustody: state.hasOpenCustody),
-          ],
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CartAddNewOrderButton(),
+              const SizedBox(width: 12),
+              CartCloseCustodyButton(hasOpenCustody: state.hasOpenCustody),
+            ],
+          ),
         );
       },
     );

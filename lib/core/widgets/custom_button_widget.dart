@@ -79,9 +79,12 @@ class CustomButtonWidget extends StatelessWidget {
               ),
 
             if (text != null)
-              CustomText(
-                text: text!,
-                style: AppFonts.styleSemiBold16.copyWith(color: fg),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: CustomText(
+                  text: text!,
+                  style: AppFonts.styleSemiBold16.copyWith(color: fg),
+                ),
               ),
 
             if (image != null && !iconFirst)
