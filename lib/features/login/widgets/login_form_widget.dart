@@ -1,11 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_assets.dart';
 import '../../../core/widgets/custom_assets_image.dart';
 import '../../../core/widgets/custom_button_widget.dart';
 import '../../../core/widgets/custom_text_field.dart';
+import '../../../routes/app_paths.dart';
 import '../cubit/login_cubit.dart';
 
 class LoginFormWidget extends StatelessWidget {
@@ -30,9 +32,11 @@ class LoginFormWidget extends StatelessWidget {
               hint: 'add_user_form.code'.tr(),
               controller: cubit.codeController,
               isOnlyNumbers: true,
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'validation.required'.tr()
-                  : null,
+              validator:
+                  (v) =>
+                      (v == null || v.trim().isEmpty)
+                          ? 'validation.required'.tr()
+                          : null,
             ),
             const SizedBox(height: 16),
             CustomTextField(
@@ -41,9 +45,11 @@ class LoginFormWidget extends StatelessWidget {
               controller: cubit.passwordController,
               isPassword: true,
               maxLines: 1,
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'validation.required'.tr()
-                  : null,
+              validator:
+                  (v) =>
+                      (v == null || v.trim().isEmpty)
+                          ? 'validation.required'.tr()
+                          : null,
             ),
             const SizedBox(height: 24),
             CustomButtonWidget(
@@ -51,6 +57,13 @@ class LoginFormWidget extends StatelessWidget {
               isLoading: cubit.state is LoginLoading,
               text: 'login',
               onPressed: () => cubit.login(),
+            ),
+            SizedBox(height: 16),
+            OutlinedButton(
+              onPressed: () {
+                context.go(AppPaths.main);
+              },
+              child: Text('Skip'),
             ),
           ],
         ),
