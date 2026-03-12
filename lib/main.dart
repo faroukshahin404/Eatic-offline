@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'core/constants/app_colors.dart';
 import 'core/utils/app_utils.dart';
@@ -22,6 +23,9 @@ import 'services_locator/service_locator.dart';
 // 123123123
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Required for sqflite_common_ffi (desktop): set factory before any database use.
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
   await AppUtils.appSetup();
 
   await EasyLocalization.ensureInitialized();

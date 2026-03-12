@@ -69,4 +69,36 @@ class CartCubit extends Cubit<CartState> {
     final hasOpen = result.fold((_) => false, (v) => v != null);
     emit(state.copyWith(hasOpenCustody: hasOpen));
   }
+
+  void setDiscountByAmount(double? value) {
+    emit(state.copyWith(
+      selectedDiscountType: CartDiscountType.amount,
+      discountAmount: value,
+      discountPercentage: null,
+      discountCouponCode: null,
+    ));
+  }
+
+  void setDiscountByPercentage(double? value) {
+    emit(state.copyWith(
+      selectedDiscountType: CartDiscountType.percentage,
+      discountPercentage: value,
+      discountAmount: null,
+      discountCouponCode: null,
+    ));
+  }
+
+  // Coupon discount temporarily disabled.
+  // void setDiscountByCoupon(String? code) {
+  //   emit(state.copyWith(
+  //     selectedDiscountType: CartDiscountType.coupon,
+  //     discountCouponCode: code,
+  //     discountAmount: null,
+  //     discountPercentage: null,
+  //   ));
+  // }
+
+  void clearDiscount() {
+    emit(state.copyWith(clearDiscount: true));
+  }
 }

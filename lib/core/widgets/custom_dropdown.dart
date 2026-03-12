@@ -102,7 +102,7 @@ class CustomDropDown<T> extends StatelessWidget {
           const SizedBox(height: 5),
         ],
         DropdownButtonFormField<T>(
-          value: effectiveValue,
+          initialValue: effectiveValue,
           decoration: _dropdownDecoration(),
           dropdownColor: AppColors.fillColor,
           style: AppFonts.styleRegular18.copyWith(

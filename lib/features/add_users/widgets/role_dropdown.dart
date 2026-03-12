@@ -62,7 +62,7 @@ class RoleDropdown extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             DropdownButtonFormField<RoleModel>(
-              value: value,
+              initialValue: value,
               decoration: _dropdownDecoration(),
               dropdownColor: AppColors.fillColor,
               style: AppFonts.styleRegular18.copyWith(
