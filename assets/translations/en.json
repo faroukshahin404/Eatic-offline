@@ -29,6 +29,8 @@
   "cart.choose_table": "Choose Table",
   "cart.choose_waiter": "Choose Waiter",
   "cart.add_user_info": "Add user info",
+  "cart.change_customer": "Change customer",
+  "cart.clear_customer": "Clear customer",
   "cart.waiter": "Waiter",
   "select_waiter": {
     "submit": "Submit"

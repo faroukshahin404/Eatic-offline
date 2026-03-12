@@ -1,12 +1,9 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/widgets/custom_button_widget.dart';
-import '../../../routes/app_paths.dart';
-import '../../_main/cubit/main_cubit.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
+import 'cart_delivery_customer_section.dart';
 import 'cart_waiter_table_section.dart';
 
 const int deliveryOrderTypeIndex = 2;
@@ -17,16 +14,13 @@ class CartOrderTypeActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CartCubit, CartState>(
-      buildWhen: (p, c) => p.selectedOrderTypeIndex != c.selectedOrderTypeIndex,
+      buildWhen: (p, c) =>
+          p.selectedOrderTypeIndex != c.selectedOrderTypeIndex ||
+          p.selectedCustomer != c.selectedCustomer,
       builder: (context, state) {
         if (state.selectedOrderTypeIndex == deliveryOrderTypeIndex) {
-          return CustomButtonWidget(
-            text: 'cart.add_user_info'.tr(),
-            onPressed: () {
-              context.read<MainCubit>().setCurrentScreen(
-                screen: AppPaths.customerSearch,
-              );
-            },
+          return CartDeliveryCustomerSection(
+            selectedCustomer: state.selectedCustomer,
           );
         }
         return const CartWaiterTableSection();

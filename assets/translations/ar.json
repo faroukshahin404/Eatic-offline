@@ -29,6 +29,8 @@
   "cart.choose_table": "اختر الطاولة",
   "cart.choose_waiter": "اختر الويتر",
   "cart.add_user_info": "إضافة بيانات العميل",
+  "cart.change_customer": "تغيير العميل",
+  "cart.clear_customer": "إزالة العميل",
   "cart.waiter": "الويتر",
   "select_waiter": {
     "submit": "تأكيد"

@@ -1,7 +1,8 @@
 import '../../create_order/model/create_order_line_model.dart';
+import '../../customers/model/customer_address_row.dart';
 import '../../users/model/user_model.dart';
 
-/// Cart state: items, order type, custody flag, selected waiter, and mock order info.
+/// Cart state: items, order type, custody flag, selected waiter, selected customer, and mock order info.
 class CartState {
   const CartState({
     this.items = const [],
@@ -10,6 +11,7 @@ class CartState {
     this.orderNumber = '#8712',
     this.tableNumber,
     this.selectedWaiter,
+    this.selectedCustomer,
   });
 
   final List<CreateOrderLineModel> items;
@@ -18,6 +20,7 @@ class CartState {
   final String orderNumber;
   final String? tableNumber;
   final UserModel? selectedWaiter;
+  final CustomerAddressRow? selectedCustomer;
 
   CartState copyWith({
     List<CreateOrderLineModel>? items,
@@ -27,6 +30,8 @@ class CartState {
     String? tableNumber,
     UserModel? selectedWaiter,
     bool clearWaiter = false,
+    CustomerAddressRow? selectedCustomer,
+    bool clearSelectedCustomer = false,
   }) {
     return CartState(
       items: items ?? this.items,
@@ -38,6 +43,9 @@ class CartState {
       selectedWaiter: clearWaiter
           ? null
           : (selectedWaiter ?? this.selectedWaiter),
+      selectedCustomer: clearSelectedCustomer
+          ? null
+          : (selectedCustomer ?? this.selectedCustomer),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../create_order/model/create_order_line_model.dart';
+import '../../customers/model/customer_address_row.dart';
 import '../../custody/repos/offline/custody_offline_repos.dart';
 import '../../users/model/user_model.dart';
 import 'cart_state.dart';
@@ -16,6 +17,13 @@ class CartCubit extends Cubit<CartState> {
 
   void setTableNumber(String? tableNumber) {
     emit(state.copyWith(tableNumber: tableNumber));
+  }
+
+  void setSelectedCustomer(CustomerAddressRow? customer) {
+    emit(state.copyWith(
+      selectedCustomer: customer,
+      clearSelectedCustomer: customer == null,
+    ));
   }
 
   void clearCart() {
