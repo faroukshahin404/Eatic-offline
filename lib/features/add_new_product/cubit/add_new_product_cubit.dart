@@ -120,7 +120,10 @@ class AddNewProductCubit extends Cubit<AddNewProductState> {
         (f) async => emit(AddNewProductError(f.failureMessage ?? 'Error')),
         (detail) async {
           _applyProductDetailToForm(detail);
-          emit(AddNewProductReady());
+
+          Future.delayed(const Duration(seconds: 1), () {
+            emit(AddNewProductReady());
+          });
         },
       );
       return;
@@ -144,11 +147,13 @@ class AddNewProductCubit extends Cubit<AddNewProductState> {
     hasVariants = detail.hasVariants;
     variableRows.clear();
     for (final row in detail.variableRows) {
-      variableRows.add(ProductVariableRow(
-        id: row.id,
-        name: row.name,
-        values: List.from(row.values),
-      ));
+      variableRows.add(
+        ProductVariableRow(
+          id: row.id,
+          name: row.name,
+          values: List.from(row.values),
+        ),
+      );
     }
 
     productPriceListPrices.clear();
@@ -156,12 +161,14 @@ class AddNewProductCubit extends Cubit<AddNewProductState> {
 
     _variantPricesRows.clear();
     for (final r in detail.variantPricesRows) {
-      _variantPricesRows.add(VariantPricesRow(
-        basePrice: r.basePrice,
-        isActive: r.isActive,
-        priceListPrices: Map.from(r.priceListPrices),
-        addonPrices: Map.from(r.addonPrices),
-      ));
+      _variantPricesRows.add(
+        VariantPricesRow(
+          basePrice: r.basePrice,
+          isActive: r.isActive,
+          priceListPrices: Map.from(r.priceListPrices),
+          addonPrices: Map.from(r.addonPrices),
+        ),
+      );
     }
   }
 
@@ -296,9 +303,12 @@ class AddNewProductCubit extends Cubit<AddNewProductState> {
     final categoryIds = selectedCategoryIds.toList();
     final addonIds = selectedAddonIds.toList();
     final variableRowsCopy = List<ProductVariableRow>.from(variableRows);
-    final productPriceListPricesCopy = Map<int, double>.from(productPriceListPrices);
-    final variantPricesRowsCopy =
-        hasVariants ? List<VariantPricesRow>.from(variantPricesRows) : <VariantPricesRow>[];
+    final productPriceListPricesCopy = Map<int, double>.from(
+      productPriceListPrices,
+    );
+    final variantPricesRowsCopy = hasVariants
+        ? List<VariantPricesRow>.from(variantPricesRows)
+        : <VariantPricesRow>[];
 
     emit(AddNewProductLoading());
 
