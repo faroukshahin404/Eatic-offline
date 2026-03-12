@@ -1,12 +1,14 @@
+import 'dart:io' show Platform;
+
 import 'package:dartz/dartz.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../error/offline_error.dart';
 import 'database_utils.dart';
-import 'package:path/path.dart';
 
+typedef DbCall<T> = Future<Either<OfflineFailure, T>>;
 
-typedef DbCall<T> = Future<Either<OfflineFailure, T>> ;
 class DatabaseService {
   Database? _database;
   bool _isInitialized = false;
@@ -22,6 +24,11 @@ class DatabaseService {
   /// Initializes the database. Call once during app startup (e.g. in [AppUtils.appSetup]).
   Future<void> init() async {
     if (_isInitialized) return;
+
+    // Use FFI implementation on desktop (Windows, Linux, macOS) for SQLite support.
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      sqfliteFfiInit();
+    }
 
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, DatabaseUtils.databaseName);

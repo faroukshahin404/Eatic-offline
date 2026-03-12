@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../../../core/data/sqLite/database_service.dart';
 import '../../../../core/error/offline_error.dart';

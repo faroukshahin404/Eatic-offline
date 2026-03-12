@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../../../core/core_models/role_model.dart';
 import '../../../../core/core_repos/offline/roles/roles_schema.dart';

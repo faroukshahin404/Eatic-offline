@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 abstract class CommonOfflineFailedModel {
   String? failureMessage;
