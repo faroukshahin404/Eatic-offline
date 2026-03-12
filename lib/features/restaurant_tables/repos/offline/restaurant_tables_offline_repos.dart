@@ -9,6 +9,10 @@ import 'restaurant_tables_schema.dart';
 
 abstract class RestaurantTablesOfflineRepository {
   DbCall<List<RestaurantTableModel>> getAll();
+
+  /// Returns tables that belong to the given [branchId].
+  DbCall<List<RestaurantTableModel>> getByBranchId(int branchId);
+
   DbCall<int> deleteById(int id);
 }
 
@@ -20,6 +24,26 @@ class RestaurantTablesOfflineRepoImpl
   Future<Either<OfflineFailure, List<RestaurantTableModel>>> getAll() async {
     try {
       final list = await _db.rawQuery(RestaurantTablesSchema.sqlQuery);
+      return Right(
+          list.map((e) => RestaurantTableModel.fromMap(e)).toList());
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, List<RestaurantTableModel>>> getByBranchId(
+    int branchId,
+  ) async {
+    try {
+      final list = await _db.rawQuery(
+        RestaurantTablesSchema.sqlQueryByBranchId,
+        [branchId],
+      );
       return Right(
           list.map((e) => RestaurantTableModel.fromMap(e)).toList());
     } catch (e) {

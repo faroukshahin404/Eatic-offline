@@ -14,6 +14,10 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(selectedWaiter: user, clearWaiter: user == null));
   }
 
+  void setTableNumber(String? tableNumber) {
+    emit(state.copyWith(tableNumber: tableNumber));
+  }
+
   void clearCart() {
     emit(state.copyWith(items: []));
   }

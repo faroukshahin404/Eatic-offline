@@ -23,19 +23,14 @@ class CartOrderInfoWidget extends StatelessWidget {
           ),
           child: Column(
             children: [
-              CartOrderInfoRow(
-                label: context.tr('cart.order_number'),
-                value: state.orderNumber,
-              ),
-              const SizedBox(height: 12),
+              // CartOrderInfoRow(
+              //   label: context.tr('cart.order_number'),
+              //   value: state.orderNumber,
+              // ),
+              // const SizedBox(height: 12),
               CartOrderInfoRow(
                 label: context.tr('cart.table_number'),
                 value: state.tableNumber ?? '—',
-                trailing: Icon(
-                  Icons.table_restaurant,
-                  color: AppColors.oppositeColor,
-                  size: 20,
-                ),
               ),
               if (state.selectedWaiter != null) ...[
                 const SizedBox(height: 12),

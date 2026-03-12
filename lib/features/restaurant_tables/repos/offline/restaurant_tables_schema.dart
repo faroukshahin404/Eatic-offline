@@ -40,4 +40,19 @@ abstract class RestaurantTablesSchema {
     LEFT JOIN ${UsersSchema.tableUsers} u ON t.$colCreatedBy = u.${UsersSchema.colId}
     ORDER BY t.$colId
   ''';
+
+  /// Same as [sqlQuery] with WHERE t.$colBranchId = ?. Use with rawQuery(..., [branchId]).
+  static const String sqlQueryByBranchId = '''
+    SELECT t.$colId, t.$colBranchId, t.$colDiningAreaId, t.$colName,
+           t.$colCreatedBy, t.$colCreatedAt, t.$colUpdatedAt,
+           b.${BranchesSchema.colName} AS branch_name,
+           d.${DiningAreasSchema.colName} AS dining_area_name,
+           u.${UsersSchema.colName} AS created_by_name
+    FROM $tableRestaurantTables t
+    LEFT JOIN ${BranchesSchema.tableBranches} b ON t.$colBranchId = b.${BranchesSchema.colId}
+    LEFT JOIN ${DiningAreasSchema.tableDiningAreas} d ON t.$colDiningAreaId = d.${DiningAreasSchema.colId}
+    LEFT JOIN ${UsersSchema.tableUsers} u ON t.$colCreatedBy = u.${UsersSchema.colId}
+    WHERE t.$colBranchId = ?
+    ORDER BY t.$colId
+  ''';
 }

@@ -25,6 +25,7 @@ abstract class AppPaths {
   static const String createOrder = '/create-order';
   static const String cart = '/cart';
   static const String selectWaiter = '/select-waiter';
+  static const String selectTable = '/select-table';
   static const String custody = '/custody';
   static const String resetPassword = '/reset-password';
 }

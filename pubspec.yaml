@@ -28,6 +28,7 @@ dependencies:
   intl:
   flutter_svg:
   animate_do:
+  vector_graphics:
 
 dev_dependencies:
   flutter_test:
@@ -43,6 +44,10 @@ flutter:
     - assets/translations/
     - assets/fonts/
     - assets/images/
+    - path: assets/svg/
+      transformers:
+         - package: vector_graphics_compiler
+
 
   fonts:
     - family: ar

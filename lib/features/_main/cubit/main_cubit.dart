@@ -11,6 +11,8 @@ import '../../create_order/cubit/create_order_cubit.dart';
 import '../../home/home_screen.dart';
 import '../../select_waiter/cubit/select_waiter_cubit.dart';
 import '../../select_waiter/select_waiter_screen.dart';
+import '../../select_table/cubit/select_table_cubit.dart';
+import '../../select_table/select_table_screen.dart';
 
 part 'main_state.dart';
 
@@ -44,6 +46,11 @@ class MainCubit extends Cubit<MainState> {
         return BlocProvider<SelectWaiterCubit>(
           create: (context) => getIt<SelectWaiterCubit>()..getWaiters(),
           child: const SelectWaiterScreen(),
+        );
+      case AppPaths.selectTable:
+        return BlocProvider<SelectTableCubit>(
+          create: (context) => getIt<SelectTableCubit>()..loadTables(),
+          child: const SelectTableScreen(),
         );
       default:
         return const HomeScreen();

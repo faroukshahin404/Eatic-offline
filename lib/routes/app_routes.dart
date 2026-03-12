@@ -46,6 +46,8 @@ import '../features/setting/setting_screen.dart';
 import '../features/splash_screen.dart';
 import '../features/select_waiter/select_waiter_screen.dart';
 import '../features/select_waiter/cubit/select_waiter_cubit.dart';
+import '../features/select_table/select_table_screen.dart';
+import '../features/select_table/cubit/select_table_cubit.dart';
 import '../features/users/cubit/users_cubit.dart';
 import '../features/users/users_screen.dart';
 import '../services_locator/service_locator.dart';
@@ -268,6 +270,15 @@ class AppPages {
           create: (context) =>
               getIt<SelectWaiterCubit>()..getWaiters(),
           child: const SelectWaiterScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: AppPaths.selectTable,
+        builder: (context, state) => BlocProvider<SelectTableCubit>(
+          create: (context) =>
+              getIt<SelectTableCubit>()..loadTables(),
+          child: const SelectTableScreen(),
         ),
       ),
 

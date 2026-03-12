@@ -28,8 +28,13 @@
   "cart.order_type_delivery": "توصيل",
   "cart.choose_table": "اختر الطاولة",
   "cart.choose_waiter": "اختر الويتر",
+  "cart.waiter": "الويتر",
   "select_waiter": {
     "submit": "تأكيد"
+  },
+  "select_table": {
+    "submit": "اختيار",
+    "empty": "لا توجد طاولات في هذا الفرع"
   },
   "cart.order_number": "رقم الطلب",
   "cart.table_number": "رقم الطاولة",
