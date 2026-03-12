@@ -230,6 +230,8 @@
     "save": "حفظ",
     "success": "تم إضافة المنتج بنجاح"
   },
+  "customers.select_customer": "اختر العميل",
+  "customers.add_address": "إضافة عنوان",
   "customers.title": "بيانات العميل",
   "customers.no_results": "لا توجد نتائج",
   "customers.add_customer": "إضافة عميل",

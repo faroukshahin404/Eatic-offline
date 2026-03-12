@@ -288,6 +288,17 @@ class AppPages {
           child: const CustomerSearchScreen(),
         ),
       ),
+
+      GoRoute(
+        path: AppPaths.addCustomer,
+        builder: (context, state) => BlocProvider<AddCustomerCubit>(
+          create: (context) {
+            return getIt<AddCustomerCubit>()
+              ..loadZones(customerId: state.extra as int?);
+          },
+          child: const AddCustomerScreen(),
+        ),
+      ),
       GoRoute(
         path: AppPaths.resetPassword,
         builder: (context, state) => BlocProvider<ResetPasswordCubit>(

@@ -222,6 +222,7 @@
     "delete": "Delete",
     "addons": "Choose Addons",
     "variants_and_prices": "Variants and Prices",
+    "add_address": "Add Address",
     "variant": "Variant",
     "active": "Active",
     "apply_to_list": "Apply to list",
@@ -230,6 +231,7 @@
     "save": "Save",
     "success": "Product added successfully"
   },
+  "customers.select_customer": "Select Customer",
   "customers.title": "Customer Info",
   "customers.no_results": "No results",
   "customers.add_customer": "Add Customer",

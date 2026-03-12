@@ -8,12 +8,15 @@ class CurrentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MainCubit, MainState>(
-      buildWhen: (previous, current) =>
-          previous.runtimeType != current.runtimeType,
-      builder: (context, state) {
-        return context.read<MainCubit>().getCurrentScreen();
-      },
+    return SafeArea(
+      
+      child: BlocBuilder<MainCubit, MainState>(
+        buildWhen: (previous, current) =>
+            previous.runtimeType != current.runtimeType,
+        builder: (context, state) {
+          return context.read<MainCubit>().getCurrentScreen();
+        },
+      ),
     );
   }
 }

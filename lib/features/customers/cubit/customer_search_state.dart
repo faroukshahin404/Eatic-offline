@@ -13,5 +13,4 @@ final class CustomerSearchError extends CustomerSearchState {
   final String message;
 }
 
-
 final class CustomerSearchNoResults extends CustomerSearchState {}

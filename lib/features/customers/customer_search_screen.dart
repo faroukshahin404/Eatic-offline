@@ -2,11 +2,11 @@ import 'package:Eatic/core/widgets/custom_header_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/widgets/custom_button_widget.dart';
 import '../../core/widgets/custom_padding.dart';
 import '../../routes/app_paths.dart';
-import '../_main/cubit/main_cubit.dart';
 import 'cubit/customer_search_cubit.dart';
 import 'widgets/customer_search_bar_widget.dart';
 import 'widgets/customer_search_results_widget.dart';
@@ -37,9 +37,7 @@ class CustomerSearchScreen extends StatelessWidget {
                 CustomButtonWidget(
                   text: "customers.add_customer".tr(),
                   onPressed: () {
-                    context.read<MainCubit>().setCurrentScreen(
-                      screen: AppPaths.addCustomer,
-                    );
+                    context.push(AppPaths.addCustomer);
                   },
                 ),
               ],
