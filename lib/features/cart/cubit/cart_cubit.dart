@@ -2,12 +2,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../create_order/model/create_order_line_model.dart';
 import '../../custody/repos/offline/custody_offline_repos.dart';
+import '../../users/model/user_model.dart';
 import 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
   CartCubit(this._custodyRepo) : super(const CartState());
 
   final CustodyOfflineRepository _custodyRepo;
+
+  void setWaiter(UserModel? user) {
+    emit(state.copyWith(selectedWaiter: user, clearWaiter: user == null));
+  }
 
   void clearCart() {
     emit(state.copyWith(items: []));

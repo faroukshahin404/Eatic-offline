@@ -16,9 +16,8 @@ class HomeProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // context.push(AppPaths.createOrder, extra: product.id);
         context.read<MainCubit>().setCurrentScreen(
-          AppPaths.createOrder,
+          screen: AppPaths.createOrder,
           data: product.id,
         );
       },

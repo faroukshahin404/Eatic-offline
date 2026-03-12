@@ -28,6 +28,9 @@
   "cart.order_type_delivery": "توصيل",
   "cart.choose_table": "اختر الطاولة",
   "cart.choose_waiter": "اختر الويتر",
+  "select_waiter": {
+    "submit": "تأكيد"
+  },
   "cart.order_number": "رقم الطلب",
   "cart.table_number": "رقم الطاولة",
   "cart.order_list": "قائمة الطلبات",
@@ -221,6 +224,7 @@
     "save": "حفظ",
     "success": "تم إضافة المنتج بنجاح"
   },
+  "select_waiter.title": "اختر الويتر",
   "cart.no_items": "لا يوجد عناصر في السلة",
   "cart.open_custody": "فتح عهدة",
   "reset_password": {

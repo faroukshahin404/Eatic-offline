@@ -9,6 +9,8 @@ import '../../cart/cart_screen.dart';
 import '../../create_order/create_order_screen.dart';
 import '../../create_order/cubit/create_order_cubit.dart';
 import '../../home/home_screen.dart';
+import '../../select_waiter/cubit/select_waiter_cubit.dart';
+import '../../select_waiter/select_waiter_screen.dart';
 
 part 'main_state.dart';
 
@@ -18,10 +20,10 @@ class MainCubit extends Cubit<MainState> {
   String currentScreen = AppPaths.home;
   dynamic data;
 
-  void setCurrentScreen(String screen, {dynamic data}) {
+  void setCurrentScreen({String? screen, dynamic data}) {
     emit(MainInitial());
 
-    currentScreen = screen;
+    currentScreen = screen ?? AppPaths.home;
     this.data = data;
     emit(MainScreenChanged());
   }
@@ -33,11 +35,15 @@ class MainCubit extends Cubit<MainState> {
       case AppPaths.cart:
         return const CartScreen();
       case AppPaths.createOrder:
-        log('data: ${data.toString()}');
         return BlocProvider<CreateOrderCubit>(
           create: (context) =>
               getIt<CreateOrderCubit>()..loadProductById(data as int),
           child: CreateOrderScreen(),
+        );
+      case AppPaths.selectWaiter:
+        return BlocProvider<SelectWaiterCubit>(
+          create: (context) => getIt<SelectWaiterCubit>()..getWaiters(),
+          child: const SelectWaiterScreen(),
         );
       default:
         return const HomeScreen();

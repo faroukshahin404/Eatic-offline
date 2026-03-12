@@ -7,6 +7,7 @@ import '../features/add_new_branch/repos/offline/add_new_branch_offline_repos.da
 import '../features/add_users/cubit/add_user_cubit.dart';
 import '../features/add_users/repos/offline/add_user_offline_repos.dart';
 import '../features/branches/cubit/branches_cubit.dart';
+import '../features/select_waiter/cubit/select_waiter_cubit.dart';
 import '../features/branches/repos/offline/branches_offline_repos.dart';
 import '../features/add_new_delivery/cubit/add_new_delivery_cubit.dart';
 import '../features/add_new_delivery/repos/offline/add_new_delivery_offline_repos.dart';
@@ -84,6 +85,10 @@ Future<void> setupDI() async {
       getIt<AddUserOfflineRepository>(),
       getIt<BranchesOfflineRepository>(),
     ),
+  );
+
+  getIt.registerFactory<SelectWaiterCubit>(
+    () => SelectWaiterCubit(getIt<UserOfflineRepository>()),
   );
 
   getIt.registerLazySingleton<LoginOfflineRepository>(

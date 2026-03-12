@@ -44,6 +44,8 @@ import '../features/reset_password/cubit/reset_password_cubit.dart';
 import '../features/reset_password/reset_password_screen.dart';
 import '../features/setting/setting_screen.dart';
 import '../features/splash_screen.dart';
+import '../features/select_waiter/select_waiter_screen.dart';
+import '../features/select_waiter/cubit/select_waiter_cubit.dart';
 import '../features/users/cubit/users_cubit.dart';
 import '../features/users/users_screen.dart';
 import '../services_locator/service_locator.dart';
@@ -259,6 +261,15 @@ class AppPages {
       //     child: const CreateOrderScreen(),
       //   ),
       // ),
+
+      GoRoute(
+        path: AppPaths.selectWaiter,
+        builder: (context, state) => BlocProvider<SelectWaiterCubit>(
+          create: (context) =>
+              getIt<SelectWaiterCubit>()..getWaiters(),
+          child: const SelectWaiterScreen(),
+        ),
+      ),
 
       GoRoute(
         path: AppPaths.resetPassword,

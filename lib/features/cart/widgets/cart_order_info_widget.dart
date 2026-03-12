@@ -37,6 +37,14 @@ class CartOrderInfoWidget extends StatelessWidget {
                   size: 20,
                 ),
               ),
+              if (state.selectedWaiter != null) ...[
+                const SizedBox(height: 12),
+                CartOrderInfoRow(
+                  label: context.tr('cart.waiter'),
+                  value:
+                      state.selectedWaiter!.name ?? state.selectedWaiter!.code,
+                ),
+              ],
             ],
           ),
         );

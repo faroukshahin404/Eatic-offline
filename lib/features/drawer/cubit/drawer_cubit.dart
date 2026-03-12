@@ -53,7 +53,7 @@ class DrawerCubit extends Cubit<DrawerState> {
       AppUtils.navigatorKey.currentContext!.push(currentCard.path!);
     } else {
       AppUtils.navigatorKey.currentContext!.read<MainCubit>().setCurrentScreen(
-        currentCard.currentScreen!,
+        screen: currentCard.currentScreen!,
       );
     }
   }

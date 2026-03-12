@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_fonts.dart';
-import '../../../../routes/app_paths.dart';
-import '../../../_main/cubit/main_cubit.dart';
+import '../constants/app_colors.dart';
+import '../constants/app_fonts.dart';
+import '../../features/_main/cubit/main_cubit.dart';
 
-/// Back button with product title; tap navigates to home.
-class OrderProductCardBackTitle extends StatelessWidget {
-  const OrderProductCardBackTitle({super.key, required this.title});
+/// Back button with title; tap navigates to [path] (or home when [path] is null).
+/// Use as a reusable header for screens that need a back + title bar.
+class CustomHeaderScreen extends StatelessWidget {
+  const CustomHeaderScreen({
+    super.key,
+    required this.title,
+    this.path,
+  });
 
   final String title;
+
+  /// When non-null, back tap navigates to this screen (e.g. [AppPaths.home]).
+  /// When null, back tap calls [MainCubit.setCurrentScreen] (default home).
+  final String? path;
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +26,11 @@ class OrderProductCardBackTitle extends StatelessWidget {
       fit: BoxFit.scaleDown,
       alignment: AlignmentDirectional.centerStart,
       child: InkWell(
-        overlayColor: WidgetStatePropertyAll(Colors.transparent),
+        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
         onTap: () {
-          context.read<MainCubit>().setCurrentScreen(AppPaths.home);
+          context.read<MainCubit>().setCurrentScreen(
+                screen: path,
+              );
         },
         child: Row(
           spacing: 5,
