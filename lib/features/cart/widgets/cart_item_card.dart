@@ -40,7 +40,7 @@ class CartItemCard extends StatelessWidget {
                 if (modifiers.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
-                    modifiers,
+                    line.variantLabel ?? '',
                     style: AppFonts.styleMedium14.copyWith(
                       color: AppColors.greyA4ACAD,
                     ),
