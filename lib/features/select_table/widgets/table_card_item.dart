@@ -2,12 +2,13 @@ import 'dart:ui' show BlendMode;
 
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_assets.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_fonts.dart';
+import '../../../core/widgets/custom_assets_image.dart';
 import '../../../core/widgets/custom_text.dart';
 import '../cubit/select_table_cubit.dart';
 import '../../restaurant_tables/model/restaurant_table_model.dart';
+
 
 class TableCardItem extends StatelessWidget {
   const TableCardItem({super.key, required this.table, required this.cubit});
@@ -53,6 +54,15 @@ class TableCardItem extends StatelessWidget {
           //     BlendMode.srcIn,
           //   ),
           // ),
+          CustomAssetImage(
+            image: "assets/images/table.png",
+            width: 100,
+            height: 100,
+            color: _cardBackgroundColor(
+              isOccupied: table.isEmpty == 0,
+              isSelected: isSelected,
+            ),
+          ),
           const SizedBox(height: 8),
           CustomText(
             text: table.name ?? 'T${table.id ?? ''}',
