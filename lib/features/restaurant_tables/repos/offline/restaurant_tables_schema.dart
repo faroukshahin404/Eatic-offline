@@ -12,6 +12,7 @@ abstract class RestaurantTablesSchema {
   static const String colBranchId = 'branch_id';
   static const String colDiningAreaId = 'dining_area_id';
   static const String colName = 'name';
+  static const String colIsEmpty = 'is_empty';
   static const String colCreatedBy = 'created_by';
   static const String colCreatedAt = 'created_at';
   static const String colUpdatedAt = 'updated_at';
@@ -22,6 +23,7 @@ abstract class RestaurantTablesSchema {
       $colBranchId INTEGER REFERENCES ${BranchesSchema.tableBranches}(${BranchesSchema.colId}),
       $colDiningAreaId INTEGER REFERENCES ${DiningAreasSchema.tableDiningAreas}(${DiningAreasSchema.colId}),
       $colName TEXT NOT NULL,
+      $colIsEmpty INTEGER NOT NULL DEFAULT 1,
       $colCreatedBy INTEGER REFERENCES ${UsersSchema.tableUsers}(${UsersSchema.colId}),
       $colCreatedAt TEXT,
       $colUpdatedAt TEXT
@@ -29,7 +31,7 @@ abstract class RestaurantTablesSchema {
   ''';
 
   static const String sqlQuery = '''
-    SELECT t.$colId, t.$colBranchId, t.$colDiningAreaId, t.$colName,
+    SELECT t.$colId, t.$colBranchId, t.$colDiningAreaId, t.$colName, t.$colIsEmpty,
            t.$colCreatedBy, t.$colCreatedAt, t.$colUpdatedAt,
            b.${BranchesSchema.colName} AS branch_name,
            d.${DiningAreasSchema.colName} AS dining_area_name,
@@ -43,7 +45,7 @@ abstract class RestaurantTablesSchema {
 
   /// Same as [sqlQuery] with WHERE t.$colBranchId = ?. Use with rawQuery(..., [branchId]).
   static const String sqlQueryByBranchId = '''
-    SELECT t.$colId, t.$colBranchId, t.$colDiningAreaId, t.$colName,
+    SELECT t.$colId, t.$colBranchId, t.$colDiningAreaId, t.$colName, t.$colIsEmpty,
            t.$colCreatedBy, t.$colCreatedAt, t.$colUpdatedAt,
            b.${BranchesSchema.colName} AS branch_name,
            d.${DiningAreasSchema.colName} AS dining_area_name,

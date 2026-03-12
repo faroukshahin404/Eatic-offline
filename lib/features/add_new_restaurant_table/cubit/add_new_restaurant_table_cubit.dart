@@ -154,6 +154,7 @@ class AddNewRestaurantTableCubit extends Cubit<AddNewRestaurantTableState> {
       branchId: selectedBranch!.id,
       diningAreaId: selectedDiningArea!.id,
       name: name,
+      isEmpty: restaurantTable?.isEmpty ?? 1,
       createdBy: user?.id ?? restaurantTable?.createdBy,
       createdAt: restaurantTable?.createdAt,
       updatedAt: now,

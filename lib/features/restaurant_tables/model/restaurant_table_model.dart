@@ -2,12 +2,14 @@ import '../repos/offline/restaurant_tables_schema.dart';
 
 /// Restaurant table entity matching the restaurant_tables table schema.
 /// branchName, diningAreaName, createdByName are resolved from JOINs (for display only).
+/// [isEmpty]: 0 = occupied, 1 = empty.
 class RestaurantTableModel {
   const RestaurantTableModel({
     this.id,
     this.branchId,
     this.diningAreaId,
     this.name,
+    this.isEmpty = 1,
     this.createdBy,
     this.createdAt,
     this.updatedAt,
@@ -20,6 +22,10 @@ class RestaurantTableModel {
   final int? branchId;
   final int? diningAreaId;
   final String? name;
+
+  /// 0 = occupied, 1 = empty.
+  final int isEmpty;
+
   final int? createdBy;
   final String? createdAt;
   final String? updatedAt;
@@ -33,6 +39,7 @@ class RestaurantTableModel {
       branchId: map[RestaurantTablesSchema.colBranchId] as int?,
       diningAreaId: map[RestaurantTablesSchema.colDiningAreaId] as int?,
       name: map[RestaurantTablesSchema.colName] as String?,
+      isEmpty: map[RestaurantTablesSchema.colIsEmpty] as int? ?? 1,
       createdBy: map[RestaurantTablesSchema.colCreatedBy] as int?,
       createdAt: map[RestaurantTablesSchema.colCreatedAt] as String?,
       updatedAt: map[RestaurantTablesSchema.colUpdatedAt] as String?,
@@ -48,6 +55,7 @@ class RestaurantTableModel {
       RestaurantTablesSchema.colBranchId: branchId,
       RestaurantTablesSchema.colDiningAreaId: diningAreaId,
       RestaurantTablesSchema.colName: name ?? '',
+      RestaurantTablesSchema.colIsEmpty: isEmpty,
       RestaurantTablesSchema.colCreatedBy: createdBy,
       RestaurantTablesSchema.colCreatedAt: now,
       RestaurantTablesSchema.colUpdatedAt: now,
@@ -60,6 +68,7 @@ class RestaurantTableModel {
       RestaurantTablesSchema.colBranchId: branchId,
       RestaurantTablesSchema.colDiningAreaId: diningAreaId,
       RestaurantTablesSchema.colName: name ?? '',
+      RestaurantTablesSchema.colIsEmpty: isEmpty,
       RestaurantTablesSchema.colUpdatedAt: now,
     };
   }
@@ -69,6 +78,7 @@ class RestaurantTableModel {
     int? branchId,
     int? diningAreaId,
     String? name,
+    int? isEmpty,
     int? createdBy,
     String? createdAt,
     String? updatedAt,
@@ -81,6 +91,7 @@ class RestaurantTableModel {
       branchId: branchId ?? this.branchId,
       diningAreaId: diningAreaId ?? this.diningAreaId,
       name: name ?? this.name,
+      isEmpty: isEmpty ?? this.isEmpty,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

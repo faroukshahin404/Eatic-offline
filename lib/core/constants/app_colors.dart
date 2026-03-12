@@ -33,6 +33,19 @@ abstract class AppColors {
   /// Validation error state (e.g. required variant not selected).
   static const Color validationError = Color(0xFFD32F2F);
 
+  /// Table card: available (empty, selectable).
+  static const Color tableAvailableBg = Color(0xFFE0E0E0);
+  static const Color tableAvailableBorder = Color(0xFFE0E0E0);
+
+  /// Table card: occupied (is_empty == 0, not selectable).
+  static const Color tableOccupiedBg = Color(0xffa2e5c4);
+  static const Color tableOccupiedBorder = Color(0xFFf0c0c0);
+
+  /// Table card: selected by user.
+  static const Color tableSelectedBg = Color(0xFFE8F5E9);
+  static const Color tableSelectedBorder = Color(0xFF81C784);
+  static const Color tableNotEmpty = Color(0xfff0c0c0);
+
   static ThemeData androidTheme = ThemeData(
     scaffoldBackgroundColor: Color(0xffffffff),
     useMaterial3: false,
@@ -54,7 +67,10 @@ abstract class AppColors {
         return Colors.transparent;
       }),
       checkColor: WidgetStateProperty.all(Colors.white),
-      side: BorderSide(color: AppColors.oppositeColor.withOpacity(0.6), width: 1.5),
+      side: BorderSide(
+        color: AppColors.oppositeColor.withOpacity(0.6),
+        width: 1.5,
+      ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
     ),
   );

@@ -25,10 +25,7 @@ class TableGridWidget extends StatelessWidget {
           return Center(
             child: Text(
               'select_table.empty'.tr(),
-              style: TextStyle(
-                color: AppColors.greyA4ACAD,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: AppColors.greyA4ACAD, fontSize: 16),
               textAlign: TextAlign.center,
             ),
           );
@@ -45,7 +42,7 @@ class TableGridWidget extends StatelessWidget {
           ),
           itemCount: tables.length,
           itemBuilder: (context, index) {
-            return TableCardItem(table: tables[index]);
+            return TableCardItem(table: tables[index], cubit: cubit);
           },
         );
       },

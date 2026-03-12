@@ -1,36 +1,43 @@
 import 'dart:ui' show BlendMode;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 
 import '../../../core/constants/app_assets.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_fonts.dart';
+import '../../../core/widgets/custom_text.dart';
 import '../cubit/select_table_cubit.dart';
 import '../../restaurant_tables/model/restaurant_table_model.dart';
 
-/// Table card for grid: available (grey), selected (green). Tappable to select.
 class TableCardItem extends StatelessWidget {
-  const TableCardItem({super.key, required this.table});
+  const TableCardItem({super.key, required this.table, required this.cubit});
 
   final RestaurantTableModel table;
+  final SelectTableCubit cubit;
 
-  static const Color _availableBg = Color(0xFFE0E0E0);
-  static const Color _availableBorder = Color(0xFFE0E0E0);
-  static const Color _selectedBg = Color(0xFFE8F5E9);
-  static const Color _selectedBorder = Color(0xFF81C784);
+  static Color _cardBackgroundColor({
+    required bool isOccupied,
+    required bool isSelected,
+  }) {
+    if (isOccupied) return AppColors.tableNotEmpty;
+    if (isSelected) return AppColors.tableSelectedBorder;
+    return AppColors.tableAvailableBg;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<SelectTableCubit>();
-    final isSelected = cubit.selectedTable?.id == table.id;
-
-    final bg = isSelected ? _selectedBg : _availableBg;
-    final border = isSelected ? _selectedBorder : _availableBorder;
+    final isSelected =
+        !(table.isEmpty == 0) && cubit.selectedTable?.id == table.id;
 
     return InkWell(
-      onTap: () => cubit.setSelectedTable(isSelected ? null : table),
+      mouseCursor: table.isEmpty == 0 ? null : SystemMouseCursors.click,
+      overlayColor: table.isEmpty != 0
+          ? null
+          : WidgetStateProperty.all(Colors.transparent),
+      onTap: table.isEmpty == 0
+          ? null
+          : () => cubit.setSelectedTable(isSelected ? null : table),
       borderRadius: BorderRadius.circular(12),
       child: Stack(
         alignment: Alignment.center,
@@ -39,17 +46,20 @@ class TableCardItem extends StatelessWidget {
             width: 100,
             height: 100,
             loader: AssetBytesLoader(AppAssets.tableIcon),
-            colorFilter: ColorFilter.mode(border, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(
+              _cardBackgroundColor(
+                isOccupied: table.isEmpty == 0,
+                isSelected: isSelected,
+              ),
+              BlendMode.srcIn,
+            ),
           ),
           const SizedBox(height: 8),
-          Text(
-            table.name ?? 'T${table.id ?? ''}',
+          CustomText(
+            text: table.name ?? 'T${table.id ?? ''}',
             style: AppFonts.styleBold18.copyWith(
               color: AppColors.oppositeColor,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
           ),
         ],
       ),

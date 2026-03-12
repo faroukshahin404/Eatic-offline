@@ -19,7 +19,7 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 14;
+  static const int databaseVersion = 15;
 
   /// Run in order: roles, users, branches, ..., price_lists, products, category_product, product_variables, product_variable_values, product_variants, product_variant_values, product_addon, product_variant_addon, product_price_list_prices, product_variant_price_list_prices.
   static const List<String> createTableStatements = [
@@ -122,5 +122,10 @@ abstract class DatabaseUtils {
   /// Add branch_id to users (for Cashier role).
   static List<String> get migrationFrom13To14 => [
         "ALTER TABLE ${UsersSchema.tableUsers} ADD COLUMN ${UsersSchema.colBranchId} INTEGER REFERENCES branches(id)",
+      ];
+
+  /// Add is_empty to restaurant_tables (0 = occupied, 1 = empty).
+  static List<String> get migrationFrom14To15 => [
+        "ALTER TABLE ${RestaurantTablesSchema.tableRestaurantTables} ADD COLUMN ${RestaurantTablesSchema.colIsEmpty} INTEGER NOT NULL DEFAULT 1",
       ];
 }
