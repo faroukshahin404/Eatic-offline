@@ -1,0 +1,174 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/action_icon_widget.dart';
+import '../../../core/widgets/custom_text.dart';
+import '../model/restaurant_table_model.dart';
+
+class ListOfRestaurantTablesWidget extends StatefulWidget {
+  const ListOfRestaurantTablesWidget({
+    super.key,
+    required this.restaurantTables,
+    this.onEdit,
+    this.onDelete,
+  });
+
+  final List<RestaurantTableModel> restaurantTables;
+  final void Function(RestaurantTableModel item)? onEdit;
+  final void Function(RestaurantTableModel item)? onDelete;
+
+  @override
+  State<ListOfRestaurantTablesWidget> createState() =>
+      _ListOfRestaurantTablesWidgetState();
+}
+
+class _ListOfRestaurantTablesWidgetState
+    extends State<ListOfRestaurantTablesWidget> {
+  final ScrollController _verticalController = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
+
+  @override
+  void dispose() {
+    _verticalController.dispose();
+    _horizontalController.dispose();
+    super.dispose();
+  }
+
+  static String _formatLastUpdate(String? value) {
+    if (value == null || value.isEmpty) return '-';
+    try {
+      final dt = DateTime.parse(value);
+      return DateFormat('d MMM yyyy, HH:mm', 'en').format(dt);
+    } catch (_) {
+      return value;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.restaurantTables.isEmpty) {
+      return Center(
+        child: Text(
+          'table.no_restaurant_tables'.tr(),
+          style: TextStyle(color: AppColors.greyA4ACAD, fontSize: 16),
+        ),
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scrollbar(
+          controller: _verticalController,
+          thumbVisibility: true,
+          child: SingleChildScrollView(
+            controller: _verticalController,
+            child: Scrollbar(
+              controller: _horizontalController,
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                controller: _horizontalController,
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: DataTable(
+                    headingRowColor: WidgetStateProperty.all(
+                      AppColors.secondary,
+                    ),
+                    columns: [
+                      DataColumn(label: Text('table.id'.tr())),
+                      DataColumn(label: Text('table.name'.tr())),
+                      DataColumn(label: Text('table.branch_name'.tr())),
+                      DataColumn(label: Text('table.dining_area_name'.tr())),
+                      DataColumn(label: Text('table.created_by'.tr())),
+                      DataColumn(label: Text('table.last_update'.tr())),
+                      DataColumn(label: Text('table.actions'.tr())),
+                    ],
+                    rows: [
+                      for (var i = 0; i < widget.restaurantTables.length; i++)
+                        DataRow(
+                          color: WidgetStateProperty.all(
+                            i.isEven ? Colors.white : AppColors.fillColor,
+                          ),
+                          cells: [
+                            DataCell(
+                              CustomText(
+                                text:
+                                    '${widget.restaurantTables[i].id ?? '-'}',
+                                needSelectable: true,
+                              ),
+                            ),
+                            DataCell(
+                              CustomText(
+                                text:
+                                    widget.restaurantTables[i].name ?? '-',
+                                needSelectable: true,
+                              ),
+                            ),
+                            DataCell(
+                              CustomText(
+                                text: widget.restaurantTables[i].branchName ??
+                                    '-',
+                                needSelectable: true,
+                              ),
+                            ),
+                            DataCell(
+                              CustomText(
+                                text: widget.restaurantTables[i]
+                                        .diningAreaName ??
+                                    '-',
+                                needSelectable: true,
+                              ),
+                            ),
+                            DataCell(
+                              CustomText(
+                                text: widget.restaurantTables[i].createdByName ??
+                                    '-',
+                                needSelectable: true,
+                              ),
+                            ),
+                            DataCell(
+                              CustomText(
+                                text: _formatLastUpdate(
+                                    widget.restaurantTables[i].updatedAt),
+                                needSelectable: true,
+                              ),
+                            ),
+                            DataCell(
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (widget.onEdit != null)
+                                    ActionIcon(
+                                      icon: Icons.edit_outlined,
+                                      tooltip: 'actions.edit'.tr(),
+                                      onTap: () => widget.onEdit!(
+                                          widget.restaurantTables[i]),
+                                    ),
+                                  if (widget.onDelete != null) ...[
+                                    if (widget.onEdit != null)
+                                      const SizedBox(width: 4),
+                                    ActionIcon(
+                                      icon: Icons.delete_outline,
+                                      tooltip: 'actions.delete'.tr(),
+                                      onTap: () => widget.onDelete!(
+                                          widget.restaurantTables[i]),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

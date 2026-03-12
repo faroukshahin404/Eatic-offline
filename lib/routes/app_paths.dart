@@ -1,0 +1,33 @@
+abstract class AppPaths {
+  static const String splash = '/';
+  static const String login = '/login';
+  static const String main = '/main';
+  static const String settings = '/settings';
+  static const String users = '/users';
+  static const String addUser = '/add-user';
+  static const String addBranch = '/add-branch';
+  static const String home = '/home';
+  static const String branches = '/branches';
+  static const String deliveryMen = '/delivery-men';
+  static const String addDelivery = '/add-delivery';
+  static const String zones = '/zones';
+  static const String addZone = '/add-zone';
+  static const String currencies = '/currencies';
+  static const String addCurrency = '/add-currency';
+  static const String paymentMethods = '/payment-methods';
+  static const String diningAreas = '/dining-areas';
+  static const String restaurantTables = '/restaurant-tables';
+  static const String categories = '/categories';
+  static const String addons = '/addons';
+  static const String priceLists = '/price-lists';
+  static const String addProduct = '/add-product';
+  static const String products = '/products';
+  static const String createOrder = '/create-order';
+  static const String cart = '/cart';
+  static const String selectWaiter = '/select-waiter';
+  static const String selectTable = '/select-table';
+  static const String addCustomer = '/add-customer';
+  static const String customerSearch = '/customer-search';
+  static const String custody = '/custody';
+  static const String resetPassword = '/reset-password';
+}
