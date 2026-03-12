@@ -28,6 +28,7 @@
   "cart.order_type_delivery": "توصيل",
   "cart.choose_table": "اختر الطاولة",
   "cart.choose_waiter": "اختر الويتر",
+  "cart.add_user_info": "إضافة بيانات العميل",
   "cart.waiter": "الويتر",
   "select_waiter": {
     "submit": "تأكيد"
