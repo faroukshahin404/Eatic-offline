@@ -5,10 +5,14 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = booking
+PRODUCT_NAME = app
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.app.booking
+PRODUCT_BUNDLE_IDENTIFIER = com.eatic.inote.app
+
+// Required for keychain entitlements (FlutterSecureStorage). Get your Team ID from Apple Developer.
+// Set this in Xcode: Runner target → Signing & Capabilities, or set here (e.g. DEVELOPMENT_TEAM = ABCDE12345)
+// DEVELOPMENT_TEAM =
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2025 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.eatic.inote. All rights reserved.
