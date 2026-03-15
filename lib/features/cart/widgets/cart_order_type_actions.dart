@@ -6,19 +6,19 @@ import '../cubit/cart_state.dart';
 import 'cart_delivery_customer_section.dart';
 import 'cart_waiter_table_section.dart';
 
-const int deliveryOrderTypeIndex = 2;
-
 class CartOrderTypeActions extends StatelessWidget {
   const CartOrderTypeActions({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CartCubit, CartState>(
-      buildWhen: (p, c) =>
-          p.selectedOrderTypeIndex != c.selectedOrderTypeIndex ||
-          p.selectedCustomer != c.selectedCustomer,
+      buildWhen:
+          (p, c) =>
+              p.selectedOrderTypeIndex != c.selectedOrderTypeIndex ||
+              p.selectedCustomer != c.selectedCustomer,
       builder: (context, state) {
-        if (state.selectedOrderTypeIndex == deliveryOrderTypeIndex) {
+        if (state.selectedOrderTypeIndex == 1 ||
+            state.selectedOrderTypeIndex == 2) {
           return CartDeliveryCustomerSection(
             selectedCustomer: state.selectedCustomer,
           );
