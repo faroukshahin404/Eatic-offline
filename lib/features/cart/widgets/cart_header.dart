@@ -25,7 +25,7 @@ class CartHeader extends StatelessWidget {
               children: [
                 const CartAddNewOrderButton(),
                 const SizedBox(width: 12),
-                CartCloseCustodyButton(hasOpenCustody: state.hasOpenCustody),
+                CartCloseCustodyButton(),
               ],
             ),
           );

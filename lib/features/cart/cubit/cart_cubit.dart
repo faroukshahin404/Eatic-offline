@@ -7,9 +7,9 @@ import '../../users/model/user_model.dart';
 import 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
-  CartCubit(this._custodyRepo) : super(const CartState());
+  CartCubit(this.custodyRepo) : super(const CartState());
 
-  final CustodyOfflineRepository _custodyRepo;
+  final CustodyOfflineRepository custodyRepo;
 
   void setWaiter(UserModel? user) {
     emit(state.copyWith(selectedWaiter: user, clearWaiter: user == null));
@@ -20,10 +20,12 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void setSelectedCustomer(CustomerAddressRow? customer) {
-    emit(state.copyWith(
-      selectedCustomer: customer,
-      clearSelectedCustomer: customer == null,
-    ));
+    emit(
+      state.copyWith(
+        selectedCustomer: customer,
+        clearSelectedCustomer: customer == null,
+      ),
+    );
   }
 
   void clearCart() {
@@ -65,27 +67,31 @@ class CartCubit extends Cubit<CartState> {
 
   /// Refreshes [hasOpenCustody] from [CustodyOfflineRepository.getLastOpenCustody]. Call after cart is shown or after open/close custody dialogs complete.
   Future<void> refreshHasOpenCustody() async {
-    final result = await _custodyRepo.getLastOpenCustody();
+    final result = await custodyRepo.getLastOpenCustody();
     final hasOpen = result.fold((_) => false, (v) => v != null);
     emit(state.copyWith(hasOpenCustody: hasOpen));
   }
 
   void setDiscountByAmount(double? value) {
-    emit(state.copyWith(
-      selectedDiscountType: CartDiscountType.amount,
-      discountAmount: value,
-      discountPercentage: null,
-      discountCouponCode: null,
-    ));
+    emit(
+      state.copyWith(
+        selectedDiscountType: CartDiscountType.amount,
+        discountAmount: value,
+        discountPercentage: null,
+        discountCouponCode: null,
+      ),
+    );
   }
 
   void setDiscountByPercentage(double? value) {
-    emit(state.copyWith(
-      selectedDiscountType: CartDiscountType.percentage,
-      discountPercentage: value,
-      discountAmount: null,
-      discountCouponCode: null,
-    ));
+    emit(
+      state.copyWith(
+        selectedDiscountType: CartDiscountType.percentage,
+        discountPercentage: value,
+        discountAmount: null,
+        discountCouponCode: null,
+      ),
+    );
   }
 
   // Coupon discount temporarily disabled.
