@@ -33,12 +33,13 @@ class AddNewProductScreen extends StatelessWidget {
           if (state is AddNewProductError) {
             return CustomFailedWidget(
               message: state.message,
-              onRetry: () => context.read<AddNewProductCubit>().loadData(
-                productId: context.read<AddNewProductCubit>().productId,
-              ),
+              onRetry:
+                  () => context.read<AddNewProductCubit>().loadData(
+                    productId: context.read<AddNewProductCubit>().productId,
+                  ),
             );
           }
-          return CustomPadding(child: const AddNewProductFormWidget());
+          return CustomPadding(child: AddNewProductFormWidget());
         },
       ),
     );
