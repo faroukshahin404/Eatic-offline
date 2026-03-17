@@ -33,21 +33,13 @@ class _AddNewProductPriceCellWithApplyState
     _controller = TextEditingController(text: _formatNumber(widget.value));
   }
 
-  @override
-  void didUpdateWidget(covariant AddNewProductPriceCellWithApply oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.value != widget.value) {
-      _controller.text = _formatNumber(widget.value);
-    }
-  }
-
   static String _formatNumber(double value) {
     final n = value.toInt();
     return n == 0 ? '' : n.toString();
   }
 
-  static double _parseNumber(String text) =>
-      (int.tryParse(text) ?? 0).toDouble();
+    static double _parseNumber(String text) =>
+        (int.tryParse(text) ?? 0).toDouble();
 
   @override
   void dispose() {
@@ -65,6 +57,10 @@ class _AddNewProductPriceCellWithApplyState
           controller: _controller,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          onChanged: (v) {
+            final val = double.parse(v) ?? 0.0;
+            widget.onChanged(val);
+          },
           decoration: const InputDecoration(
             isDense: true,
             border: OutlineInputBorder(),
