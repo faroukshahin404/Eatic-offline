@@ -14,6 +14,10 @@ abstract class CreateOrderOfflineRepository {
   /// Fetches a product by id; returns null if not found.
   DbCall<ProductModel?> getProductById(int productId);
 
+  /// Fetches product-level price list prices (for products without variants).
+  /// Returns map of price_list_id -> price. Empty if product has variants or no rows.
+  DbCall<Map<int, double>> getProductPriceListPrices(int productId);
+
   /// Fetches all variants for a product (with variable labels and value IDs).
   DbCall<List<CreateOrderVariantModel>> getVariantsByProductId(int productId);
 
@@ -39,6 +43,33 @@ class CreateOrderOfflineRepoImpl implements CreateOrderOfflineRepository {
       );
       if (rows.isEmpty) return const Right(null);
       return Right(ProductModel.fromMap(rows.first));
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, Map<int, double>>> getProductPriceListPrices(
+    int productId,
+  ) async {
+    try {
+      final rows = await _db.query(
+        ProductsSchema.tableProductPriceListPrices,
+        where: '${ProductsSchema.colProductId} = ?',
+        whereArgs: [productId],
+      );
+      final map = <int, double>{};
+      for (final r in rows) {
+        final plId = r[ProductsSchema.colPriceListId] as int?;
+        if (plId != null) {
+          map[plId] = (r[ProductsSchema.colPrice] as num?)?.toDouble() ?? 0.0;
+        }
+      }
+      return Right(map);
     } catch (e) {
       return Left(
         e is DatabaseException

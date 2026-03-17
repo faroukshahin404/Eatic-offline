@@ -29,6 +29,9 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
   int? selectedPriceListId;
   CreateOrderVariantModel? selectedVariant;
 
+  /// Product-level price list prices (for products without variants). Loaded in [loadProductById].
+  Map<int, double> productPriceListPrices = {};
+
   TextEditingController notesController = TextEditingController();
 
   /// Per-variable selection (variableId -> valueId). Used when [variableGroups] is non-empty.
@@ -93,6 +96,18 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     product = productVal;
     variants = variantsList;
     addons = addonsList;
+
+    if (productVal.hasVariants != true) {
+      final pricesResult =
+          await _repo.getProductPriceListPrices(productId);
+      productPriceListPrices = pricesResult.fold(
+        (_) => <int, double>{},
+        (map) => map,
+      );
+    } else {
+      productPriceListPrices = {};
+    }
+
     emit(CreateOrderProductLoaded());
   }
 
@@ -195,6 +210,7 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
   bool isAddonSelected(int addonId) => getAddonQuantity(addonId) > 0;
 
   /// Selected variant price for the current price list (or base price if no price list / not in map).
+  /// Null when no variant is selected (e.g. product without variants).
   double? get selectedVariantPrice {
     if (selectedVariant == null) return null;
     final v = selectedVariant!;
@@ -203,6 +219,18 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
       return v.priceListPrices[selectedPriceListId];
     }
     return v.basePrice;
+  }
+
+  /// Unit price for the current selection: variant price when product has variants,
+  /// otherwise product-level price for selected price list or [ProductModel.defaultPrice].
+  double? get selectedUnitPrice {
+    if (selectedVariant != null) return selectedVariantPrice;
+    if (product == null) return null;
+    if (selectedPriceListId != null &&
+        productPriceListPrices.containsKey(selectedPriceListId)) {
+      return productPriceListPrices[selectedPriceListId];
+    }
+    return product!.defaultPrice;
   }
 
   /// Display label for the selected variant (e.g. "Large, Red").
@@ -226,9 +254,9 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     return total;
   }
 
-  /// Grand total: variant price + selected addons total (0 if no variant).
+  /// Grand total: unit price (variant or product) + selected addons total.
   double get orderLineTotal =>
-      (selectedVariantPrice ?? 0) + selectedAddonsTotal;
+      (selectedUnitPrice ?? 0) + selectedAddonsTotal;
 
   /// Sets addon quantity (0 = remove). Persists for the next step.
   void setAddonQuantity(int addonId, int quantity) {
@@ -291,7 +319,7 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
       notes: notesController.text.trim(),
       quantity: 1,
       priceListId: selectedPriceListId,
-      variantUnitPrice: selectedVariantPrice,
+      variantUnitPrice: selectedUnitPrice,
       addonQuantities: Map.from(addonQuantities),
       addonsTotal: selectedAddonsTotal,
       lineTotal: orderLineTotal,
@@ -319,6 +347,7 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     variableGroups = [];
     addons = [];
     priceLists = [];
+    productPriceListPrices = {};
     selectedPriceListId = null;
     selectedVariant = null;
     selectedValueIds.clear();
