@@ -1,3 +1,4 @@
+import '../../users/model/user_model.dart';
 import '../repos/offline/custody_schema.dart';
 
 /// Custody entity matching the custody table schema.
@@ -10,6 +11,7 @@ class CustodyModel {
     this.isClosed = false,
     this.closedBy,
     this.totalWhenClose,
+    this.userModel,
   });
 
   final int? id;
@@ -20,7 +22,15 @@ class CustodyModel {
   final int? closedBy;
   final double? totalWhenClose;
 
+  /// Resolved user who created this custody. Not persisted — populated at runtime via [createdBy].
+  final UserModel? userModel;
+
   factory CustodyModel.fromMap(Map<String, dynamic> map) {
+    UserModel? resolvedUser;
+    final userData = map['created_by_user'];
+    if (userData is Map<String, dynamic>) {
+      resolvedUser = UserModel.fromMap(userData);
+    }
     return CustodyModel(
       id: map[CustodySchema.colId] as int?,
       totalWhenCreate:
@@ -31,6 +41,7 @@ class CustodyModel {
       closedBy: map[CustodySchema.colClosedBy] as int?,
       totalWhenClose:
           (map[CustodySchema.colTotalWhenClose] as num?)?.toDouble(),
+      userModel: resolvedUser,
     );
   }
 
@@ -55,6 +66,7 @@ class CustodyModel {
     bool? isClosed,
     int? closedBy,
     double? totalWhenClose,
+    UserModel? userModel,
   }) {
     return CustodyModel(
       id: id ?? this.id,
@@ -64,6 +76,7 @@ class CustodyModel {
       isClosed: isClosed ?? this.isClosed,
       closedBy: closedBy ?? this.closedBy,
       totalWhenClose: totalWhenClose ?? this.totalWhenClose,
+      userModel: userModel ?? this.userModel,
     );
   }
 }

@@ -52,9 +52,11 @@ class SelectTableScreen extends StatelessWidget {
 
   void _onSubmit(BuildContext context) {
     final selected = context.read<SelectTableCubit>().selectedTable;
-    context.read<CartCubit>().setTableNumber(
+    final cartCubit = context.read<CartCubit>();
+    cartCubit.setTableNumber(
       selected?.name ?? selected?.id?.toString(),
     );
+    cartCubit.setSelectedTableId(selected?.id);
     context.read<MainCubit>().setCurrentScreen();
   }
 }

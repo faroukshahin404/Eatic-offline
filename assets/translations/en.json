@@ -253,6 +253,8 @@
   "cart.discount": "Discount",
   "cart.total": "Total",
   "cart.confirm_order": "Confirm Order",
+  "cart.payment_method": "Payment method",
+  "cart.order_submitted": "Order submitted successfully",
   "reset_password": {
     "title": "Reset Password",
     "current_password": "Current Password",
@@ -344,6 +346,17 @@
   "products.no_price": "No price",
   "products.currency": "EGP",
   "products.delete_confirm": "Are you sure you want to delete \"{{name}}\"?",
+  "shifts": {
+    "title": "Shifts",
+    "cashier_name": "Cashier name",
+    "from": "From",
+    "to": "To",
+    "search": "Search",
+    "time": "Time",
+    "show": "Show",
+    "no_records": "No records found",
+    "details": "Shift Details"
+  },
   "errors": {
     "db_not_init": "Database is not initialized",
     "insert_failed": "Insert failed",

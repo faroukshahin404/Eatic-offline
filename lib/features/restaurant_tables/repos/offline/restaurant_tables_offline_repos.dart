@@ -14,6 +14,9 @@ abstract class RestaurantTablesOfflineRepository {
   DbCall<List<RestaurantTableModel>> getByBranchId(int branchId);
 
   DbCall<int> deleteById(int id);
+
+  /// Updates the table's [isEmpty] flag (0 = occupied, 1 = empty).
+  DbCall<int> updateTableIsEmpty(int tableId, int isEmpty);
 }
 
 class RestaurantTablesOfflineRepoImpl
@@ -69,6 +72,31 @@ class RestaurantTablesOfflineRepoImpl
         e is DatabaseException
             ? OfflineFailure.fromSqliteException(e)
             : OfflineFailure.deleteFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, int>> updateTableIsEmpty(
+    int tableId,
+    int isEmpty,
+  ) async {
+    try {
+      final count = await _db.update(
+        RestaurantTablesSchema.tableRestaurantTables,
+        {
+          RestaurantTablesSchema.colIsEmpty: isEmpty,
+          RestaurantTablesSchema.colUpdatedAt: DateTime.now().toIso8601String(),
+        },
+        where: '${RestaurantTablesSchema.colId} = ?',
+        whereArgs: [tableId],
+      );
+      return Right(count);
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.updateFailed(e),
       );
     }
   }

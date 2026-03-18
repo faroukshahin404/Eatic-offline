@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_fonts.dart';
 import '../../core/services/flutter_secure_storage.dart';
 import '../../core/widgets/custom_app_bar.dart';
+import '../users/session_user_holder.dart';
 import '../../core/widgets/custom_padding.dart';
 import '../../core/widgets/custom_text.dart';
 import '../../routes/app_paths.dart';
@@ -43,9 +44,9 @@ class SettingScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () async {
-                SecureLocalStorageService.deleteAllSecureData();
-
-                context.go(AppPaths.splash);
+                SessionUserHolder.clear();
+                await SecureLocalStorageService.deleteAllSecureData();
+                if (context.mounted) context.go(AppPaths.splash);
               },
               child: CustomText(
                 text: 'logout',

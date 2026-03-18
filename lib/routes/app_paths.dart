@@ -30,4 +30,5 @@ abstract class AppPaths {
   static const String customerSearch = '/customer-search';
   static const String custody = '/custody';
   static const String resetPassword = '/reset-password';
+  static const String shifts = '/shifts';
 }

@@ -22,6 +22,11 @@ class DrawerCubit extends Cubit<DrawerState> {
       currentScreen: AppPaths.home,
     ),
     DrawerCardModel(
+      title: 'shifts.title',
+      icon: AppAssets.settingsIcon,
+      currentScreen: AppPaths.shifts,
+    ),
+    DrawerCardModel(
       title: 'settings',
       icon: AppAssets.settingsIcon,
       path: AppPaths.settings,

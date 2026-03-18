@@ -1,11 +1,12 @@
 import '../../create_order/model/create_order_line_model.dart';
 import '../../customers/model/customer_address_row.dart';
+import '../../payment_methods/model/payment_method_model.dart';
 import '../../users/model/user_model.dart';
 
 /// Discount type selected in the cart footer.
 enum CartDiscountType { amount, percentage, coupon }
 
-/// Cart state: items, order type, custody flag, selected waiter, selected customer, discount, and mock order info.
+/// Cart state: items, order type, custody flag, selected waiter, selected table, selected customer, discount, and mock order info.
 class CartState {
   const CartState({
     this.items = const [],
@@ -13,12 +14,18 @@ class CartState {
     this.hasOpenCustody = false,
     this.orderNumber = '#8712',
     this.tableNumber,
+    this.selectedTableId,
     this.selectedWaiter,
     this.selectedCustomer,
     this.selectedDiscountType,
     this.discountAmount,
     this.discountPercentage,
     this.discountCouponCode,
+    this.isSubmitting = false,
+    this.submitError,
+    this.submitSuccess = false,
+    this.paymentMethods = const [],
+    this.selectedPaymentMethod,
   });
 
   final List<CreateOrderLineModel> items;
@@ -26,8 +33,15 @@ class CartState {
   final bool hasOpenCustody;
   final String orderNumber;
   final String? tableNumber;
+  /// Table id from restaurant_tables (used for dine-in order and marking table occupied).
+  final int? selectedTableId;
   final UserModel? selectedWaiter;
   final CustomerAddressRow? selectedCustomer;
+  final bool isSubmitting;
+  final String? submitError;
+  final bool submitSuccess;
+  final List<PaymentMethodModel> paymentMethods;
+  final PaymentMethodModel? selectedPaymentMethod;
   final CartDiscountType? selectedDiscountType;
   final double? discountAmount;
   final double? discountPercentage;
@@ -39,6 +53,7 @@ class CartState {
     bool? hasOpenCustody,
     String? orderNumber,
     String? tableNumber,
+    int? selectedTableId,
     UserModel? selectedWaiter,
     bool clearWaiter = false,
     CustomerAddressRow? selectedCustomer,
@@ -48,6 +63,14 @@ class CartState {
     double? discountPercentage,
     String? discountCouponCode,
     bool clearDiscount = false,
+    bool? isSubmitting,
+    String? submitError,
+    bool clearSubmitError = false,
+    bool? submitSuccess,
+    bool clearSubmitSuccess = false,
+    List<PaymentMethodModel>? paymentMethods,
+    PaymentMethodModel? selectedPaymentMethod,
+    bool clearSelectedPaymentMethod = false,
   }) {
     return CartState(
       items: items ?? this.items,
@@ -56,6 +79,7 @@ class CartState {
       hasOpenCustody: hasOpenCustody ?? this.hasOpenCustody,
       orderNumber: orderNumber ?? this.orderNumber,
       tableNumber: tableNumber ?? this.tableNumber,
+      selectedTableId: selectedTableId ?? this.selectedTableId,
       selectedWaiter: clearWaiter
           ? null
           : (selectedWaiter ?? this.selectedWaiter),
@@ -68,6 +92,13 @@ class CartState {
       discountAmount: clearDiscount ? null : (discountAmount ?? this.discountAmount),
       discountPercentage: clearDiscount ? null : (discountPercentage ?? this.discountPercentage),
       discountCouponCode: clearDiscount ? null : (discountCouponCode ?? this.discountCouponCode),
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      submitError: clearSubmitError ? null : (submitError ?? this.submitError),
+      submitSuccess: clearSubmitSuccess ? false : (submitSuccess ?? this.submitSuccess),
+      paymentMethods: paymentMethods ?? this.paymentMethods,
+      selectedPaymentMethod: clearSelectedPaymentMethod
+          ? null
+          : (selectedPaymentMethod ?? this.selectedPaymentMethod),
     );
   }
 }

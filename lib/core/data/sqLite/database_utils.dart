@@ -13,6 +13,7 @@ import '../../../../features/price_lists/repos/offline/price_lists_schema.dart';
 import '../../../../features/add_new_product/repos/offline/products_schema.dart';
 import '../../../../features/custody/repos/offline/custody_schema.dart';
 import '../../../features/customers/repos/offline/customers_schema.dart';
+import '../../../../features/cart/orders/repos/offline/orders_schema.dart';
 
 /// Central configuration for SQLite database.
 /// Aggregates createTableStatements from core/feature models. Roles first, then users, branches, delivery_men, zones, currencies.
@@ -20,7 +21,7 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 16;
+  static const int databaseVersion = 18;
 
   /// Run in order: roles, users, branches, ..., price_lists, products, category_product, product_variables, product_variable_values, product_variants, product_variant_values, product_addon, product_variant_addon, product_price_list_prices, product_variant_price_list_prices.
   static const List<String> createTableStatements = [
@@ -49,6 +50,8 @@ abstract class DatabaseUtils {
     CustodySchema.createTableCustody,
     CustomersSchema.createTableCustomers,
     CustomerAddressesSchema.createTableCustomerAddresses,
+    OrdersSchema.createTableOrders,
+    OrderLinesSchema.createTableOrderLines,
   ];
 
   /// Run after createTableStatements in onCreate (e.g. seed default roles).
@@ -136,5 +139,16 @@ abstract class DatabaseUtils {
   static List<String> get migrationFrom15To16 => [
         CustomersSchema.createTableCustomers,
         CustomerAddressesSchema.createTableCustomerAddresses,
+      ];
+
+  /// Add orders and order_lines tables.
+  static List<String> get migrationFrom16To17 => [
+        OrdersSchema.createTableOrders,
+        OrderLinesSchema.createTableOrderLines,
+      ];
+
+  /// Add payment_method_id to orders table.
+  static List<String> get migrationFrom17To18 => [
+        'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colPaymentMethodId} INTEGER REFERENCES ${PaymentMethodsSchema.tablePaymentMethods}(${PaymentMethodsSchema.colId})',
       ];
 }

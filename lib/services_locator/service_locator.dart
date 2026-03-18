@@ -19,6 +19,7 @@ import '../features/add_new_delivery/repos/offline/add_new_delivery_offline_repo
 import '../features/deliveries/cubit/delivery_men_cubit.dart';
 import '../features/deliveries/repos/offline/deliveries_offline_repos.dart';
 import '../features/drawer/cubit/drawer_cubit.dart';
+import '../features/shifts/cubit/shifts_cubit.dart';
 import '../features/home/cubit/home_cubit.dart';
 import '../features/add_new_zone/cubit/add_new_zone_cubit.dart';
 import '../features/add_new_zone/repos/offline/add_new_zone_offline_repos.dart';
@@ -59,6 +60,7 @@ import '../features/create_order/repos/offline/create_order_offline_repos.dart';
 import '../features/cart/cubit/cart_cubit.dart';
 import '../features/custody/cubit/custody_cubit.dart';
 import '../features/custody/repos/offline/custody_offline_repos.dart';
+import '../features/cart/orders/repos/offline/orders_offline_repos.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/repos/offline/zones_offline_repos.dart';
 import '../features/login/cubit/login_cubit.dart';
@@ -297,8 +299,20 @@ Future<void> setupDI() async {
     () => CustodyCubit(getIt<CustodyOfflineRepository>()),
   );
 
+  getIt.registerFactory<ShiftsCubit>(
+    () => ShiftsCubit(getIt<CustodyOfflineRepository>()),
+  );
+
+  getIt.registerLazySingleton<OrdersOfflineRepository>(
+    () => OrdersOfflineRepoImpl(),
+  );
   getIt.registerFactory<CartCubit>(
-    () => CartCubit(getIt<CustodyOfflineRepository>()),
+    () => CartCubit(
+      getIt<CustodyOfflineRepository>(),
+      getIt<OrdersOfflineRepository>(),
+      getIt<PaymentMethodsOfflineRepository>(),
+      getIt<RestaurantTablesOfflineRepository>(),
+    ),
   );
 
   getIt.registerFactory<HomeCubit>(

@@ -139,5 +139,25 @@ class DatabaseService {
         await db.execute(sql);
       }
     }
+    if (oldVersion < 17) {
+      for (final sql in DatabaseUtils.migrationFrom16To17) {
+        await db.execute(sql);
+      }
+    }
+    if (oldVersion < 18) {
+      // Idempotent: add payment_method_id only if missing (avoids "duplicate column" if already present).
+      const columnName = 'payment_method_id';
+      final info = await db.rawQuery(
+        'PRAGMA table_info(orders)',
+      );
+      final hasColumn = info.any(
+        (row) => row['name']?.toString() == columnName,
+      );
+      if (!hasColumn) {
+        for (final sql in DatabaseUtils.migrationFrom17To18) {
+          await db.execute(sql);
+        }
+      }
+    }
   }
 }

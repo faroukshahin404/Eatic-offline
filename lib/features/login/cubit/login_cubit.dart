@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/services/flutter_secure_storage.dart';
 import '../../users/model/user_model.dart';
+import '../../users/session_user_holder.dart';
 import '../repos/offline/login_offline_repos.dart';
 
 part 'login_state.dart';
@@ -40,12 +41,12 @@ class LoginCubit extends Cubit<LoginState> {
       if (user == null) {
         emit(LoginError('login.invalid_credentials'.tr()));
       } else {
+        log('user: ${user.toJson()}');
+        SessionUserHolder.current = user;
         try {
           final json = jsonEncode(user.toJson());
           await SecureLocalStorageService.writeSecureData('user', json);
         } catch (_) {
-          // Keychain may fail on macOS without proper signing (e.g. -34018).
-          // Login still succeeds; user session just won't persist to secure storage.
           log(
             'Keychain may fail on macOS without proper signing (e.g. -34018).',
           );

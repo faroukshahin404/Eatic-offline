@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,6 +15,8 @@ import '../../select_waiter/cubit/select_waiter_cubit.dart';
 import '../../select_waiter/select_waiter_screen.dart';
 import '../../select_table/cubit/select_table_cubit.dart';
 import '../../select_table/select_table_screen.dart';
+import '../../shifts/cubit/shifts_cubit.dart';
+import '../../shifts/shifts_screen.dart';
 
 part 'main_state.dart';
 
@@ -43,8 +43,9 @@ class MainCubit extends Cubit<MainState> {
         return const CartScreen();
       case AppPaths.createOrder:
         return BlocProvider<CreateOrderCubit>(
-          create: (context) =>
-              getIt<CreateOrderCubit>()..loadProductById(data as int),
+          create:
+              (context) =>
+                  getIt<CreateOrderCubit>()..loadProductById(data as int),
           child: CreateOrderScreen(),
         );
       case AppPaths.selectWaiter:
@@ -69,6 +70,11 @@ class MainCubit extends Cubit<MainState> {
               ..loadZones(customerId: data as int?);
           },
           child: const AddCustomerScreen(),
+        );
+      case AppPaths.shifts:
+        return BlocProvider<ShiftsCubit>(
+          create: (_) => getIt<ShiftsCubit>(),
+          child: const ShiftsScreen(),
         );
       default:
         return const HomeScreen();

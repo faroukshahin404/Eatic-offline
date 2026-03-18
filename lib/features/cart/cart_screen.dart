@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/constants/app_colors.dart';
-import 'widgets/cart_footer/cart_footer.dart';
+import 'cubit/cart_cubit.dart';
+import 'widgets/cart_footer/_cart_footer.dart';
 import 'widgets/cart_header.dart';
 import 'widgets/cart_order_type_selector.dart';
 import 'widgets/cart_scrollable_content.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CartCubit>()
+      ..refreshHasOpenCustody()
+      ..loadPaymentMethods();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -47,7 +47,7 @@ class TableCardItem extends StatelessWidget {
           CustomAssetImage(
             width: 100,
             height: 100,
-            image: AppAssets.tableIcon,
+            image: "assets/images/table.png",
             color: _cardBackgroundColor(
               isOccupied: table.isEmpty == 0,
               isSelected: isSelected,

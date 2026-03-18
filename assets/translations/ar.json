@@ -254,6 +254,8 @@
   "cart.discount": "الخصم",
   "cart.total": "الإجمالي",
   "cart.confirm_order": "تأكيد الطلب",
+  "cart.payment_method": "طريقة الدفع",
+  "cart.order_submitted": "تم إرسال الطلب بنجاح",
   "reset_password": {
     "title": "تغيير كلمة المرور",
     "current_password": "كلمة المرور الحالية",
@@ -345,6 +347,17 @@
   "products.no_price": "بدون سعر",
   "products.currency": "ج.م",
   "products.delete_confirm": "هل أنت متأكد من حذف \"{{name}}\"؟",
+  "shifts": {
+    "title": "الورديات",
+    "cashier_name": "اسم الكاشير",
+    "from": "من",
+    "to": "إلى",
+    "search": "بحث",
+    "time": "الوقت",
+    "show": "عرض",
+    "no_records": "لا توجد سجلات",
+    "details": "تفاصيل الوردية"
+  },
   "errors": {
     "db_not_init": "قاعدة البيانات غير مهيأة",
     "insert_failed": "فشل الإدراج",

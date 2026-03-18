@@ -14,6 +14,8 @@ abstract class UserOfflineRepository {
     int page = 0,
   });
 
+  DbCall<UserModel?> getById(int id);
+
   /// Returns users whose role is waiter (role_id = 4 per seed order).
   DbCall<List<UserModel>> getWaiters();
 
@@ -38,6 +40,26 @@ class UsersOfflineRepoImpl implements UserOfflineRepository {
         offset: offset,
       );
       return Right(list.map((e) => UserModel.fromMap(e)).toList());
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, UserModel?>> getById(int id) async {
+    try {
+      final rows = await _db.query(
+        UsersSchema.tableUsers,
+        where: '${UsersSchema.colId} = ?',
+        whereArgs: [id],
+        limit: 1,
+      );
+      if (rows.isEmpty) return const Right(null);
+      return Right(UserModel.fromMap(rows.first));
     } catch (e) {
       return Left(
         e is DatabaseException

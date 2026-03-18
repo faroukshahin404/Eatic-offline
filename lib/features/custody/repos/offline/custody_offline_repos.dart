@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../../../core/data/sqLite/database_service.dart';
 import '../../../../core/error/offline_error.dart';
 import '../../../../services_locator/service_locator.dart';
+import '../../../users/repos/offline/users_schema.dart';
 import '../../model/custody_model.dart';
 import 'custody_schema.dart';
 
@@ -11,8 +14,12 @@ abstract class CustodyOfflineRepository {
   DbCall<CustodyModel> add(CustodyModel custody);
   DbCall<void> update(CustodyModel custody);
   DbCall<CustodyModel?> getById(int id);
+
   /// Last opened custody (most recent by id, where is_closed = false).
   DbCall<CustodyModel?> getLastOpenCustody();
+
+  /// All custodies ordered by id DESC.
+  DbCall<List<CustodyModel>> getAllCustodies();
 }
 
 class CustodyOfflineRepoImpl implements CustodyOfflineRepository {
@@ -90,6 +97,40 @@ class CustodyOfflineRepoImpl implements CustodyOfflineRepository {
       );
       if (rows.isEmpty) return const Right(null);
       return Right(CustodyModel.fromMap(rows.first));
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, List<CustodyModel>>> getAllCustodies() async {
+    try {
+      final list = await _db.query(
+        CustodySchema.tableCustody,
+        orderBy: '${CustodySchema.colId} DESC',
+      );
+      final custodies = <CustodyModel>[];
+      for (final row in list) {
+        final rowMap = Map<String, dynamic>.from(row);
+        final createdById = rowMap[CustodySchema.colCreatedBy] as int?;
+        log('createdById: $createdById');
+        if (createdById != null) {
+          final userRows = await _db.query(
+            UsersSchema.tableUsers,
+            where: '${UsersSchema.colId} = ?',
+            whereArgs: [createdById],
+          );
+          if (userRows.isNotEmpty) {
+            rowMap['created_by_user'] = userRows.first;
+          }
+        }
+        custodies.add(CustodyModel.fromMap(rowMap));
+      }
+      return Right(custodies);
     } catch (e) {
       return Left(
         e is DatabaseException
