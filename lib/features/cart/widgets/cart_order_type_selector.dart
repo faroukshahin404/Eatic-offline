@@ -10,11 +10,6 @@ import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
 
 /// Order type labels (static list): Hall, Takeaway, Delivery.
-const List<String> _orderTypeKeys = [
-  'cart.order_type_hall',
-  'cart.order_type_takeaway',
-  'cart.order_type_delivery',
-];
 
 /// Segmented control for order type: single selection, updates cart state on tap.
 class CartOrderTypeSelector extends StatelessWidget {
@@ -25,33 +20,36 @@ class CartOrderTypeSelector extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: BlocBuilder<CartCubit, CartState>(
-        buildWhen: (p, c) =>
-            p.selectedOrderTypeIndex != c.selectedOrderTypeIndex,
+        buildWhen:
+            (p, c) => p.selectedOrderTypeIndex != c.selectedOrderTypeIndex,
         builder: (context, state) {
+          final orderTypes = state.orderTypes;
           return ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Row(
-              children: List.generate(_orderTypeKeys.length, (index) {
+              children: List.generate(orderTypes.length, (index) {
                 final isSelected = state.selectedOrderTypeIndex == index;
                 return Expanded(
                   child: Material(
-                    color: isSelected
-                        ? AppColors.primary
-                        : AppColors.greyE6E9EA,
+                    color:
+                        isSelected ? AppColors.primary : AppColors.greyE6E9EA,
                     child: InkWell(
                       onTap: () {
                         context.read<MainCubit>().setCurrentScreen();
-                        context.read<CartCubit>().setOrderType(index);
+                        context.read<CartCubit>().setOrderType(
+                          orderTypes[index].id,
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: Text(
-                          context.tr(_orderTypeKeys[index]),
+                          context.tr(orderTypes[index].name),
                           textAlign: TextAlign.center,
                           style: AppFonts.styleMedium16.copyWith(
-                            color: isSelected
-                                ? Colors.white
-                                : AppColors.oppositeColor,
+                            color:
+                                isSelected
+                                    ? Colors.white
+                                    : AppColors.oppositeColor,
                           ),
                         ),
                       ),

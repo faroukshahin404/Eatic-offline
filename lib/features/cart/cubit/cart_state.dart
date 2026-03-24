@@ -1,7 +1,10 @@
+import 'package:Eatic/core/utils/app_utils.dart';
+
 import '../../create_order/model/create_order_line_model.dart';
 import '../../customers/model/customer_address_row.dart';
 import '../../payment_methods/model/payment_method_model.dart';
 import '../../users/model/user_model.dart';
+import '../orders/model/order_type_model.dart';
 
 /// Discount type selected in the cart footer.
 enum CartDiscountType { amount, percentage, coupon }
@@ -26,9 +29,13 @@ class CartState {
     this.submitSuccess = false,
     this.paymentMethods = const [],
     this.selectedPaymentMethod,
+    this.orderTypes = const [],
+    this.screenState,
   });
 
   final List<CreateOrderLineModel> items;
+  final List<OrderTypeModel> orderTypes;
+  final ScreenState? screenState;
   final int selectedOrderTypeIndex;
   final bool hasOpenCustody;
   final String orderNumber;
@@ -50,6 +57,7 @@ class CartState {
   CartState copyWith({
     List<CreateOrderLineModel>? items,
     int? selectedOrderTypeIndex,
+    ScreenState? screenState,
     bool? hasOpenCustody,
     String? orderNumber,
     String? tableNumber,
@@ -71,8 +79,11 @@ class CartState {
     List<PaymentMethodModel>? paymentMethods,
     PaymentMethodModel? selectedPaymentMethod,
     bool clearSelectedPaymentMethod = false,
+    List<OrderTypeModel>? orderTypes,
   }) {
     return CartState(
+      screenState: screenState ?? this.screenState,
+      orderTypes: orderTypes ?? this.orderTypes,
       items: items ?? this.items,
       selectedOrderTypeIndex:
           selectedOrderTypeIndex ?? this.selectedOrderTypeIndex,

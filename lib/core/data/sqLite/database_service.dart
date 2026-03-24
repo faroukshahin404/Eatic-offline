@@ -5,8 +5,8 @@ import '../../error/offline_error.dart';
 import 'database_utils.dart';
 import 'package:path/path.dart';
 
+typedef DbCall<T> = Future<Either<OfflineFailure, T>>;
 
-typedef DbCall<T> = Future<Either<OfflineFailure, T>> ;
 class DatabaseService {
   Database? _database;
   bool _isInitialized = false;
@@ -147,9 +147,7 @@ class DatabaseService {
     if (oldVersion < 18) {
       // Idempotent: add payment_method_id only if missing (avoids "duplicate column" if already present).
       const columnName = 'payment_method_id';
-      final info = await db.rawQuery(
-        'PRAGMA table_info(orders)',
-      );
+      final info = await db.rawQuery('PRAGMA table_info(orders)');
       final hasColumn = info.any(
         (row) => row['name']?.toString() == columnName,
       );
@@ -157,6 +155,16 @@ class DatabaseService {
         for (final sql in DatabaseUtils.migrationFrom17To18) {
           await db.execute(sql);
         }
+      }
+    }
+    if (oldVersion < 19) {
+      for (final sql in DatabaseUtils.migrationFrom18To19) {
+        await db.execute(sql);
+      }
+    }
+    if (oldVersion < 20) {
+      for (final sql in DatabaseUtils.migrationFrom19To20) {
+        await db.execute(sql);
       }
     }
   }

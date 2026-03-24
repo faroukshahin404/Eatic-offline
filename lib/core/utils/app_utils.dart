@@ -8,6 +8,12 @@ import '../constants/app_fonts.dart';
 import '../data/sqLite/database_service.dart';
 import '../services/flutter_secure_storage.dart';
 
+enum ScreenState {
+  loading,
+  loaded,
+  error,
+}
+
 abstract class AppUtils {
   static double? devicePixelRatio;
 

@@ -35,6 +35,9 @@ import '../features/add_new_product/add_new_product_screen.dart';
 import '../features/add_new_product/cubit/add_new_product_cubit.dart';
 import '../features/products/products_screen.dart';
 import '../features/products/cubit/products_cubit.dart';
+import '../features/shift_details/all_currencies_screen.dart';
+import '../features/shift_details/cubit/shift_details_cubit.dart';
+import '../features/shift_details/shift_details_screen.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/zones_screen.dart';
 import '../features/login/login_screen.dart';
@@ -305,6 +308,23 @@ class AppPages {
           create: (context) => getIt<ResetPasswordCubit>(),
           child: const ResetPasswordScreen(),
         ),
+      ),
+      GoRoute(
+        path: AppPaths.allCurrencies,
+        builder: (context, state) => BlocProvider<ShiftDetailsCubit>(
+          create: (context) => getIt<ShiftDetailsCubit>()..getAll(custodyId: state.extra as int?),
+          child: const AllCurrenciesScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppPaths.shiftDetails,
+        builder: (context, state) {
+          final cubit = state.extra as ShiftDetailsCubit;
+          return BlocProvider.value(
+            value: cubit,
+            child: const ShiftDetailsScreen(),
+          );
+        },
       ),
     ],
   );

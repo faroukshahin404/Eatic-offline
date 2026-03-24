@@ -1,6 +1,7 @@
 import '../../../../custody/repos/offline/custody_schema.dart';
 import '../../../../customers/repos/offline/customers_schema.dart';
 import '../../../../payment_methods/repos/offline/payment_methods_schema.dart';
+import '../../../../price_lists/repos/offline/price_lists_schema.dart';
 import '../../../../restaurant_tables/repos/offline/restaurant_tables_schema.dart';
 import '../../../../users/repos/offline/users_schema.dart';
 
@@ -23,11 +24,13 @@ abstract class OrdersSchema {
   static const String colSubtotal = 'subtotal';
   static const String colDiscountAmount = 'discount_amount';
   static const String colTotal = 'total';
+  static const String colSelectedPriceListId = 'selected_price_list_id';
   static const String colCreatedAt = 'created_at';
 
   static const String createTableOrders = '''
     CREATE TABLE $tableOrders (
       $colId INTEGER PRIMARY KEY AUTOINCREMENT,
+      $colSelectedPriceListId INTEGER NOT NULL REFERENCES ${PriceListsSchema.tablePriceLists}(${PriceListsSchema.colId}),
       $colCustodyId INTEGER NOT NULL REFERENCES ${CustodySchema.tableCustody}(${CustodySchema.colId}),
       $colCashierId INTEGER NOT NULL REFERENCES ${UsersSchema.tableUsers}(${UsersSchema.colId}),
       $colOrderType INTEGER NOT NULL,
@@ -80,4 +83,27 @@ abstract class OrderLinesSchema {
       $colNotes TEXT
     )
   ''';
+}
+
+
+abstract class OrderTypesSchema {
+  OrderTypesSchema._();
+
+  static const String tableOrderTypes = 'order_types';
+
+  static const String colId = 'id';
+  static const String colName = 'name';
+
+  static const String createTableOrderTypes = '''
+    CREATE TABLE $tableOrderTypes (
+      $colId INTEGER PRIMARY KEY,
+      $colName TEXT NOT NULL
+    )
+  ''';
+
+  static const List<String> seedStatements = [
+    "INSERT INTO $tableOrderTypes ($colId, $colName) VALUES (0, 'hall')",
+    "INSERT INTO $tableOrderTypes ($colId, $colName) VALUES (1, 'takeaway')",
+    "INSERT INTO $tableOrderTypes ($colId, $colName) VALUES (2, 'delivery')",
+  ];
 }

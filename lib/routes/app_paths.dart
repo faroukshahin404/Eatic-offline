@@ -31,4 +31,6 @@ abstract class AppPaths {
   static const String custody = '/custody';
   static const String resetPassword = '/reset-password';
   static const String shifts = '/shifts';
+  static const String allCurrencies = '/all-currencies';
+  static const String shiftDetails = '/shift-details';
 }

@@ -19,6 +19,7 @@ import '../features/add_new_delivery/repos/offline/add_new_delivery_offline_repo
 import '../features/deliveries/cubit/delivery_men_cubit.dart';
 import '../features/deliveries/repos/offline/deliveries_offline_repos.dart';
 import '../features/drawer/cubit/drawer_cubit.dart';
+import '../features/shift_details/cubit/shift_details_cubit.dart';
 import '../features/shifts/cubit/shifts_cubit.dart';
 import '../features/home/cubit/home_cubit.dart';
 import '../features/add_new_zone/cubit/add_new_zone_cubit.dart';
@@ -349,5 +350,13 @@ Future<void> setupDI() async {
   getIt.registerFactory<AddNewPaymentMethodCubit>(
     () =>
         AddNewPaymentMethodCubit(getIt<AddNewPaymentMethodOfflineRepository>()),
+  );
+
+  getIt.registerFactory<ShiftDetailsCubit>(
+    () => ShiftDetailsCubit(
+      getIt<PaymentMethodsOfflineRepository>(),
+      getIt<OrdersOfflineRepository>(),
+      getIt<PriceListsOfflineRepository>(),
+    ),
   );
 }

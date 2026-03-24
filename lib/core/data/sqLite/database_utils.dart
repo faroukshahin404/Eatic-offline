@@ -21,7 +21,7 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 18;
+  static const int databaseVersion = 20;
 
   /// Run in order: roles, users, branches, ..., price_lists, products, category_product, product_variables, product_variable_values, product_variants, product_variant_values, product_addon, product_variant_addon, product_price_list_prices, product_variant_price_list_prices.
   static const List<String> createTableStatements = [
@@ -52,103 +52,114 @@ abstract class DatabaseUtils {
     CustomerAddressesSchema.createTableCustomerAddresses,
     OrdersSchema.createTableOrders,
     OrderLinesSchema.createTableOrderLines,
+    OrderTypesSchema.createTableOrderTypes,
   ];
 
   /// Run after createTableStatements in onCreate (e.g. seed default roles).
-  static List<String> get seedStatements => RolesStatement.seedStatements;
+  static List<String> get seedStatements => [
+    ...RolesStatement.seedStatements,
+    ...OrderTypesSchema.seedStatements,
+  ];
 
   /// Migrations for existing DBs that were created before branches table existed.
   static List<String> get migrationFrom1To2 => [
-        BranchesSchema.createTableBranches,
-      ];
+    BranchesSchema.createTableBranches,
+  ];
 
   /// Migrations for existing DBs that were created before delivery_men table existed.
   static List<String> get migrationFrom2To3 => [
-        DeliveryMenSchema.createTableDeliveryMen,
-      ];
+    DeliveryMenSchema.createTableDeliveryMen,
+  ];
 
   /// Migrations for existing DBs that were created before zones table existed.
-  static List<String> get migrationFrom3To4 => [
-        ZonesSchema.createTableZones,
-      ];
+  static List<String> get migrationFrom3To4 => [ZonesSchema.createTableZones];
 
   /// Migrations for existing DBs that were created before currencies table existed.
   static List<String> get migrationFrom4To5 => [
-        CurrenciesSchema.createTableCurrencies,
-      ];
+    CurrenciesSchema.createTableCurrencies,
+  ];
 
   /// Migrations for existing DBs that were created before payment_methods table existed.
   static List<String> get migrationFrom5To6 => [
-        PaymentMethodsSchema.createTablePaymentMethods,
-      ];
+    PaymentMethodsSchema.createTablePaymentMethods,
+  ];
 
   /// Migrations for existing DBs that were created before dining_areas table existed.
   static List<String> get migrationFrom6To7 => [
-        DiningAreasSchema.createTableDiningAreas,
-      ];
+    DiningAreasSchema.createTableDiningAreas,
+  ];
 
   /// Migrations for existing DBs that were created before restaurant_tables table existed.
   static List<String> get migrationFrom7To8 => [
-        RestaurantTablesSchema.createTableRestaurantTables,
-      ];
+    RestaurantTablesSchema.createTableRestaurantTables,
+  ];
 
   /// Migrations for existing DBs that were created before categories table existed.
   static List<String> get migrationFrom8To9 => [
-        CategoriesSchema.createTableCategories,
-      ];
+    CategoriesSchema.createTableCategories,
+  ];
 
   /// Migrations for existing DBs that were created before addons table existed.
   static List<String> get migrationFrom9To10 => [
-        AddonsSchema.createTableAddons,
-      ];
+    AddonsSchema.createTableAddons,
+  ];
 
   /// Migrations for existing DBs that were created before price_lists table existed.
   static List<String> get migrationFrom10To11 => [
-        PriceListsSchema.createTablePriceLists,
-      ];
+    PriceListsSchema.createTablePriceLists,
+  ];
 
   /// Migrations for existing DBs that were created before product tables existed.
   static List<String> get migrationFrom11To12 => [
-        ProductsSchema.createTableProducts,
-        ProductsSchema.createTableCategoryProduct,
-        ProductsSchema.createTableProductVariables,
-        ProductsSchema.createTableProductVariableValues,
-        ProductsSchema.createTableProductVariants,
-        ProductsSchema.createTableProductVariantValues,
-        ProductsSchema.createTableProductAddon,
-        ProductsSchema.createTableProductVariantAddon,
-        ProductsSchema.createTableProductPriceListPrices,
-        ProductsSchema.createTableProductVariantPriceListPrices,
-      ];
+    ProductsSchema.createTableProducts,
+    ProductsSchema.createTableCategoryProduct,
+    ProductsSchema.createTableProductVariables,
+    ProductsSchema.createTableProductVariableValues,
+    ProductsSchema.createTableProductVariants,
+    ProductsSchema.createTableProductVariantValues,
+    ProductsSchema.createTableProductAddon,
+    ProductsSchema.createTableProductVariantAddon,
+    ProductsSchema.createTableProductPriceListPrices,
+    ProductsSchema.createTableProductVariantPriceListPrices,
+  ];
 
   static List<String> get migrationFrom12To13 => [
-        CustodySchema.createTableCustody,
-      ];
+    CustodySchema.createTableCustody,
+  ];
 
   /// Add branch_id to users (for Cashier role).
   static List<String> get migrationFrom13To14 => [
-        "ALTER TABLE ${UsersSchema.tableUsers} ADD COLUMN ${UsersSchema.colBranchId} INTEGER REFERENCES branches(id)",
-      ];
+    "ALTER TABLE ${UsersSchema.tableUsers} ADD COLUMN ${UsersSchema.colBranchId} INTEGER REFERENCES branches(id)",
+  ];
 
   /// Add is_empty to restaurant_tables (0 = occupied, 1 = empty).
   static List<String> get migrationFrom14To15 => [
-        "ALTER TABLE ${RestaurantTablesSchema.tableRestaurantTables} ADD COLUMN ${RestaurantTablesSchema.colIsEmpty} INTEGER NOT NULL DEFAULT 1",
-      ];
+    "ALTER TABLE ${RestaurantTablesSchema.tableRestaurantTables} ADD COLUMN ${RestaurantTablesSchema.colIsEmpty} INTEGER NOT NULL DEFAULT 1",
+  ];
 
   /// Add customers and customer_addresses tables.
   static List<String> get migrationFrom15To16 => [
-        CustomersSchema.createTableCustomers,
-        CustomerAddressesSchema.createTableCustomerAddresses,
-      ];
+    CustomersSchema.createTableCustomers,
+    CustomerAddressesSchema.createTableCustomerAddresses,
+  ];
 
   /// Add orders and order_lines tables.
   static List<String> get migrationFrom16To17 => [
-        OrdersSchema.createTableOrders,
-        OrderLinesSchema.createTableOrderLines,
-      ];
+    OrdersSchema.createTableOrders,
+    OrderLinesSchema.createTableOrderLines,
+  ];
 
   /// Add payment_method_id to orders table.
   static List<String> get migrationFrom17To18 => [
-        'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colPaymentMethodId} INTEGER REFERENCES ${PaymentMethodsSchema.tablePaymentMethods}(${PaymentMethodsSchema.colId})',
-      ];
+    'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colPaymentMethodId} INTEGER REFERENCES ${PaymentMethodsSchema.tablePaymentMethods}(${PaymentMethodsSchema.colId})',
+  ];
+
+  static List<String> get migrationFrom18To19 => [
+    'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colSelectedPriceListId} INTEGER NOT NULL DEFAULT 0',
+  ];
+  
+  static List<String> get migrationFrom19To20 => [
+    OrderTypesSchema.createTableOrderTypes,
+    ...OrderTypesSchema.seedStatements,
+  ];
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
+import '../../routes/app_paths.dart';
 import 'cubit/shifts_cubit.dart';
 import 'cubit/shifts_state.dart';
 import 'widgets/shift_details_dialog.dart';
@@ -45,7 +47,9 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                   return ShiftsTableWidget(
                     custodies: state.custodies,
                     onShow:
-                        (custody) => ShiftDetailsDialog.show(context, custody),
+                        (custody) {
+                          context.push(AppPaths.allCurrencies, extra: custody.id);
+                        },
                   );
                 }
                 return const SizedBox.shrink();

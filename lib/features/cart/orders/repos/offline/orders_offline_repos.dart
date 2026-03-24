@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -7,6 +9,7 @@ import '../../../../../services_locator/service_locator.dart';
 import '../../../../create_order/model/create_order_line_model.dart';
 import '../../model/order_line_model.dart';
 import '../../model/order_model.dart';
+import '../../model/order_type_model.dart';
 import 'orders_schema.dart';
 
 abstract class OrdersOfflineRepository {
@@ -18,6 +21,15 @@ abstract class OrdersOfflineRepository {
     int orderId,
     List<CreateOrderLineModel> lines,
   );
+
+  Future<Either<OfflineFailure, List<OrderModel>>> getOrdersByFilters({
+    required int custodyId,
+    required int selectedPriceListId,
+    required int orderType,
+    required int paymentMethodId,
+  });
+
+  Future<Either<OfflineFailure, List<OrderTypeModel>>> getOrderTypes();
 }
 
 class OrdersOfflineRepoImpl implements OrdersOfflineRepository {
@@ -26,12 +38,13 @@ class OrdersOfflineRepoImpl implements OrdersOfflineRepository {
   @override
   Future<Either<OfflineFailure, int>> insertOrder(OrderModel order) async {
     try {
+      log(order.toInsertMap().toString());
       final id = await _db.insert(
         OrdersSchema.tableOrders,
         order.toInsertMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      return Right(id as int);
+      return Right(id);
     } catch (e) {
       return Left(
         e is DatabaseException
@@ -75,6 +88,64 @@ class OrdersOfflineRepoImpl implements OrdersOfflineRepository {
             ? OfflineFailure.fromSqliteException(e)
             : OfflineFailure.insertFailed(e),
       );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, List<OrderModel>>> getOrdersByFilters({
+    required int custodyId,
+    required int selectedPriceListId,
+    required int orderType,
+    required int paymentMethodId,
+  }) async {
+    try {
+      final result = await _db.query(
+        OrdersSchema.tableOrders,
+        where:
+            '${OrdersSchema.colCustodyId} = ? AND '
+            '${OrdersSchema.colSelectedPriceListId} = ? AND '
+            '${OrdersSchema.colOrderType} = ? AND '
+            '${OrdersSchema.colPaymentMethodId} = ?',
+        whereArgs: [custodyId, selectedPriceListId, orderType, paymentMethodId],
+        orderBy: '${OrdersSchema.colId} DESC',
+      );
+
+      final orders = <OrderModel>[];
+
+      for (final row in result) {
+        final orderId = row[OrdersSchema.colId] as int;
+        final items = await _getOrderLinesByOrderId(orderId);
+        orders.add(OrderModel.fromMap(row, items: items));
+      }
+
+      return Right(orders);
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.insertFailed(e),
+      );
+    }
+  }
+
+  Future<List<OrderLineModel>> _getOrderLinesByOrderId(int orderId) async {
+    final result = await _db.query(
+      OrderLinesSchema.tableOrderLines,
+      where: '${OrderLinesSchema.colOrderId} = ?',
+      whereArgs: [orderId],
+      orderBy: OrderLinesSchema.colId,
+    );
+
+    return result.map(OrderLineModel.fromMap).toList();
+  }
+
+  @override
+  Future<Either<OfflineFailure, List<OrderTypeModel>>> getOrderTypes() async {
+    try {
+      final result = await _db.query(OrderTypesSchema.tableOrderTypes);
+      return Right(result.map(OrderTypeModel.fromMap).toList());
+    } catch (e) {
+      return Left(OfflineFailure.queryFailed(e));
     }
   }
 }

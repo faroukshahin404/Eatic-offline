@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/services/flutter_secure_storage.dart';
+import '../../../core/utils/app_utils.dart';
 import '../../create_order/model/create_order_line_model.dart';
 import '../../customers/model/customer_address_row.dart';
 import '../../custody/repos/offline/custody_offline_repos.dart';
@@ -50,6 +51,19 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
+  Future<void> loadOrderTypes() async {
+    emit(state.copyWith(screenState: ScreenState.loading));
+    final result = await ordersRepo.getOrderTypes();
+    result.fold(
+      (_) {
+        emit(state.copyWith(screenState: ScreenState.error, orderTypes: []));
+      },
+      (list) {
+        emit(state.copyWith(screenState: ScreenState.loaded, orderTypes: list));
+      },
+    );
+  }
+
   /// Computes discount amount from cart discount state and subtotal.
   static double _computeDiscountValue(CartState state, double subtotal) {
     switch (state.selectedDiscountType) {
@@ -91,9 +105,8 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(items: []));
   }
 
-  void setOrderType(int index) {
-    if (index < 0 || index > 2) return;
-    emit(state.copyWith(selectedOrderTypeIndex: index));
+  void setOrderType(int id) {
+    emit(state.copyWith(selectedOrderTypeIndex: id));
   }
 
   void addItem(CreateOrderLineModel line) {
@@ -133,22 +146,27 @@ class CartCubit extends Cubit<CartState> {
     final result = await paymentMethodsRepo.getAll();
     result.fold(
       (_) {
-        emit(state.copyWith(
-          paymentMethods: [_cashFallback],
-          selectedPaymentMethod: state.selectedPaymentMethod ?? _cashFallback,
-        ));
+        emit(
+          state.copyWith(
+            paymentMethods: [_cashFallback],
+            selectedPaymentMethod: state.selectedPaymentMethod ?? _cashFallback,
+          ),
+        );
       },
       (list) {
         final effectiveList = list.isEmpty ? [_cashFallback] : list;
         final current = state.selectedPaymentMethod;
-        final selected = current != null &&
-                effectiveList.any((p) => p.id != null && p.id == current.id)
-            ? current
-            : effectiveList.first;
-        emit(state.copyWith(
-          paymentMethods: effectiveList,
-          selectedPaymentMethod: selected,
-        ));
+        final selected =
+            current != null &&
+                    effectiveList.any((p) => p.id != null && p.id == current.id)
+                ? current
+                : effectiveList.first;
+        emit(
+          state.copyWith(
+            paymentMethods: effectiveList,
+            selectedPaymentMethod: selected,
+          ),
+        );
       },
     );
   }
@@ -203,46 +221,51 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
 
     if (state.items.isEmpty) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        submitError: 'Cart is empty',
-      ));
+      emit(state.copyWith(isSubmitting: false, submitError: 'Cart is empty'));
       return;
     }
 
     final cashier = await _getStoredUser();
     if (cashier == null || cashier.id == null) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        submitError: 'No logged-in user. Please log in as cashier.',
-      ));
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          submitError: 'No logged-in user. Please log in as cashier.',
+        ),
+      );
       return;
     }
 
     final custodyResult = await custodyRepo.getLastOpenCustody();
     final custody = custodyResult.fold((_) => null, (c) => c);
     if (custody == null || custody.id == null) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        submitError: 'No open custody. Please open a custody first.',
-      ));
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          submitError: 'No open custody. Please open a custody first.',
+        ),
+      );
       return;
     }
 
     const orderTypeDineIn = 0;
     if (state.selectedOrderTypeIndex == orderTypeDineIn) {
       if (state.selectedWaiter == null || state.selectedWaiter!.id == null) {
-        emit(state.copyWith(
-          isSubmitting: false,
-          submitError: 'Please select a waiter for dine-in orders.',
-        ));
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            submitError: 'Please select a waiter for dine-in orders.',
+          ),
+        );
         return;
       }
       if (state.selectedTableId == null) {
-        emit(state.copyWith(
-          isSubmitting: false,
-          submitError: 'Please select a table for dine-in orders.',
-        ));
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            submitError: 'Please select a table for dine-in orders.',
+          ),
+        );
         return;
       }
     }
@@ -255,18 +278,22 @@ class CartCubit extends Cubit<CartState> {
     final total = (subtotal - discountValue).clamp(0.0, double.infinity);
 
     final order = OrderModel(
+      selectedPriceListId: state.items.first.priceListId ?? 0,
       custodyId: custody.id!,
       cashierId: cashier.id!,
       orderType: state.selectedOrderTypeIndex,
-      tableId: state.selectedOrderTypeIndex == orderTypeDineIn
-          ? state.selectedTableId
-          : null,
-      tableNumber: state.selectedOrderTypeIndex == orderTypeDineIn
-          ? state.tableNumber
-          : null,
-      waiterId: state.selectedOrderTypeIndex == orderTypeDineIn
-          ? state.selectedWaiter!.id
-          : null,
+      tableId:
+          state.selectedOrderTypeIndex == orderTypeDineIn
+              ? state.selectedTableId
+              : null,
+      tableNumber:
+          state.selectedOrderTypeIndex == orderTypeDineIn
+              ? state.tableNumber
+              : null,
+      waiterId:
+          state.selectedOrderTypeIndex == orderTypeDineIn
+              ? state.selectedWaiter!.id
+              : null,
       customerId: state.selectedCustomer?.customerId,
       addressId: state.selectedCustomer?.addressId,
       paymentMethodId: state.selectedPaymentMethod?.id,
@@ -276,29 +303,27 @@ class CartCubit extends Cubit<CartState> {
     );
 
     final orderResult = await ordersRepo.insertOrder(order);
-    final orderId = orderResult.fold<int?>(
-      (failure) {
-        emit(state.copyWith(
+    final orderId = orderResult.fold<int?>((failure) {
+      emit(
+        state.copyWith(
           isSubmitting: false,
           submitError: failure.failureMessage ?? 'Failed to save order',
-        ));
-        return null;
-      },
-      (id) => id,
-    );
+        ),
+      );
+      return null;
+    }, (id) => id);
     if (orderId == null) return;
 
     final linesResult = await ordersRepo.insertOrderLines(orderId, state.items);
-    final linesOk = linesResult.fold<bool>(
-      (failure) {
-        emit(state.copyWith(
+    final linesOk = linesResult.fold<bool>((failure) {
+      emit(
+        state.copyWith(
           isSubmitting: false,
           submitError: failure.failureMessage ?? 'Failed to save order lines',
-        ));
-        return false;
-      },
-      (_) => true,
-    );
+        ),
+      );
+      return false;
+    }, (_) => true);
     if (!linesOk) return;
 
     if (state.selectedOrderTypeIndex == orderTypeDineIn &&
@@ -307,30 +332,37 @@ class CartCubit extends Cubit<CartState> {
         state.selectedTableId!,
         0,
       );
-          tableResult.fold(
-            (failure) {
-              emit(state.copyWith(
-                isSubmitting: false,
-                submitError: failure.failureMessage ??
-                    'Order saved but failed to update table status',
-              ));
-            },
-            (_) {
-              emit(state.copyWith(
-                items: [],
-                isSubmitting: false,
-                clearSubmitError: true,
-                submitSuccess: true,
-              ));
-            },
+      tableResult.fold(
+        (failure) {
+          emit(
+            state.copyWith(
+              isSubmitting: false,
+              submitError:
+                  failure.failureMessage ??
+                  'Order saved but failed to update table status',
+            ),
           );
+        },
+        (_) {
+          emit(
+            state.copyWith(
+              items: [],
+              isSubmitting: false,
+              clearSubmitError: true,
+              submitSuccess: true,
+            ),
+          );
+        },
+      );
     } else {
-      emit(state.copyWith(
-        items: [],
-        isSubmitting: false,
-        clearSubmitError: true,
-        submitSuccess: true,
-      ));
+      emit(
+        state.copyWith(
+          items: [],
+          isSubmitting: false,
+          clearSubmitError: true,
+          submitSuccess: true,
+        ),
+      );
     }
   }
 

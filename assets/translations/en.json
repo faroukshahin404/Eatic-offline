@@ -343,8 +343,13 @@
   "products": "Products",
   "products.no_products": "No products yet",
   "products.has_variants": "Has variants",
+  "shift_details": "Shift Details",
+  "hall": "Hall",
+  "takeaway": "Takeaway",
+  "delivery": "Delivery",
   "products.no_price": "No price",
   "products.currency": "EGP",
+  "all_currencies": "All Currencies",
   "products.delete_confirm": "Are you sure you want to delete \"{{name}}\"?",
   "shifts": {
     "title": "Shifts",

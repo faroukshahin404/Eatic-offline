@@ -45,4 +45,20 @@ class OrderLineModel {
       OrderLinesSchema.colNotes: notes,
     };
   }
+  factory OrderLineModel.fromMap(Map<String, dynamic> map) {
+  return OrderLineModel(
+    id: map[OrderLinesSchema.colId] as int?,
+    orderId: map[OrderLinesSchema.colOrderId] as int,
+    productId: map[OrderLinesSchema.colProductId] as int,
+    productName: map[OrderLinesSchema.colProductName] as String?,
+    variantId: map[OrderLinesSchema.colVariantId] as int?,
+    variantLabel: map[OrderLinesSchema.colVariantLabel] as String?,
+    priceListId: map[OrderLinesSchema.colPriceListId] as int?,
+    unitPrice: (map[OrderLinesSchema.colUnitPrice] as num?)?.toDouble() ?? 0,
+    quantity: map[OrderLinesSchema.colQuantity] as int? ?? 1,
+    addonsTotal: (map[OrderLinesSchema.colAddonsTotal] as num?)?.toDouble() ?? 0,
+    lineTotal: (map[OrderLinesSchema.colLineTotal] as num?)?.toDouble() ?? 0,
+    notes: map[OrderLinesSchema.colNotes] as String?,
+  );
+}
 }
