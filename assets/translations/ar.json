@@ -363,6 +363,22 @@
     "no_records": "لا توجد سجلات",
     "details": "تفاصيل الوردية"
   },
+  "orders_status": {
+    "title": "حالة الطلبات",
+    "no_records": "لا توجد طلبات معلقة",
+    "created_at": "التاريخ",
+    "order_type": "نوع الطلب",
+    "payment_method": "طريقة الدفع",
+    "table_number": "رقم الطاولة",
+    "total": "الإجمالي",
+    "cashier": "اسم الكاشير",
+    "customer": "اسم العميل",
+    "kitchen_print": "فاتورة المطبخ",
+    "customer_print": "فاتورة العميل",
+    "printed_yes": "تم",
+    "printed_no": "لا",
+    "actions": "إجراء"
+  },
   "errors": {
     "db_not_init": "قاعدة البيانات غير مهيأة",
     "insert_failed": "فشل الإدراج",

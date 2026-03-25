@@ -11,6 +11,8 @@ import '../../create_order/cubit/create_order_cubit.dart';
 import '../../customers/cubit/customer_search_cubit.dart';
 import '../../customers/customer_search_screen.dart';
 import '../../home/home_screen.dart';
+import '../../orders_status/cubit/orders_status_cubit.dart';
+import '../../orders_status/orders_status_screen.dart';
 import '../../select_waiter/cubit/select_waiter_cubit.dart';
 import '../../select_waiter/select_waiter_screen.dart';
 import '../../select_table/cubit/select_table_cubit.dart';
@@ -75,6 +77,11 @@ class MainCubit extends Cubit<MainState> {
         return BlocProvider<ShiftsCubit>(
           create: (_) => getIt<ShiftsCubit>(),
           child: const ShiftsScreen(),
+        );
+      case AppPaths.ordersStatus:
+        return BlocProvider<OrdersStatusCubit>(
+          create: (_) => getIt<OrdersStatusCubit>(),
+          child: const OrdersStatusScreen(),
         );
       default:
         return const HomeScreen();

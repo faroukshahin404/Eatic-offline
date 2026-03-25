@@ -62,6 +62,8 @@ import '../features/cart/cubit/cart_cubit.dart';
 import '../features/custody/cubit/custody_cubit.dart';
 import '../features/custody/repos/offline/custody_offline_repos.dart';
 import '../features/cart/orders/repos/offline/orders_offline_repos.dart';
+import '../features/orders_status/repos/offline/orders_status_offline_repos.dart';
+import '../features/orders_status/cubit/orders_status_cubit.dart';
 import '../features/zones/cubit/zones_cubit.dart';
 import '../features/zones/repos/offline/zones_offline_repos.dart';
 import '../features/login/cubit/login_cubit.dart';
@@ -306,6 +308,13 @@ Future<void> setupDI() async {
 
   getIt.registerLazySingleton<OrdersOfflineRepository>(
     () => OrdersOfflineRepoImpl(),
+  );
+
+  getIt.registerLazySingleton<OrdersStatusOfflineRepository>(
+    () => OrdersStatusOfflineRepoImpl(),
+  );
+  getIt.registerFactory<OrdersStatusCubit>(
+    () => OrdersStatusCubit(getIt<OrdersStatusOfflineRepository>()),
   );
   getIt.registerFactory<CartCubit>(
     () => CartCubit(

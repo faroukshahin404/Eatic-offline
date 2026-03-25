@@ -362,6 +362,22 @@
     "no_records": "No records found",
     "details": "Shift Details"
   },
+  "orders_status": {
+    "title": "Orders Status",
+    "no_records": "No pending orders found",
+    "created_at": "Created At",
+    "order_type": "Order Type",
+    "payment_method": "Payment Method",
+    "table_number": "Table Number",
+    "total": "Total",
+    "cashier": "Cashier",
+    "customer": "Customer",
+    "kitchen_print": "Kitchen Invoice",
+    "customer_print": "Customer Invoice",
+    "printed_yes": "Yes",
+    "printed_no": "No",
+    "actions": "Actions"
+  },
   "errors": {
     "db_not_init": "Database is not initialized",
     "insert_failed": "Insert failed",
