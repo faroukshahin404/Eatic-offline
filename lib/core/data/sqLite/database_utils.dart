@@ -21,7 +21,7 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 20;
+  static const int databaseVersion = 22;
 
   /// Run in order: roles, users, branches, ..., price_lists, products, category_product, product_variables, product_variable_values, product_variants, product_variant_values, product_addon, product_variant_addon, product_price_list_prices, product_variant_price_list_prices.
   static const List<String> createTableStatements = [
@@ -161,5 +161,15 @@ abstract class DatabaseUtils {
   static List<String> get migrationFrom19To20 => [
     OrderTypesSchema.createTableOrderTypes,
     ...OrderTypesSchema.seedStatements,
+  ];
+
+  /// Mark newly submitted orders as pending (offline sync queue).
+  static List<String> get migrationFrom20To21 => [
+    'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colIsPending} INTEGER NOT NULL DEFAULT 1',
+  ];
+
+  static List<String> get migrationFrom21To22 => [
+    'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colIsPrintedToCustomer} INTEGER NOT NULL DEFAULT 0',
+    'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colIsPrintedToKitchen} INTEGER NOT NULL DEFAULT 0',
   ];
 }

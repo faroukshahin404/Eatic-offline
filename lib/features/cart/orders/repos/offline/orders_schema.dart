@@ -26,6 +26,9 @@ abstract class OrdersSchema {
   static const String colTotal = 'total';
   static const String colSelectedPriceListId = 'selected_price_list_id';
   static const String colCreatedAt = 'created_at';
+  static const String colIsPending = 'is_pending';
+  static const String colIsPrintedToCustomer = 'is_printed_to_customer';
+  static const String colIsPrintedToKitchen = 'is_printed_to_kitchen';
 
   static const String createTableOrders = '''
     CREATE TABLE $tableOrders (
@@ -43,7 +46,10 @@ abstract class OrdersSchema {
       $colSubtotal REAL NOT NULL DEFAULT 0,
       $colDiscountAmount REAL NOT NULL DEFAULT 0,
       $colTotal REAL NOT NULL DEFAULT 0,
-      $colCreatedAt TEXT
+      $colCreatedAt TEXT,
+      $colIsPending INTEGER NOT NULL DEFAULT 1,
+      $colIsPrintedToCustomer INTEGER NOT NULL DEFAULT 0,
+      $colIsPrintedToKitchen INTEGER NOT NULL DEFAULT 0
     )
   ''';
 }

@@ -167,5 +167,39 @@ class DatabaseService {
         await db.execute(sql);
       }
     }
+
+    if (oldVersion < 21) {
+      // Idempotent: add is_pending only if missing (avoids "duplicate column").
+      const columnName = 'is_pending';
+      final info = await db.rawQuery('PRAGMA table_info(orders)');
+      final hasColumn = info.any(
+        (row) => row['name']?.toString() == columnName,
+      );
+      if (!hasColumn) {
+        for (final sql in DatabaseUtils.migrationFrom20To21) {
+          await db.execute(sql);
+        }
+      }
+    }
+
+    if (oldVersion < 22) {
+      // Idempotent: add print columns only if missing (avoids "duplicate column").
+      const customerColumnName = 'is_printed_to_customer';
+      const kitchenColumnName = 'is_printed_to_kitchen';
+
+      final info = await db.rawQuery('PRAGMA table_info(orders)');
+      final hasCustomerColumn = info.any(
+        (row) => row['name']?.toString() == customerColumnName,
+      );
+      final hasKitchenColumn = info.any(
+        (row) => row['name']?.toString() == kitchenColumnName,
+      );
+
+      if (!hasCustomerColumn || !hasKitchenColumn) {
+        for (final sql in DatabaseUtils.migrationFrom21To22) {
+          await db.execute(sql);
+        }
+      }
+    }
   }
 }

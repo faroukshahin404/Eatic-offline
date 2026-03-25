@@ -38,10 +38,16 @@ class OrdersOfflineRepoImpl implements OrdersOfflineRepository {
   @override
   Future<Either<OfflineFailure, int>> insertOrder(OrderModel order) async {
     try {
-      log(order.toInsertMap().toString());
+      final orderMap = order.toInsertMap();
+      // Any newly submitted order should be stored as pending for offline flows.
+      orderMap[OrdersSchema.colIsPending] = 1;
+      // Newly submitted orders are not printed yet.
+      orderMap[OrdersSchema.colIsPrintedToCustomer] = 0;
+      orderMap[OrdersSchema.colIsPrintedToKitchen] = 0;
+      log(orderMap.toString());
       final id = await _db.insert(
         OrdersSchema.tableOrders,
-        order.toInsertMap(),
+        orderMap,
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
       return Right(id);

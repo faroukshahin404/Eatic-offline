@@ -18,6 +18,9 @@ class OrderModel {
     this.discountAmount = 0,
     this.total = 0,
     this.createdAt,
+    this.isPending = 1,
+    this.isPrintedToCustomer = 0,
+    this.isPrintedToKitchen = 0,
     required this.selectedPriceListId,
     this.items,
   });
@@ -37,6 +40,9 @@ class OrderModel {
   final double discountAmount;
   final double total;
   final String? createdAt;
+  final int isPending;
+  final int isPrintedToCustomer;
+  final int isPrintedToKitchen;
   final List<OrderLineModel>? items;
 
   Map<String, dynamic> toInsertMap() {
@@ -56,6 +62,9 @@ class OrderModel {
       OrdersSchema.colTotal: total,
       OrdersSchema.colCreatedAt: createdAt ?? now,
       OrdersSchema.colSelectedPriceListId: selectedPriceListId,
+      OrdersSchema.colIsPending: isPending,
+      OrdersSchema.colIsPrintedToCustomer: isPrintedToCustomer,
+      OrdersSchema.colIsPrintedToKitchen: isPrintedToKitchen,
     };
   }
 
@@ -79,6 +88,11 @@ class OrderModel {
     total: (map[OrdersSchema.colTotal] as num?)?.toDouble() ?? 0,
     createdAt: map[OrdersSchema.colCreatedAt] as String?,
     selectedPriceListId: map[OrdersSchema.colSelectedPriceListId] as int,
+    isPending: map[OrdersSchema.colIsPending] as int? ?? 1,
+    isPrintedToCustomer:
+        map[OrdersSchema.colIsPrintedToCustomer] as int? ?? 0,
+    isPrintedToKitchen:
+        map[OrdersSchema.colIsPrintedToKitchen] as int? ?? 0,
     items: items,
   );
 }
