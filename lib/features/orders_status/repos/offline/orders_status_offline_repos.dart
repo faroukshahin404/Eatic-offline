@@ -7,6 +7,7 @@ import '../../../../services_locator/service_locator.dart';
 import '../../../cart/orders/repos/offline/orders_schema.dart';
 import '../../../customers/repos/offline/customers_schema.dart';
 import '../../../payment_methods/repos/offline/payment_methods_schema.dart';
+import '../../../restaurant_tables/repos/offline/restaurant_tables_schema.dart';
 import '../../../users/repos/offline/users_schema.dart';
 import '../../model/order_status_row_model.dart';
 
@@ -128,17 +129,52 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
     required int isPrintedToKitchen,
   }) async {
     try {
-      final count = await _db.update(
-        OrdersSchema.tableOrders,
-        {
-          OrdersSchema.colIsPrintedToCustomer: isPrintedToCustomer,
-          OrdersSchema.colIsPrintedToKitchen: isPrintedToKitchen,
-        },
-        where: '${OrdersSchema.colId} = ?',
-        whereArgs: [orderId],
-      );
+      final resultCount = await _db.transaction<int>((txn) async {
+        final count = await txn.update(
+          OrdersSchema.tableOrders,
+          {
+            OrdersSchema.colIsPrintedToCustomer: isPrintedToCustomer,
+            OrdersSchema.colIsPrintedToKitchen: isPrintedToKitchen,
+          },
+          where: '${OrdersSchema.colId} = ?',
+          whereArgs: [orderId],
+        );
 
-      return Right(count);
+        // Business rule:
+        // If order type is dine-in, mark its assigned table as available after printing.
+        final orderRows = await txn.query(
+          OrdersSchema.tableOrders,
+          where: '${OrdersSchema.colId} = ?',
+          whereArgs: [orderId],
+          limit: 1,
+        );
+
+        if (orderRows.isNotEmpty) {
+          final orderRow = orderRows.first;
+          final orderType = (orderRow[OrdersSchema.colOrderType] as num?)
+              ?.toInt();
+          final tableId = (orderRow[OrdersSchema.colTableId] as num?)
+              ?.toInt();
+
+          // 0 = dine-in (see OrderModel comment).
+          if (orderType == 0 && tableId != null) {
+            await txn.update(
+              RestaurantTablesSchema.tableRestaurantTables,
+              {
+                RestaurantTablesSchema.colIsEmpty: 1,
+                RestaurantTablesSchema.colUpdatedAt:
+                    DateTime.now().toIso8601String(),
+              },
+              where: '${RestaurantTablesSchema.colId} = ?',
+              whereArgs: [tableId],
+            );
+          }
+        }
+
+        return count;
+      });
+
+      return Right(resultCount);
     } catch (e) {
       return Left(
         e is DatabaseException
