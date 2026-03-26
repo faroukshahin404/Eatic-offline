@@ -15,6 +15,8 @@ class CartState {
     this.items = const [],
     this.selectedOrderTypeIndex = 0,
     this.hasOpenCustody = false,
+    this.isEditMode = false,
+    this.editingOrderId,
     this.orderNumber = '#8712',
     this.tableNumber,
     this.selectedTableId,
@@ -38,6 +40,8 @@ class CartState {
   final ScreenState? screenState;
   final int selectedOrderTypeIndex;
   final bool hasOpenCustody;
+  final bool isEditMode;
+  final int? editingOrderId;
   final String orderNumber;
   final String? tableNumber;
   /// Table id from restaurant_tables (used for dine-in order and marking table occupied).
@@ -59,6 +63,9 @@ class CartState {
     int? selectedOrderTypeIndex,
     ScreenState? screenState,
     bool? hasOpenCustody,
+    bool? isEditMode,
+    int? editingOrderId,
+    bool clearEditMode = false,
     String? orderNumber,
     String? tableNumber,
     int? selectedTableId,
@@ -88,6 +95,9 @@ class CartState {
       selectedOrderTypeIndex:
           selectedOrderTypeIndex ?? this.selectedOrderTypeIndex,
       hasOpenCustody: hasOpenCustody ?? this.hasOpenCustody,
+      isEditMode: clearEditMode ? false : (isEditMode ?? this.isEditMode),
+      editingOrderId:
+          clearEditMode ? null : (editingOrderId ?? this.editingOrderId),
       orderNumber: orderNumber ?? this.orderNumber,
       tableNumber: tableNumber ?? this.tableNumber,
       selectedTableId: selectedTableId ?? this.selectedTableId,

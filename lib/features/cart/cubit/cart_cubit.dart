@@ -38,6 +38,10 @@ class CartCubit extends Cubit<CartState> {
   final PaymentMethodsOfflineRepository paymentMethodsRepo;
   final RestaurantTablesOfflineRepository restaurantTablesRepo;
 
+  /// Keeps the original persisted order snapshot during edit mode so we can
+  /// preserve record id and printing/pending flags.
+  OrderModel? _editingOrderSnapshot;
+
   /// Reads stored user from secure storage (logged-in cashier). Returns null if not found or invalid.
   Future<UserModel?> _getStoredUser() async {
     try {
@@ -102,7 +106,89 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void clearCart() {
-    emit(state.copyWith(items: []));
+    _editingOrderSnapshot = null;
+    emit(
+      state.copyWith(
+        items: [],
+        clearEditMode: true,
+        clearSubmitError: true,
+        submitSuccess: false,
+      ),
+    );
+  }
+
+  /// Starts edit mode by loading an existing order (with lines and resolved
+  /// related entities) into the cart state.
+  Future<void> startEditOrder(int orderId) async {
+    _editingOrderSnapshot = null;
+    emit(
+      state.copyWith(
+        clearSubmitError: true,
+        submitSuccess: false,
+        isEditMode: true,
+        editingOrderId: orderId,
+        items: const [],
+        // Keep selections; they will be replaced when data loads.
+      ),
+    );
+
+    final result = await ordersRepo.getOrderForCartEdit(orderId);
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            clearEditMode: true,
+            isSubmitting: false,
+            submitError: failure.failureMessage ?? 'Failed to load order',
+          ),
+        );
+      },
+      (editModel) {
+        _editingOrderSnapshot = editModel.order;
+
+        final dtoOrder = editModel.order;
+        final cartItems = (dtoOrder.items ?? []).map((line) {
+          return CreateOrderLineModel(
+            productId: line.productId,
+            productName: line.productName,
+            variantId: line.variantId,
+            variantLabel: line.variantLabel,
+            selectedOptions: const [],
+            notes: line.notes ?? '',
+            quantity: line.quantity,
+            priceListId: line.priceListId,
+            variantUnitPrice: line.unitPrice,
+            addonQuantities: const {},
+            addonsTotal: line.addonsTotal,
+            lineTotal: line.lineTotal,
+          );
+        }).toList();
+
+        final isDineIn = dtoOrder.orderType == 0;
+
+        // Convert persisted discount amount to cart's discount state.
+        emit(
+          state.copyWith(
+            isEditMode: true,
+            editingOrderId: orderId,
+            items: cartItems,
+            selectedOrderTypeIndex: dtoOrder.orderType,
+            selectedWaiter: isDineIn ? editModel.waiterUser : null,
+            selectedTableId: isDineIn ? dtoOrder.tableId : null,
+            tableNumber: isDineIn ? dtoOrder.tableNumber : null,
+            selectedCustomer: isDineIn ? null : editModel.customerAddress,
+            selectedPaymentMethod: editModel.paymentMethod,
+            selectedDiscountType: CartDiscountType.amount,
+            discountAmount: dtoOrder.discountAmount,
+            discountPercentage: null,
+            discountCouponCode: null,
+            isSubmitting: false,
+            clearSubmitError: true,
+            submitSuccess: false,
+          ),
+        );
+      },
+    );
   }
 
   void setOrderType(int id) {
@@ -222,6 +308,166 @@ class CartCubit extends Cubit<CartState> {
 
     if (state.items.isEmpty) {
       emit(state.copyWith(isSubmitting: false, submitError: 'Cart is empty'));
+      return;
+    }
+
+    // Edit mode: update the selected pending order instead of inserting a new one.
+    if (state.isEditMode && state.editingOrderId != null) {
+      final snapshot = _editingOrderSnapshot;
+      if (snapshot == null || snapshot.id == null) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            submitError: 'Failed to load order for editing',
+            clearEditMode: true,
+          ),
+        );
+        return;
+      }
+      if (snapshot.id != state.editingOrderId) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            submitError: 'Selected order does not match loaded snapshot',
+            clearEditMode: true,
+          ),
+        );
+        return;
+      }
+
+      const orderTypeDineIn = 0;
+      if (state.selectedOrderTypeIndex == orderTypeDineIn) {
+        if (state.selectedWaiter == null || state.selectedWaiter!.id == null) {
+          emit(
+            state.copyWith(
+              isSubmitting: false,
+              submitError: 'Please select a waiter for dine-in orders.',
+            ),
+          );
+          return;
+        }
+        if (state.selectedTableId == null) {
+          emit(
+            state.copyWith(
+              isSubmitting: false,
+              submitError: 'Please select a table for dine-in orders.',
+            ),
+          );
+          return;
+        }
+      }
+
+      final subtotal = state.items.fold<double>(
+        0,
+        (sum, line) => sum + line.lineTotal,
+      );
+      final discountValue = _computeDiscountValue(state, subtotal);
+      final total = (subtotal - discountValue).clamp(0.0, double.infinity);
+
+      final updatedOrder = OrderModel(
+        id: snapshot.id,
+        selectedPriceListId: state.items.first.priceListId ?? 0,
+        custodyId: snapshot.custodyId,
+        cashierId: snapshot.cashierId,
+        orderType: state.selectedOrderTypeIndex,
+        tableId:
+            state.selectedOrderTypeIndex == orderTypeDineIn
+                ? state.selectedTableId
+                : null,
+        tableNumber:
+            state.selectedOrderTypeIndex == orderTypeDineIn
+                ? state.tableNumber
+                : null,
+        waiterId:
+            state.selectedOrderTypeIndex == orderTypeDineIn
+                ? state.selectedWaiter!.id
+                : null,
+        customerId: state.selectedCustomer?.customerId,
+        addressId: state.selectedCustomer?.addressId,
+        paymentMethodId: state.selectedPaymentMethod?.id,
+        subtotal: subtotal,
+        discountAmount: discountValue,
+        total: total,
+        createdAt: snapshot.createdAt,
+        isPending: snapshot.isPending,
+        isPrintedToCustomer: snapshot.isPrintedToCustomer,
+        isPrintedToKitchen: snapshot.isPrintedToKitchen,
+      );
+
+      final orderUpdate = await ordersRepo.updateOrder(updatedOrder);
+      final orderOk = orderUpdate.fold<bool>(
+        (failure) {
+          emit(
+            state.copyWith(
+              isSubmitting: false,
+              submitError: failure.failureMessage ?? 'Failed to update order',
+            ),
+          );
+          return false;
+        },
+        (_) => true,
+      );
+      if (!orderOk) return;
+
+      final linesResult = await ordersRepo.updateOrderLines(
+        state.editingOrderId!,
+        state.items,
+      );
+      final linesOk = linesResult.fold<bool>((failure) {
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            submitError:
+                failure.failureMessage ?? 'Failed to save updated order lines',
+          ),
+        );
+        return false;
+      }, (_) => true);
+      if (!linesOk) return;
+
+      if (state.selectedOrderTypeIndex == orderTypeDineIn &&
+          state.selectedTableId != null) {
+        final tableResult = await restaurantTablesRepo.updateTableIsEmpty(
+          state.selectedTableId!,
+          0,
+        );
+        await tableResult.fold(
+          (failure) async {
+            emit(
+              state.copyWith(
+                isSubmitting: false,
+                submitError:
+                    failure.failureMessage ??
+                    'Order updated but failed to update table status',
+              ),
+            );
+          },
+          (_) async {
+            emit(
+              state.copyWith(
+                items: [],
+                isSubmitting: false,
+                clearSubmitError: true,
+                submitSuccess: true,
+                clearEditMode: true,
+              ),
+            );
+            _editingOrderSnapshot = null;
+          },
+        );
+      } else {
+        emit(
+          state.copyWith(
+            items: [],
+            isSubmitting: false,
+            clearSubmitError: true,
+            submitSuccess: true,
+            clearEditMode: true,
+          ),
+        );
+        _editingOrderSnapshot = null;
+      }
+
       return;
     }
 

@@ -12,11 +12,17 @@ class OrdersStatusTableWidget extends StatelessWidget {
     super.key,
     required this.orders,
     required this.onUpdatePrintedStatus,
+    required this.onOpenOrderInCart,
   });
 
   final List<OrderStatusRowModel> orders;
-  final void Function(int orderId, int isPrintedToCustomer, int isPrintedToKitchen)
-      onUpdatePrintedStatus;
+  final void Function(
+    int orderId,
+    int isPrintedToCustomer,
+    int isPrintedToKitchen,
+  )
+  onUpdatePrintedStatus;
+  final Future<void> Function(int orderId) onOpenOrderInCart;
 
   static String _formatCreatedAt(String? value) {
     if (value == null || value.isEmpty) return '-';
@@ -39,9 +45,7 @@ class OrdersStatusTableWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       side: const BorderSide(color: AppColors.greyE6E9EA, width: 1.5),
       backgroundColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 
@@ -57,9 +61,7 @@ class OrdersStatusTableWidget extends StatelessWidget {
         width: 1.5,
       ),
       backgroundColor: isPrinted ? backgroundColor : Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 
@@ -90,14 +92,15 @@ class OrdersStatusTableWidget extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: BoxConstraints(minWidth: constraints.maxWidth),
                 child: DataTable(
-                  headingRowColor:
-                      WidgetStateProperty.all(AppColors.secondary),
+                  headingRowColor: WidgetStateProperty.all(AppColors.secondary),
                   columns: [
                     DataColumn(label: Text('table.id'.tr())),
                     DataColumn(label: Text('orders_status.created_at'.tr())),
                     DataColumn(label: Text('orders_status.total'.tr())),
                     DataColumn(label: Text('orders_status.order_type'.tr())),
-                    DataColumn(label: Text('orders_status.payment_method'.tr())),
+                    DataColumn(
+                      label: Text('orders_status.payment_method'.tr()),
+                    ),
                     DataColumn(label: Text('orders_status.table_number'.tr())),
                     DataColumn(label: Text('orders_status.cashier'.tr())),
                     DataColumn(label: Text('orders_status.customer'.tr())),
@@ -144,9 +147,10 @@ class OrdersStatusTableWidget extends StatelessWidget {
                               needSelectable: true,
                               text: entry.value.orderTypeName,
                               style: AppFonts.styleBold16.copyWith(
-                                fontFamily: AppFonts.getCurrentFontFamilyBasedOnText(
-                                  entry.value.orderTypeName,
-                                ),
+                                fontFamily:
+                                    AppFonts.getCurrentFontFamilyBasedOnText(
+                                      entry.value.orderTypeName,
+                                    ),
                               ),
                             ),
                           ),
@@ -155,19 +159,21 @@ class OrdersStatusTableWidget extends StatelessWidget {
                               needSelectable: true,
                               text: entry.value.paymentMethodName,
                               style: AppFonts.styleBold16.copyWith(
-                                fontFamily: AppFonts.getCurrentFontFamilyBasedOnText(
-                                  entry.value.paymentMethodName,
-                                ),
+                                fontFamily:
+                                    AppFonts.getCurrentFontFamilyBasedOnText(
+                                      entry.value.paymentMethodName,
+                                    ),
                               ),
                             ),
                           ),
                           DataCell(
                             CustomText(
                               needSelectable: true,
-                              text: (entry.value.tableNumber?.trim().isEmpty ??
-                                      true)
-                                  ? '-'
-                                  : entry.value.tableNumber!,
+                              text:
+                                  (entry.value.tableNumber?.trim().isEmpty ??
+                                          true)
+                                      ? '-'
+                                      : entry.value.tableNumber!,
                               style: AppFonts.styleBold16.copyWith(
                                 fontFamily: AppFonts.enFamily,
                               ),
@@ -178,9 +184,10 @@ class OrdersStatusTableWidget extends StatelessWidget {
                               needSelectable: true,
                               text: entry.value.cashierName,
                               style: AppFonts.styleBold16.copyWith(
-                                fontFamily: AppFonts.getCurrentFontFamilyBasedOnText(
-                                  entry.value.cashierName,
-                                ),
+                                fontFamily:
+                                    AppFonts.getCurrentFontFamilyBasedOnText(
+                                      entry.value.cashierName,
+                                    ),
                               ),
                             ),
                           ),
@@ -189,9 +196,10 @@ class OrdersStatusTableWidget extends StatelessWidget {
                               needSelectable: true,
                               text: entry.value.customerName,
                               style: AppFonts.styleBold16.copyWith(
-                                fontFamily: AppFonts.getCurrentFontFamilyBasedOnText(
-                                  entry.value.customerName,
-                                ),
+                                fontFamily:
+                                    AppFonts.getCurrentFontFamilyBasedOnText(
+                                      entry.value.customerName,
+                                    ),
                               ),
                             ),
                           ),
@@ -203,8 +211,8 @@ class OrdersStatusTableWidget extends StatelessWidget {
                                   style: _invoiceButtonStyle(
                                     borderColor: Colors.amber.shade700,
                                     backgroundColor: Colors.amber.shade100,
-                                    isPrinted: entry.value.isPrintedToCustomer ==
-                                        1,
+                                    isPrinted:
+                                        entry.value.isPrintedToCustomer == 1,
                                   ),
                                   onPressed: () {
                                     onUpdatePrintedStatus(
@@ -216,14 +224,14 @@ class OrdersStatusTableWidget extends StatelessWidget {
                                   child: Text(
                                     customerInvoiceText,
                                     style: AppFonts.styleMedium14.copyWith(
-                                      fontFamily: AppFonts
-                                          .getCurrentFontFamilyBasedOnText(
-                                        customerInvoiceText,
-                                      ),
-                                      color: entry.value.isPrintedToCustomer ==
-                                              1
-                                          ? AppColors.deepPrimary
-                                          : AppColors.greyA4ACAD,
+                                      fontFamily:
+                                          AppFonts.getCurrentFontFamilyBasedOnText(
+                                            customerInvoiceText,
+                                          ),
+                                      color:
+                                          entry.value.isPrintedToCustomer == 1
+                                              ? AppColors.deepPrimary
+                                              : AppColors.greyA4ACAD,
                                     ),
                                   ),
                                 ),
@@ -232,7 +240,8 @@ class OrdersStatusTableWidget extends StatelessWidget {
                                   style: _invoiceButtonStyle(
                                     borderColor: AppColors.deepPrimary,
                                     backgroundColor: AppColors.secondary,
-                                    isPrinted: entry.value.isPrintedToKitchen == 1,
+                                    isPrinted:
+                                        entry.value.isPrintedToKitchen == 1,
                                   ),
                                   onPressed: () {
                                     onUpdatePrintedStatus(
@@ -244,67 +253,52 @@ class OrdersStatusTableWidget extends StatelessWidget {
                                   child: Text(
                                     kitchenInvoiceText,
                                     style: AppFonts.styleMedium14.copyWith(
-                                      fontFamily: AppFonts
-                                          .getCurrentFontFamilyBasedOnText(
-                                        kitchenInvoiceText,
-                                      ),
-                                      color: entry.value.isPrintedToKitchen ==
-                                              1
-                                          ? AppColors.deepPrimary
-                                          : AppColors.greyA4ACAD,
+                                      fontFamily:
+                                          AppFonts.getCurrentFontFamilyBasedOnText(
+                                            kitchenInvoiceText,
+                                          ),
+                                      color:
+                                          entry.value.isPrintedToKitchen == 1
+                                              ? AppColors.deepPrimary
+                                              : AppColors.greyA4ACAD,
                                     ),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
                                 OutlinedButton(
                                   style: _actionButtonStyle(),
-                                  onPressed: () {
-                                    showDialog<void>(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text(viewText),
-                                        content: Text(
-                                          'Order #${entry.value.id}',
-                                        ),
-                                      ),
-                                    );
+                                  onPressed: () async {
+                                    await onOpenOrderInCart(entry.value.id);
                                   },
                                   child: Text(
-                                    viewText,
-                                    style: AppFonts.styleMedium14.copyWith(
-                                      fontFamily: AppFonts
-                                          .getCurrentFontFamilyBasedOnText(
-                                        viewText,
-                                      ),
-                                      color: AppColors.deepPrimary,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                OutlinedButton(
-                                  style: _actionButtonStyle(),
-                                  onPressed: () {
-                                    showDialog<void>(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text(editText),
-                                        content: Text(
-                                          'Order #${entry.value.id}',
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
+                                    // viewText,
                                     editText,
                                     style: AppFonts.styleMedium14.copyWith(
-                                      fontFamily: AppFonts
-                                          .getCurrentFontFamilyBasedOnText(
-                                        editText,
-                                      ),
+                                      fontFamily:
+                                          AppFonts.getCurrentFontFamilyBasedOnText(
+                                            viewText,
+                                          ),
                                       color: AppColors.deepPrimary,
                                     ),
                                   ),
                                 ),
+                                // const SizedBox(width: 8),
+                                // OutlinedButton(
+                                //   style: _actionButtonStyle(),
+                                //   onPressed: () async {
+                                //     await onOpenOrderInCart(entry.value.id);
+                                //   },
+                                //   child: Text(
+                                //     editText,
+                                //     style: AppFonts.styleMedium14.copyWith(
+                                //       fontFamily: AppFonts
+                                //           .getCurrentFontFamilyBasedOnText(
+                                //         editText,
+                                //       ),
+                                //       color: AppColors.deepPrimary,
+                                //     ),
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -320,4 +314,3 @@ class OrdersStatusTableWidget extends StatelessWidget {
     );
   }
 }
-

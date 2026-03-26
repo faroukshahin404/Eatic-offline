@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../cart/cubit/cart_cubit.dart';
+import '../_main/cubit/main_cubit.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
 import '../../core/widgets/custom_padding.dart';
+import '../../routes/app_paths.dart';
+import '../drawer/cubit/drawer_cubit.dart';
 import './cubit/orders_status_cubit.dart';
 import './widgets/orders_status_table_widget.dart';
 
@@ -37,9 +41,8 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
             if (state is OrdersStatusError) {
               return CustomFailedWidget(
                 message: state.message,
-                onRetry: () => context
-                    .read<OrdersStatusCubit>()
-                    .loadPendingOrders(),
+                onRetry:
+                    () => context.read<OrdersStatusCubit>().loadPendingOrders(),
               );
             }
 
@@ -49,12 +52,21 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                 Expanded(
                   child: OrdersStatusTableWidget(
                     orders: cubit.orders,
+
                     onUpdatePrintedStatus: (orderId, isCustomer, isKitchen) {
-                  cubit.updatePrintedStatus(
+                      cubit.updatePrintedStatus(
                         orderId: orderId,
                         isPrintedToCustomer: isCustomer,
                         isPrintedToKitchen: isKitchen,
                       );
+                    },
+                    onOpenOrderInCart: (orderId) async {
+                      await context.read<CartCubit>().startEditOrder(orderId);
+                      if (!context.mounted) return;
+                      context.read<MainCubit>().setCurrentScreen(
+                        screen: AppPaths.home,
+                      );
+                      context.read<DrawerCubit>().changeSelectedDrawerCard(0);
                     },
                   ),
                 ),
@@ -66,4 +78,3 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
     );
   }
 }
-
