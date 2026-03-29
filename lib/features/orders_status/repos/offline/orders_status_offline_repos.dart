@@ -14,6 +14,9 @@ import '../../model/order_status_row_model.dart';
 abstract class OrdersStatusOfflineRepository {
   DbCall<List<OrderStatusRowModel>> getPendingOrders();
 
+  /// Returns the order ID of the pending order linked to [tableId], or null.
+  DbCall<int?> getPendingOrderIdByTableId(int tableId);
+
   Future<Either<OfflineFailure, int>> updatePrintedStatus({
     required int orderId,
     required int isPrintedToCustomer,
@@ -113,6 +116,31 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
       }
 
       return Right(results);
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, int?>> getPendingOrderIdByTableId(
+    int tableId,
+  ) async {
+    try {
+      final rows = await _db.query(
+        OrdersSchema.tableOrders,
+        columns: [OrdersSchema.colId],
+        where:
+            '${OrdersSchema.colIsPending} = ? AND ${OrdersSchema.colTableId} = ?',
+        whereArgs: [1, tableId],
+        orderBy: '${OrdersSchema.colId} DESC',
+        limit: 1,
+      );
+      if (rows.isEmpty) return const Right(null);
+      return Right(rows.first[OrdersSchema.colId] as int);
     } catch (e) {
       return Left(
         e is DatabaseException

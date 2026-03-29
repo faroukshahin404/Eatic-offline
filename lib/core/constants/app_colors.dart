@@ -46,6 +46,14 @@ abstract class AppColors {
   static const Color tableSelectedBorder = Color(0xFF81C784);
   static const Color tableNotEmpty = Color(0xfff0c0c0);
 
+  /// Orders-status tables grid: free card.
+  static const Color tableFreeBg = Color(0xFFE8F8F0);
+  static const Color tableFreeBorder = Color(0xFFB2DFDB);
+
+  /// Orders-status tables grid: occupied / active card.
+  static const Color tableActiveBg = Color(0xFFFDF0F0);
+  static const Color tableActiveBorder = Color(0xFFF5C6C6);
+
   static ThemeData androidTheme = ThemeData(
     scaffoldBackgroundColor: Color(0xffffffff),
     useMaterial3: false,

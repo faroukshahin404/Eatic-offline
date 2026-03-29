@@ -364,6 +364,8 @@
   },
   "orders_status": {
     "title": "Orders Status",
+    "tab_orders": "Orders",
+    "tab_tables": "Tables",
     "no_records": "No pending orders found",
     "created_at": "Created At",
     "order_type": "Order Type",
@@ -376,7 +378,12 @@
     "customer_print": "Customer Invoice",
     "printed_yes": "Yes",
     "printed_no": "No",
-    "actions": "Actions"
+    "actions": "Actions",
+    "table_active": "Active",
+    "table_free": "Free",
+    "edit_active_order": "Edit Active Order",
+    "create_hall_order": "Create Hall Order",
+    "no_tables": "No tables found"
   },
   "errors": {
     "db_not_init": "Database is not initialized",

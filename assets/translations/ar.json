@@ -365,6 +365,8 @@
   },
   "orders_status": {
     "title": "حالة الطلبات",
+    "tab_orders": "الطلبات",
+    "tab_tables": "الطاولات",
     "no_records": "لا توجد طلبات معلقة",
     "created_at": "التاريخ",
     "order_type": "نوع الطلب",
@@ -377,7 +379,12 @@
     "customer_print": "فاتورة العميل",
     "printed_yes": "تم",
     "printed_no": "لا",
-    "actions": "إجراء"
+    "actions": "إجراء",
+    "table_active": "نشطة",
+    "table_free": "فارغة",
+    "edit_active_order": "تعديل الطلب النشط",
+    "create_hall_order": "إنشاء طلب صالة",
+    "no_tables": "لا توجد طاولات"
   },
   "errors": {
     "db_not_init": "قاعدة البيانات غير مهيأة",

@@ -314,7 +314,10 @@ Future<void> setupDI() async {
     () => OrdersStatusOfflineRepoImpl(),
   );
   getIt.registerFactory<OrdersStatusCubit>(
-    () => OrdersStatusCubit(getIt<OrdersStatusOfflineRepository>()),
+    () => OrdersStatusCubit(
+      getIt<OrdersStatusOfflineRepository>(),
+      getIt<RestaurantTablesOfflineRepository>(),
+    ),
   );
   getIt.registerFactory<CartCubit>(
     () => CartCubit(
