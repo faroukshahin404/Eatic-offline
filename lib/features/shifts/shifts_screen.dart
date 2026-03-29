@@ -8,7 +8,6 @@ import '../../core/widgets/custom_loading.dart';
 import '../../routes/app_paths.dart';
 import 'cubit/shifts_cubit.dart';
 import 'cubit/shifts_state.dart';
-import 'widgets/shift_details_dialog.dart';
 import 'widgets/shifts_filter_widget.dart';
 import 'widgets/shifts_table_widget.dart';
 

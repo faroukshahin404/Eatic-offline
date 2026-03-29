@@ -21,8 +21,7 @@ class ProductsScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'products'),
       body: CustomPadding(
-        child: BlocConsumer<ProductsCubit, ProductsState>(
-          listener: (context, state) {},
+        child: BlocBuilder<ProductsCubit, ProductsState>(
           builder: (context, state) {
             if (state is ProductsLoading) {
               return const CustomLoading();

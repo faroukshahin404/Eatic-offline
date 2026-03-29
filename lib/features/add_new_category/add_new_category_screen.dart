@@ -27,11 +27,12 @@ class AddNewCategoryScreen extends StatelessWidget {
         child: BlocConsumer<AddNewCategoryCubit, AddNewCategoryState>(
           listener: (context, state) {
             if (state is AddNewCategorySaved) {
+              final messenger = ScaffoldMessenger.of(context);
               Navigator.of(context).pop<bool>(true);
               final message = state.isUpdate
                   ? 'add_category_form.update_success'.tr()
                   : 'add_category_form.success'.tr();
-              ScaffoldMessenger.of(context).showSnackBar(
+              messenger.showSnackBar(
                 SnackBar(content: Text(message)),
               );
             }

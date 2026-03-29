@@ -19,8 +19,7 @@ class ZonesScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'zones'),
       body: CustomPadding(
-        child: BlocConsumer<ZonesCubit, ZonesState>(
-          listener: (context, state) {},
+        child: BlocBuilder<ZonesCubit, ZonesState>(
           builder: (context, state) {
             if (state is ZonesLoading) {
               return const CustomLoading();

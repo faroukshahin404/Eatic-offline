@@ -32,11 +32,12 @@ class AddNewZoneScreen extends StatelessWidget {
           child: BlocConsumer<AddNewZoneCubit, AddNewZoneState>(
             listener: (context, state) {
               if (state is AddNewZoneSaved) {
+                final messenger = ScaffoldMessenger.of(context);
                 context.pop<bool>(true);
                 final message = state.isUpdate
                     ? 'add_zone_form.update_success'.tr()
                     : 'add_zone_form.success'.tr();
-                ScaffoldMessenger.of(context).showSnackBar(
+                messenger.showSnackBar(
                   SnackBar(content: Text(message)),
                 );
               }

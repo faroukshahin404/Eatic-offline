@@ -28,8 +28,9 @@ class AddNewPriceListScreen extends StatelessWidget {
         child: BlocConsumer<AddNewPriceListCubit, AddNewPriceListState>(
           listener: (context, state) {
             if (state is AddNewPriceListSaved) {
+              final messenger = ScaffoldMessenger.of(context);
               context.pop<bool>(true);
-              ScaffoldMessenger.of(context).showSnackBar(
+              messenger.showSnackBar(
                 SnackBar(
                   content: Text(
                     priceList != null

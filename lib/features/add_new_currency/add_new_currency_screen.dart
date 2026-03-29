@@ -32,11 +32,12 @@ class AddNewCurrencyScreen extends StatelessWidget {
           child: BlocConsumer<AddNewCurrencyCubit, AddNewCurrencyState>(
             listener: (context, state) {
               if (state is AddNewCurrencySaved) {
+                final messenger = ScaffoldMessenger.of(context);
                 context.pop<bool>(true);
                 final message = state.isUpdate
                     ? 'add_currency_form.update_success'.tr()
                     : 'add_currency_form.success'.tr();
-                ScaffoldMessenger.of(context).showSnackBar(
+                messenger.showSnackBar(
                   SnackBar(content: Text(message)),
                 );
               }

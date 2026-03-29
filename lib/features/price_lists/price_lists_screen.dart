@@ -35,8 +35,7 @@ class PriceListsScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'price_lists'),
       body: CustomPadding(
-        child: BlocConsumer<PriceListsCubit, PriceListsState>(
-          listener: (context, state) {},
+        child: BlocBuilder<PriceListsCubit, PriceListsState>(
           builder: (context, state) {
             if (state is PriceListsLoading) {
               return const CustomLoading();

@@ -35,8 +35,7 @@ class RestaurantTablesScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'restaurant_tables'),
       body: CustomPadding(
-        child: BlocConsumer<RestaurantTablesCubit, RestaurantTablesState>(
-          listener: (context, state) {},
+        child: BlocBuilder<RestaurantTablesCubit, RestaurantTablesState>(
           builder: (context, state) {
             if (state is RestaurantTablesLoading) {
               return const CustomLoading();

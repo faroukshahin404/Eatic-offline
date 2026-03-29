@@ -12,15 +12,6 @@ import 'features/drawer/cubit/drawer_cubit.dart';
 import 'routes/app_routes.dart';
 import 'services_locator/service_locator.dart';
 
-// runZonedGuarded(() {
-//   mains();
-// }, (error, stackTrace) {
-//   print(error);
-//   print(stackTrace);
-// });
-
-// 12321312
-// 123123123
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Required for sqflite_common_ffi (desktop): set factory before any database use.

@@ -35,8 +35,7 @@ class PaymentMethodsScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'payment_methods'),
       body: CustomPadding(
-        child: BlocConsumer<PaymentMethodsCubit, PaymentMethodsState>(
-          listener: (context, state) {},
+        child: BlocBuilder<PaymentMethodsCubit, PaymentMethodsState>(
           builder: (context, state) {
             if (state is PaymentMethodsLoading) {
               return const CustomLoading();

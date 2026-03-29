@@ -28,8 +28,7 @@ class UsersScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: "users"),
       body: CustomPadding(
-        child: BlocConsumer<UsersCubit, UsersState>(
-          listener: (context, state) {},
+        child: BlocBuilder<UsersCubit, UsersState>(
           builder: (context, state) {
             if (state is UsersLoading) {
               return const CustomLoading();

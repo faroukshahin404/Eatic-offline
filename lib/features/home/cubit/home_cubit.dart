@@ -28,7 +28,7 @@ class HomeCubit extends Cubit<HomeState> {
       (list) async {
         _categories = list;
         _selectedCategoryId = null;
-         getProductById();
+        await getProductById();
       },
     );
   }

@@ -23,11 +23,12 @@ class AddNewPaymentMethodScreen extends StatelessWidget {
         child: BlocConsumer<AddNewPaymentMethodCubit, AddNewPaymentMethodState>(
           listener: (context, state) {
             if (state is AddNewPaymentMethodSaved) {
+              final messenger = ScaffoldMessenger.of(context);
               Navigator.of(context).pop<bool>(true);
               final message = paymentMethod != null
                   ? 'add_payment_method_form.update_success'.tr()
                   : 'add_payment_method_form.success'.tr();
-              ScaffoldMessenger.of(context).showSnackBar(
+              messenger.showSnackBar(
                 SnackBar(content: Text(message)),
               );
             }

@@ -56,79 +56,85 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
     return Scaffold(
       appBar: const CustomAppBar(title: 'orders_status.title'),
       body: CustomPadding(
-        child: BlocBuilder<OrdersStatusCubit, OrdersStatusState>(
-          builder: (context, state) {
-            if (state is OrdersStatusLoading) {
-              return const CustomLoading();
-            }
-            if (state is OrdersStatusError) {
-              return CustomFailedWidget(
-                message: state.message,
-                onRetry: () {
-                  if (_selectedTabIndex == 0) {
-                    context.read<OrdersStatusCubit>().loadPendingOrders();
-                  } else {
-                    context.read<OrdersStatusCubit>().loadTables();
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            _OrdersStatusTabs(
+              selectedIndex: _selectedTabIndex,
+              onChanged: (idx) {
+                if (idx == _selectedTabIndex) return;
+                setState(() => _selectedTabIndex = idx);
+                final cubit = context.read<OrdersStatusCubit>();
+                if (idx == 0) {
+                  cubit.loadPendingOrders();
+                } else {
+                  cubit.loadTables();
+                }
+              },
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: BlocBuilder<OrdersStatusCubit, OrdersStatusState>(
+                builder: (context, state) {
+                  if (state is OrdersStatusLoading) {
+                    return const CustomLoading();
                   }
-                },
-              );
-            }
+                  if (state is OrdersStatusError) {
+                    return CustomFailedWidget(
+                      message: state.message,
+                      onRetry: () {
+                        if (_selectedTabIndex == 0) {
+                          context
+                              .read<OrdersStatusCubit>()
+                              .loadPendingOrders();
+                        } else {
+                          context.read<OrdersStatusCubit>().loadTables();
+                        }
+                      },
+                    );
+                  }
 
-            final cubit = context.read<OrdersStatusCubit>();
-            return Column(
-              children: [
-                const SizedBox(height: 8),
-                _OrdersStatusTabs(
-                  selectedIndex: _selectedTabIndex,
-                  onChanged: (idx) {
-                    if (idx == _selectedTabIndex) return;
-                    setState(() => _selectedTabIndex = idx);
-                    if (idx == 0) {
-                      cubit.loadPendingOrders();
-                    } else {
-                      cubit.loadTables();
-                    }
-                  },
-                ),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: _selectedTabIndex == 0
-                      ? OrdersStatusTableWidget(
-                          orders: cubit.orders,
-                          onUpdatePrintedStatus:
-                              (orderId, isCustomer, isKitchen) {
-                            cubit.updatePrintedStatus(
-                              orderId: orderId,
-                              isPrintedToCustomer: isCustomer,
-                              isPrintedToKitchen: isKitchen,
-                            );
-                          },
-                          onOpenOrderInCart: (orderId) async {
-                            _navigateToCartForEdit(orderId);
-                          },
-                        )
-                      : TablesGridViewWidget(
-                          tables: cubit.tables,
-                          onFreeTableTap: (table) {
-                            _navigateToCartForCreate(table.id!, table.name);
-                          },
-                          onOccupiedTableTap: (table) async {
-                            final orderId =
-                                await cubit.getPendingOrderIdByTableId(
-                              table.id!,
-                            );
-                            if (!context.mounted) return;
-                            if (orderId != null) {
-                              _navigateToCartForEdit(orderId);
-                            } else {
-                              _navigateToCartForCreate(table.id!, table.name);
-                            }
-                          },
-                        ),
-                ),
-              ],
-            );
-          },
+                  final cubit = context.read<OrdersStatusCubit>();
+                  if (_selectedTabIndex == 0) {
+                    return OrdersStatusTableWidget(
+                      orders: cubit.orders,
+                      onUpdatePrintedStatus:
+                          (orderId, isCustomer, isKitchen) {
+                        cubit.updatePrintedStatus(
+                          orderId: orderId,
+                          isPrintedToCustomer: isCustomer,
+                          isPrintedToKitchen: isKitchen,
+                        );
+                      },
+                      onOpenOrderInCart: (orderId) async {
+                        _navigateToCartForEdit(orderId);
+                      },
+                    );
+                  }
+                  return TablesGridViewWidget(
+                    tables: cubit.tables,
+                    onFreeTableTap: (table) {
+                      if (table.id == null) return;
+                      _navigateToCartForCreate(table.id!, table.name);
+                    },
+                    onOccupiedTableTap: (table) async {
+                      if (table.id == null) return;
+                      final orderId =
+                          await cubit.getPendingOrderIdByTableId(
+                        table.id!,
+                      );
+                      if (!context.mounted) return;
+                      if (orderId != null) {
+                        _navigateToCartForEdit(orderId);
+                      } else {
+                        _navigateToCartForCreate(table.id!, table.name);
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

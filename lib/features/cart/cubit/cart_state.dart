@@ -1,4 +1,4 @@
-import 'package:Eatic/core/utils/app_utils.dart';
+import '../../../core/utils/app_utils.dart';
 
 import '../../create_order/model/create_order_line_model.dart';
 import '../../customers/model/customer_address_row.dart';
@@ -68,7 +68,9 @@ class CartState {
     bool clearEditMode = false,
     String? orderNumber,
     String? tableNumber,
+    bool clearTableNumber = false,
     int? selectedTableId,
+    bool clearSelectedTableId = false,
     UserModel? selectedWaiter,
     bool clearWaiter = false,
     CustomerAddressRow? selectedCustomer,
@@ -99,8 +101,8 @@ class CartState {
       editingOrderId:
           clearEditMode ? null : (editingOrderId ?? this.editingOrderId),
       orderNumber: orderNumber ?? this.orderNumber,
-      tableNumber: tableNumber ?? this.tableNumber,
-      selectedTableId: selectedTableId ?? this.selectedTableId,
+      tableNumber: clearTableNumber ? null : (tableNumber ?? this.tableNumber),
+      selectedTableId: clearSelectedTableId ? null : (selectedTableId ?? this.selectedTableId),
       selectedWaiter: clearWaiter
           ? null
           : (selectedWaiter ?? this.selectedWaiter),

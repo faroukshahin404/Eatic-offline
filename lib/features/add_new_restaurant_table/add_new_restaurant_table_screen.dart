@@ -31,13 +31,12 @@ class AddNewRestaurantTableScreen extends StatelessWidget {
             >(
               listener: (context, state) {
                 if (state is AddNewRestaurantTableSaved) {
+                  final messenger = ScaffoldMessenger.of(context);
                   Navigator.of(context).pop<bool>(true);
                   final message = state.isUpdate
                       ? 'add_restaurant_table_form.update_success'.tr()
                       : 'add_restaurant_table_form.success'.tr();
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(message)));
+                  messenger.showSnackBar(SnackBar(content: Text(message)));
                 }
               },
               builder: (context, state) {

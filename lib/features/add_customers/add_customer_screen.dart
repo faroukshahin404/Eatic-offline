@@ -4,12 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/widgets/custom_app_bar.dart';
-import '../../core/widgets/custom_button_widget.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
 import '../../core/widgets/custom_padding.dart';
-import '../../routes/app_paths.dart';
-import '../_main/cubit/main_cubit.dart';
 import 'cubit/add_customer_cubit.dart';
 import 'widgets/add_customer_form_widget.dart';
 
@@ -24,10 +21,9 @@ class AddCustomerScreen extends StatelessWidget {
         child: BlocConsumer<AddCustomerCubit, AddCustomerState>(
           listener: (context, state) {
             if (state is AddCustomerSaved) {
+              final messenger = ScaffoldMessenger.of(context);
               context.pop<bool>(true);
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('customers.save'.tr())));
+              messenger.showSnackBar(SnackBar(content: Text('customers.save'.tr())));
             }
           },
           builder: (context, state) {

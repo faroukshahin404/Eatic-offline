@@ -45,7 +45,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           CustomText(
             text: title ?? "",
             style: AppFonts.styleBold24.copyWith(
-              fontFamily: AppFonts.getCurrentFontFamilyBasedOnText(title!.tr()),
+              fontFamily: AppFonts.getCurrentFontFamilyBasedOnText((title ?? '').tr()),
             ),
           ),
       automaticallyImplyLeading: isMobile || context.canPop(),

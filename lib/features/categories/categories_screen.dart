@@ -35,8 +35,7 @@ class CategoriesScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'categories'),
       body: CustomPadding(
-        child: BlocConsumer<CategoriesCubit, CategoriesState>(
-          listener: (context, state) {},
+        child: BlocBuilder<CategoriesCubit, CategoriesState>(
           builder: (context, state) {
             if (state is CategoriesLoading) {
               return const CustomLoading();

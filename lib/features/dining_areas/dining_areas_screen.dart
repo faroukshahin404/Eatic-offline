@@ -35,8 +35,7 @@ class DiningAreasScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'dining_areas'),
       body: CustomPadding(
-        child: BlocConsumer<DiningAreasCubit, DiningAreasState>(
-          listener: (context, state) {},
+        child: BlocBuilder<DiningAreasCubit, DiningAreasState>(
           builder: (context, state) {
             if (state is DiningAreasLoading) {
               return const CustomLoading();

@@ -113,6 +113,11 @@ class CartCubit extends Cubit<CartState> {
         clearEditMode: true,
         clearSubmitError: true,
         submitSuccess: false,
+        clearWaiter: true,
+        clearSelectedCustomer: true,
+        clearTableNumber: true,
+        clearSelectedTableId: true,
+        clearDiscount: true,
       ),
     );
   }

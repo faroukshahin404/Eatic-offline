@@ -78,7 +78,6 @@ class OrdersStatusTableWidget extends StatelessWidget {
 
     final customerInvoiceText = 'orders_status.customer_print'.tr();
     final kitchenInvoiceText = 'orders_status.kitchen_print'.tr();
-    final viewText = 'actions.view'.tr();
     final editText = 'actions.edit'.tr();
 
     return LayoutBuilder(
@@ -271,34 +270,16 @@ class OrdersStatusTableWidget extends StatelessWidget {
                                     await onOpenOrderInCart(entry.value.id);
                                   },
                                   child: Text(
-                                    // viewText,
                                     editText,
                                     style: AppFonts.styleMedium14.copyWith(
                                       fontFamily:
                                           AppFonts.getCurrentFontFamilyBasedOnText(
-                                            viewText,
+                                            editText,
                                           ),
                                       color: AppColors.deepPrimary,
                                     ),
                                   ),
                                 ),
-                                // const SizedBox(width: 8),
-                                // OutlinedButton(
-                                //   style: _actionButtonStyle(),
-                                //   onPressed: () async {
-                                //     await onOpenOrderInCart(entry.value.id);
-                                //   },
-                                //   child: Text(
-                                //     editText,
-                                //     style: AppFonts.styleMedium14.copyWith(
-                                //       fontFamily: AppFonts
-                                //           .getCurrentFontFamilyBasedOnText(
-                                //         editText,
-                                //       ),
-                                //       color: AppColors.deepPrimary,
-                                //     ),
-                                //   ),
-                                // ),
                               ],
                             ),
                           ),

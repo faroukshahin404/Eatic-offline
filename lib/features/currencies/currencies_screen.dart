@@ -19,8 +19,7 @@ class CurrenciesScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'currencies'),
       body: CustomPadding(
-        child: BlocConsumer<CurrenciesCubit, CurrenciesState>(
-          listener: (context, state) {},
+        child: BlocBuilder<CurrenciesCubit, CurrenciesState>(
           builder: (context, state) {
             if (state is CurrenciesLoading) {
               return const CustomLoading();

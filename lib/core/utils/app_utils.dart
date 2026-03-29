@@ -34,7 +34,7 @@ abstract class AppUtils {
   static Future<void> copyTextWithSnackBar(String text) async {
     await Clipboard.setData(ClipboardData(text: text));
 
-    if ((navigatorKey.currentContext?.mounted ?? false)) return;
+    if (!(navigatorKey.currentContext?.mounted ?? false)) return;
     ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
         backgroundColor: AppColors.primary,

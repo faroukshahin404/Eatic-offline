@@ -19,8 +19,7 @@ class DeliveryMenScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'delivery_men'),
       body: CustomPadding(
-        child: BlocConsumer<DeliveryMenCubit, DeliveryMenState>(
-          listener: (context, state) {},
+        child: BlocBuilder<DeliveryMenCubit, DeliveryMenState>(
           builder: (context, state) {
             if (state is DeliveryMenLoading) {
               return const CustomLoading();

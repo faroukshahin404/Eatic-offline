@@ -27,11 +27,12 @@ class AddNewDiningAreaScreen extends StatelessWidget {
         child: BlocConsumer<AddNewDiningAreaCubit, AddNewDiningAreaState>(
           listener: (context, state) {
             if (state is AddNewDiningAreaSaved) {
+              final messenger = ScaffoldMessenger.of(context);
               Navigator.of(context).pop<bool>(true);
               final message = state.isUpdate
                   ? 'add_dining_area_form.update_success'.tr()
                   : 'add_dining_area_form.success'.tr();
-              ScaffoldMessenger.of(context).showSnackBar(
+              messenger.showSnackBar(
                 SnackBar(content: Text(message)),
               );
             }

@@ -24,13 +24,12 @@ class AddNewDeliveryScreen extends StatelessWidget {
         child: BlocConsumer<AddNewDeliveryCubit, AddNewDeliveryState>(
           listener: (context, state) {
             if (state is AddNewDeliverySaved) {
+              final messenger = ScaffoldMessenger.of(context);
               context.pop<bool>(true);
               final message = state.isUpdate
                   ? 'add_delivery_form.update_success'.tr()
                   : 'add_delivery_form.success'.tr();
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(message)));
+              messenger.showSnackBar(SnackBar(content: Text(message)));
             }
           },
           builder: (context, state) {

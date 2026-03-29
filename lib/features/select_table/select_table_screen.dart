@@ -7,7 +7,6 @@ import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_header_screen.dart';
 import '../../core/widgets/custom_loading.dart';
 import '../../core/widgets/custom_padding.dart';
-import '../../routes/app_paths.dart';
 import '../_main/cubit/main_cubit.dart';
 import '../cart/cubit/cart_cubit.dart';
 import 'cubit/select_table_cubit.dart';

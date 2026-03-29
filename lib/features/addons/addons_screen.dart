@@ -35,8 +35,7 @@ class AddonsScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'addons'),
       body: CustomPadding(
-        child: BlocConsumer<AddonsCubit, AddonsState>(
-          listener: (context, state) {},
+        child: BlocBuilder<AddonsCubit, AddonsState>(
           builder: (context, state) {
             if (state is AddonsLoading) {
               return const CustomLoading();

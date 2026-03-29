@@ -26,11 +26,12 @@ class AddNewAddonScreen extends StatelessWidget {
         child: BlocConsumer<AddNewAddonCubit, AddNewAddonState>(
           listener: (context, state) {
             if (state is AddNewAddonSaved) {
+              final messenger = ScaffoldMessenger.of(context);
               Navigator.of(context).pop<bool>(true);
               final message = state.isUpdate
                   ? 'add_addon_form.update_success'.tr()
                   : 'add_addon_form.success'.tr();
-              ScaffoldMessenger.of(context).showSnackBar(
+              messenger.showSnackBar(
                 SnackBar(content: Text(message)),
               );
             }
