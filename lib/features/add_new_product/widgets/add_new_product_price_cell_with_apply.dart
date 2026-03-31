@@ -42,6 +42,17 @@ class _AddNewProductPriceCellWithApplyState
         (int.tryParse(text) ?? 0).toDouble();
 
   @override
+  void didUpdateWidget(covariant AddNewProductPriceCellWithApply oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      final formatted = _formatNumber(widget.value);
+      if (_controller.text != formatted) {
+        _controller.text = formatted;
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -58,7 +69,7 @@ class _AddNewProductPriceCellWithApplyState
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onChanged: (v) {
-            final val = double.parse(v) ?? 0.0;
+            final val = _parseNumber(v);
             widget.onChanged(val);
           },
           decoration: const InputDecoration(
