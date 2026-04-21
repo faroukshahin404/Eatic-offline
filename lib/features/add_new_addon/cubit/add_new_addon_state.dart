@@ -4,7 +4,8 @@ sealed class AddNewAddonState {}
 
 final class AddNewAddonInitial extends AddNewAddonState {}
 
-final class AddNewAddonLoading extends AddNewAddonState {}
+/// Persisting create or update.
+final class AddNewAddonSaving extends AddNewAddonState {}
 
 final class AddNewAddonError extends AddNewAddonState {
   final String message;

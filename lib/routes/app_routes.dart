@@ -25,8 +25,8 @@ import '../features/dining_areas/cubit/dining_areas_cubit.dart';
 import '../features/dining_areas/dining_areas_screen.dart';
 import '../features/restaurant_tables/cubit/restaurant_tables_cubit.dart';
 import '../features/restaurant_tables/restaurant_tables_screen.dart';
-import '../features/categories/cubit/categories_cubit.dart';
 import '../features/categories/categories_screen.dart';
+import '../features/categories/cubit/categories_cubit.dart';
 import '../features/addons/cubit/addons_cubit.dart';
 import '../features/addons/addons_screen.dart';
 import '../features/price_lists/cubit/price_lists_cubit.dart';
@@ -34,7 +34,6 @@ import '../features/price_lists/price_lists_screen.dart';
 import '../features/add_new_product/add_new_product_screen.dart';
 import '../features/add_new_product/cubit/add_new_product_cubit.dart';
 import '../features/products/products_screen.dart';
-import '../features/products/cubit/products_cubit.dart';
 import '../features/shift_details/all_currencies_screen.dart';
 import '../features/shift_details/cubit/shift_details_cubit.dart';
 import '../features/shift_details/shift_details_screen.dart';
@@ -57,6 +56,23 @@ import '../features/users/cubit/users_cubit.dart';
 import '../features/users/users_screen.dart';
 import '../services_locator/service_locator.dart';
 import 'app_paths.dart';
+import 'app_route_transitions.dart';
+
+GoRoute _appRoute({
+  required String path,
+  required Widget Function(BuildContext context, GoRouterState state) builder,
+  bool fadeOnly = false,
+}) {
+  return GoRoute(
+    path: path,
+    pageBuilder: (context, state) {
+      final child = builder(context, state);
+      return fadeOnly
+          ? AppRouteTransitions.fade(state, child)
+          : AppRouteTransitions.modal(state, child);
+    },
+  );
+}
 
 final myObserver = MyRouteObserver();
 
@@ -88,17 +104,18 @@ class AppPages {
     initialLocation: AppPaths.splash,
     observers: [myObserver],
     routes: [
-      GoRoute(
+      _appRoute(
         path: AppPaths.splash,
+        fadeOnly: true,
         builder: (context, state) => const SplashScreen(),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.main,
         builder: (context, state) => const MainScreen(),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.login,
         builder: (context, state) => BlocProvider<LoginCubit>(
           create: (context) => getIt<LoginCubit>(),
@@ -106,12 +123,12 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.settings,
         builder: (context, state) => SettingScreen(),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.users,
         builder: (context, state) => BlocProvider<UsersCubit>(
           create: (context) => getIt<UsersCubit>()..getUsers(),
@@ -119,7 +136,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.addUser,
         builder: (context, state) => BlocProvider<AddUserCubit>(
           create: (context) =>
@@ -128,7 +145,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.addBranch,
         builder: (context, state) => BlocProvider<AddNewBranchCubit>(
           create: (context) => getIt<AddNewBranchCubit>(),
@@ -136,7 +153,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.branches,
         builder: (context, state) => BlocProvider<BranchesCubit>(
           create: (context) => getIt<BranchesCubit>()..getBranches(),
@@ -144,7 +161,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.deliveryMen,
         builder: (context, state) => BlocProvider<DeliveryMenCubit>(
           create: (context) => getIt<DeliveryMenCubit>()..getAll(),
@@ -152,13 +169,14 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.addDelivery,
         builder: (context, state) => BlocProvider<AddNewDeliveryCubit>(
           create: (context) {
             final cubit = getIt<AddNewDeliveryCubit>();
-            if (state.extra != null)
+            if (state.extra != null) {
               cubit.setDeliveryIdForEdit(state.extra as int);
+            }
             cubit.loadBranches();
             return cubit;
           },
@@ -166,7 +184,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.zones,
         builder: (context, state) => BlocProvider<ZonesCubit>(
           create: (context) => getIt<ZonesCubit>()..getAllZones(),
@@ -174,13 +192,13 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.addZone,
         builder: (context, state) =>
             AddNewZoneScreen(zoneId: state.extra as int?),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.currencies,
         builder: (context, state) => BlocProvider<CurrenciesCubit>(
           create: (context) => getIt<CurrenciesCubit>()..getAll(),
@@ -188,13 +206,13 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.addCurrency,
         builder: (context, state) =>
             AddNewCurrencyScreen(currencyId: state.extra as int?),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.paymentMethods,
         builder: (context, state) => BlocProvider<PaymentMethodsCubit>(
           create: (context) => getIt<PaymentMethodsCubit>()..getAll(),
@@ -202,7 +220,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.diningAreas,
         builder: (context, state) => BlocProvider<DiningAreasCubit>(
           create: (context) => getIt<DiningAreasCubit>()..getAll(),
@@ -210,7 +228,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.restaurantTables,
         builder: (context, state) => BlocProvider<RestaurantTablesCubit>(
           create: (context) => getIt<RestaurantTablesCubit>()..getAll(),
@@ -218,7 +236,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.categories,
         builder: (context, state) => BlocProvider<CategoriesCubit>(
           create: (context) => getIt<CategoriesCubit>()..getAll(),
@@ -226,7 +244,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.addons,
         builder: (context, state) => BlocProvider<AddonsCubit>(
           create: (context) => getIt<AddonsCubit>()..getAll(),
@@ -234,7 +252,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.priceLists,
         builder: (context, state) => BlocProvider<PriceListsCubit>(
           create: (context) => getIt<PriceListsCubit>()..getAll(),
@@ -242,7 +260,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.addProduct,
         builder: (context, state) => BlocProvider<AddNewProductCubit>(
           create: (context) =>
@@ -252,12 +270,9 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.products,
-        builder: (context, state) => BlocProvider<ProductsCubit>(
-          create: (context) => getIt<ProductsCubit>()..loadProducts(),
-          child: const ProductsScreen(),
-        ),
+        builder: (context, state) => const ProductsScreen(),
       ),
 
       // GoRoute(
@@ -268,7 +283,7 @@ class AppPages {
       //     child: const CreateOrderScreen(),
       //   ),
       // ),
-      GoRoute(
+      _appRoute(
         path: AppPaths.selectWaiter,
         builder: (context, state) => BlocProvider<SelectWaiterCubit>(
           create: (context) => getIt<SelectWaiterCubit>()..getWaiters(),
@@ -276,7 +291,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.selectTable,
         builder: (context, state) => BlocProvider<SelectTableCubit>(
           create: (context) => getIt<SelectTableCubit>()..loadTables(),
@@ -284,7 +299,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.customerSearch,
         builder: (context, state) => BlocProvider<CustomerSearchCubit>(
           create: (context) => getIt<CustomerSearchCubit>(),
@@ -292,7 +307,7 @@ class AppPages {
         ),
       ),
 
-      GoRoute(
+      _appRoute(
         path: AppPaths.addCustomer,
         builder: (context, state) => BlocProvider<AddCustomerCubit>(
           create: (context) {
@@ -302,21 +317,21 @@ class AppPages {
           child: const AddCustomerScreen(),
         ),
       ),
-      GoRoute(
+      _appRoute(
         path: AppPaths.resetPassword,
         builder: (context, state) => BlocProvider<ResetPasswordCubit>(
           create: (context) => getIt<ResetPasswordCubit>(),
           child: const ResetPasswordScreen(),
         ),
       ),
-      GoRoute(
+      _appRoute(
         path: AppPaths.allCurrencies,
         builder: (context, state) => BlocProvider<ShiftDetailsCubit>(
           create: (context) => getIt<ShiftDetailsCubit>()..getAll(custodyId: state.extra as int?),
           child: const AllCurrenciesScreen(),
         ),
       ),
-      GoRoute(
+      _appRoute(
         path: AppPaths.shiftDetails,
         builder: (context, state) {
           final cubit = state.extra as ShiftDetailsCubit;

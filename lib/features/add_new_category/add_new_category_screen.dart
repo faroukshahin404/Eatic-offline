@@ -10,6 +10,7 @@ import '../categories/model/category_model.dart';
 import 'cubit/add_new_category_cubit.dart';
 import 'widgets/add_new_category_form_widget.dart';
 
+/// Standalone category form (e.g. legacy bottom sheet). Prefer inline flow on [CategoriesScreen].
 class AddNewCategoryScreen extends StatelessWidget {
   const AddNewCategoryScreen({super.key, this.category});
   final CategoryModel? category;
@@ -38,7 +39,8 @@ class AddNewCategoryScreen extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            if (state is AddNewCategoryLoading) {
+            if (state is AddNewCategoryLoadingCategories ||
+                state is AddNewCategorySaving) {
               return const CustomLoading();
             }
             if (state is AddNewCategoryError) {

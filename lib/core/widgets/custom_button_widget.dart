@@ -38,18 +38,49 @@ class CustomButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fg = foregroundColor ?? Colors.white;
+    final bg = backgroundColor ?? AppColors.primary;
     final button = ElevatedButton(
       onPressed: onPressed,
       style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(
-          backgroundColor ?? AppColors.primary,
-        ),
-        foregroundColor: WidgetStateProperty.all(fg),
+        elevation: const WidgetStatePropertyAll(0),
+        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return bg.withValues(alpha: 0.45);
+          }
+          return bg;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return fg.withValues(alpha: 0.75);
+          }
+          return fg;
+        }),
+        overlayColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return Colors.transparent;
+          }
+          if (states.contains(WidgetState.pressed)) {
+            return Color.alphaBlend(
+              Colors.black.withValues(alpha: 0.1),
+              bg,
+            );
+          }
+          if (states.contains(WidgetState.hovered)) {
+            return Color.alphaBlend(
+              Colors.white.withValues(alpha: 0.14),
+              bg,
+            );
+          }
+          return Colors.transparent;
+        }),
         padding: WidgetStateProperty.all(
-          padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         ),
+        minimumSize: const WidgetStatePropertyAll(Size(0, 40)),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         mouseCursor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
@@ -61,7 +92,7 @@ class CustomButtonWidget extends StatelessWidget {
       child: AnimatedCrossFade(
         firstCurve: Curves.easeInOut,
         secondCurve: Curves.easeInOut,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         crossFadeState: isLoading
             ? CrossFadeState.showSecond
             : CrossFadeState.showFirst,

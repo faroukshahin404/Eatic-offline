@@ -21,6 +21,7 @@ class BranchDropdownWidget extends StatelessWidget {
           onChanged: cubit.setSelectedBranch,
           itemLabelBuilder: (b) => b.name,
           label: 'add_zone_form.branch'.tr(),
+          leadingIcon: Icons.store_mall_directory_outlined,
           validator: (v) => v == null ? 'validation.required'.tr() : null,
         );
       },

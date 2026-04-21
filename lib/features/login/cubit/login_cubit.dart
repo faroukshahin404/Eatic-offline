@@ -16,10 +16,16 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit(this._repo) : super(LoginInitial());
 
   final LoginOfflineRepository _repo;
+  late final Future<bool> isUsersTableEmptyFuture = _loadUsersTableIsEmpty();
 
   final formKey = GlobalKey<FormState>();
   final codeController = TextEditingController();
   final passwordController = TextEditingController();
+
+  Future<bool> _loadUsersTableIsEmpty() async {
+    final result = await _repo.isUsersTableEmpty();
+    return result.fold((_) => false, (isEmpty) => isEmpty);
+  }
 
   @override
   Future<void> close() {

@@ -8,11 +8,13 @@ final class AddNewPriceListLoadingCurrencies extends AddNewPriceListState {}
 
 final class AddNewPriceListReady extends AddNewPriceListState {}
 
-final class AddNewPriceListLoading extends AddNewPriceListState {}
+/// Persisting create or update.
+final class AddNewPriceListSaving extends AddNewPriceListState {}
 
 final class AddNewPriceListSaved extends AddNewPriceListState {
   final int? id;
-  AddNewPriceListSaved({this.id});
+  final bool isUpdate;
+  AddNewPriceListSaved({this.id, this.isUpdate = false});
 }
 
 final class AddNewPriceListError extends AddNewPriceListState {

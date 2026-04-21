@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
@@ -19,6 +20,7 @@ class AddNewDeliveryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFA),
       appBar: CustomAppBar(title: 'add_delivery'),
       body: CustomPadding(
         child: BlocConsumer<AddNewDeliveryCubit, AddNewDeliveryState>(
@@ -26,9 +28,10 @@ class AddNewDeliveryScreen extends StatelessWidget {
             if (state is AddNewDeliverySaved) {
               final messenger = ScaffoldMessenger.of(context);
               context.pop<bool>(true);
-              final message = state.isUpdate
-                  ? 'add_delivery_form.update_success'.tr()
-                  : 'add_delivery_form.success'.tr();
+              final message =
+                  state.isUpdate
+                      ? 'add_delivery_form.update_success'.tr()
+                      : 'add_delivery_form.success'.tr();
               messenger.showSnackBar(SnackBar(content: Text(message)));
             }
           },
@@ -39,11 +42,17 @@ class AddNewDeliveryScreen extends StatelessWidget {
             if (state is AddNewDeliveryError) {
               return CustomFailedWidget(
                 message: state.message,
-                onRetry: () =>
-                    context.read<AddNewDeliveryCubit>().loadBranches(),
+                onRetry:
+                    () => context.read<AddNewDeliveryCubit>().loadBranches(),
               );
             }
-            return const AddNewDeliveryFormWidget();
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.greyE6E9EA),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const AddNewDeliveryFormWidget(),
+            );
           },
         ),
       ),

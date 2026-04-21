@@ -12,9 +12,19 @@ class ProductsCubit extends Cubit<ProductsState> {
   List<ProductModel> _products = [];
   List<ProductModel> get products => _products;
 
+  /// `null` means show products from all categories.
+  int? _selectedCategoryId;
+  int? get selectedCategoryFilter => _selectedCategoryId;
+
+  Future<void> setCategoryFilter(int? categoryId) async {
+    _selectedCategoryId = categoryId;
+    return loadProducts();
+  }
+
   Future<void> loadProducts() async {
     emit(ProductsLoading());
-    final result = await _productRepo.getAllProducts();
+    final result =
+        await _productRepo.getProductsByCategoryId(_selectedCategoryId);
     result.fold(
       (f) => emit(ProductsError(f.failureMessage ?? 'Error')),
       (list) {

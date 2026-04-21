@@ -9,6 +9,7 @@ import '../../../users/repos/offline/users_schema.dart';
 
 abstract class LoginOfflineRepository {
   DbCall<UserModel?> findByCodeAndPassword(String code, String password);
+  DbCall<bool> isUsersTableEmpty();
 }
 
 class LoginOfflineRepoImpl implements LoginOfflineRepository {
@@ -22,11 +23,28 @@ class LoginOfflineRepoImpl implements LoginOfflineRepository {
     try {
       final list = await _db.query(
         UsersSchema.tableUsers,
-        where:
-            '${UsersSchema.colCode} = ? AND ${UsersSchema.colPassword} = ?',
+        where: '${UsersSchema.colCode} = ? AND ${UsersSchema.colPassword} = ?',
         whereArgs: [code.trim(), password],
       );
       return Right(list.isEmpty ? null : UserModel.fromMap(list.first));
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, bool>> isUsersTableEmpty() async {
+    try {
+      final list = await _db.query(
+        UsersSchema.tableUsers,
+        columns: [UsersSchema.colId],
+        limit: 1,
+      );
+      return Right(list.isEmpty);
     } catch (e) {
       return Left(
         e is DatabaseException

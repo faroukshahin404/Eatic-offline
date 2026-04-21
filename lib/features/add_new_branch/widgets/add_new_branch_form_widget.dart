@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_fonts.dart';
-import '../../../core/widgets/custom_button_widget.dart';
 import '../../../core/widgets/custom_text_field.dart';
+import '../../../core/widgets/pos_crud_ui.dart';
 import '../cubit/add_new_branch_cubit.dart';
 
 class AddNewBranchFormWidget extends StatelessWidget {
@@ -25,43 +25,65 @@ class AddNewBranchFormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final cubit = context.read<AddNewBranchCubit>();
     final branch = cubit.branch;
+    final isEdit = branch != null;
+
     return Form(
       key: cubit.formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          CustomTextField(
-            title: 'add_branch_form.name'.tr(),
-            hint: 'add_branch_form.name'.tr(),
-            controller: cubit.nameController,
-            validator: (v) => (v == null || v.trim().isEmpty)
-                ? 'validation.required'.tr()
-                : null,
-          ),
-          if (branch != null) ...[
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PosCrudSectionCard(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  CustomTextField(
+                    title: 'add_branch_form.name'.tr(),
+                    hint: 'add_branch_form.name'.tr(),
+                    controller: cubit.nameController,
+                    prefix: const Padding(
+                      padding: EdgeInsetsDirectional.only(start: 10, end: 8),
+                      child: Icon(Icons.store_mall_directory_outlined),
+                    ),
+                    validator:
+                        (v) =>
+                            (v == null || v.trim().isEmpty)
+                                ? 'validation.required'.tr()
+                                : null,
+                  ),
+                  if (branch != null) ...[
+                    const SizedBox(height: 20),
+                    _ReadOnlyField(
+                      label: 'add_branch_form.created_at'.tr(),
+                      value: '\u200E${_formatDate(branch.createdAt)}',
+                    ),
+                    const SizedBox(height: 12),
+                    _ReadOnlyField(
+                      label: 'add_branch_form.updated_at'.tr(),
+                      value: '\u200E${_formatDate(branch.updatedAt)}',
+                    ),
+                    const SizedBox(height: 12),
+                    _ReadOnlyField(
+                      label: 'add_branch_form.created_by'.tr(),
+                      value:
+                          branch.createdBy?.name ??
+                          branch.createdBy?.code ??
+                          '-',
+                    ),
+                  ],
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
-            _ReadOnlyField(
-              label: 'add_branch_form.created_at'.tr(),
-              value: '\u200E${_formatDate(branch.createdAt)}',
-            ),
-            const SizedBox(height: 12),
-            _ReadOnlyField(
-              label: 'add_branch_form.updated_at'.tr(),
-              value: '\u200E${_formatDate(branch.updatedAt)}',
-            ),
-            const SizedBox(height: 12),
-            _ReadOnlyField(
-              label: 'add_branch_form.created_by'.tr(),
-              value: branch.createdBy?.name ?? branch.createdBy?.code ?? '-',
+            PosCrudActionButton(
+              label: 'add_branch_form.save'.tr(),
+              icon: isEdit ? Icons.edit_rounded : Icons.save_outlined,
+              onPressed: () => cubit.saveBranch(),
             ),
           ],
-          const SizedBox(height: 24),
-          CustomButtonWidget(
-            text: 'add_branch_form.save',
-            onPressed: () => cubit.saveBranch(),
-          ),
-        ],
+        ),
       ),
     );
   }

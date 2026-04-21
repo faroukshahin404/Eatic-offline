@@ -34,12 +34,15 @@ class AddNewProductBasicDataSection extends StatelessWidget {
           title: 'add_product_form.name_en'.tr(),
           hint: 'add_product_form.name_en_hint'.tr(),
           controller: cubit.nameEnController,
+          // Optional: CustomTextField treats null validator as required by default.
+          validator: (_) => null,
         ),
         CustomTextField(
           title: 'add_product_form.description'.tr(),
           hint: 'add_product_form.description'.tr(),
           controller: cubit.descriptionController,
           maxLines: 4,
+          validator: (_) => null,
         ),
       ],
     );

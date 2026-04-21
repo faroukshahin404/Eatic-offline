@@ -31,6 +31,9 @@ class AddNewAddonCubit extends Cubit<AddNewAddonState> {
       priceController.text = model.defaultPrice != null
           ? model.defaultPrice!.toString()
           : '';
+    } else {
+      nameController.clear();
+      priceController.clear();
     }
   }
 
@@ -51,7 +54,7 @@ class AddNewAddonCubit extends Cubit<AddNewAddonState> {
       createdAt: addon?.createdAt,
       updatedAt: now,
     );
-    emit(AddNewAddonLoading());
+    emit(AddNewAddonSaving());
     final isUpdate = addon?.id != null;
     final result = isUpdate
         ? await _repo.update(model)

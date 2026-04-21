@@ -1,13 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../core/widgets/custom_app_bar.dart';
-import '../../core/widgets/custom_button_widget.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
 import '../../core/widgets/custom_padding.dart';
+import '../../core/widgets/pos_crud_ui.dart';
 import '../../routes/app_paths.dart';
 import 'cubit/users_cubit.dart';
 import 'widgets/list_of_user_widget.dart';
@@ -26,6 +26,7 @@ class UsersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFA),
       appBar: CustomAppBar(title: "users"),
       body: CustomPadding(
         child: BlocBuilder<UsersCubit, UsersState>(
@@ -44,12 +45,17 @@ class UsersScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 16,
               children: [
-                CustomButtonWidget(
-                  text: "add_user",
-                  onPressed: () async {
-                    await goToAddUser(context);
-                  },
+                SizedBox(
+                  width: 220,
+                  child: PosCrudActionButton(
+                    label: 'add_user'.tr(),
+                    icon: Icons.person_add_alt_1_rounded,
+                    onPressed: () async {
+                      await goToAddUser(context);
+                    },
+                  ),
                 ),
+                const SizedBox(height: 4),
                 Expanded(
                   child: ListOfUserWidget(
                     users: users,

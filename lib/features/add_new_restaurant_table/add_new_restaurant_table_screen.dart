@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
 import '../../core/widgets/custom_padding.dart';
@@ -10,6 +11,7 @@ import '../restaurant_tables/model/restaurant_table_model.dart';
 import 'cubit/add_new_restaurant_table_cubit.dart';
 import 'widgets/add_new_restaurant_table_form_widget.dart';
 
+/// Standalone restaurant table form (e.g. legacy bottom sheet). Prefer inline flow on [RestaurantTablesScreen].
 class AddNewRestaurantTableScreen extends StatelessWidget {
   const AddNewRestaurantTableScreen({super.key, this.restaurantTable});
   final RestaurantTableModel? restaurantTable;
@@ -24,36 +26,47 @@ class AddNewRestaurantTableScreen extends StatelessWidget {
           cubit.loadBranches();
           return cubit;
         },
-        child:
-            BlocConsumer<
-              AddNewRestaurantTableCubit,
-              AddNewRestaurantTableState
-            >(
-              listener: (context, state) {
-                if (state is AddNewRestaurantTableSaved) {
-                  final messenger = ScaffoldMessenger.of(context);
-                  Navigator.of(context).pop<bool>(true);
-                  final message = state.isUpdate
+        child: BlocConsumer<
+          AddNewRestaurantTableCubit,
+          AddNewRestaurantTableState
+        >(
+          listener: (context, state) {
+            if (state is AddNewRestaurantTableSaved) {
+              final messenger = ScaffoldMessenger.of(context);
+              Navigator.of(context).pop<bool>(true);
+              final message =
+                  state.isUpdate
                       ? 'add_restaurant_table_form.update_success'.tr()
                       : 'add_restaurant_table_form.success'.tr();
-                  messenger.showSnackBar(SnackBar(content: Text(message)));
-                }
-              },
-              builder: (context, state) {
-                if (state is AddNewRestaurantTableError) {
-                  return CustomFailedWidget(
-                    message: state.message,
-                    onRetry: () => context
-                        .read<AddNewRestaurantTableCubit>()
-                        .loadBranches(),
-                  );
-                }
-                if (state is AddNewRestaurantTableSaving) {
-                  return const CustomLoading();
-                }
-                return const AddNewRestaurantTableFormWidget();
-              },
-            ),
+              messenger.showSnackBar(SnackBar(content: Text(message)));
+            }
+          },
+          builder: (context, state) {
+            if (state is AddNewRestaurantTableError) {
+              return CustomFailedWidget(
+                message: state.message,
+                onRetry:
+                    () =>
+                        context
+                            .read<AddNewRestaurantTableCubit>()
+                            .loadBranches(),
+              );
+            }
+            if (state is AddNewRestaurantTableSaving) {
+              return const CustomLoading();
+            }
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.greyE6E9EA),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(12),
+                child: AddNewRestaurantTableFormWidget(),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

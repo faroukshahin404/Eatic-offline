@@ -14,6 +14,7 @@ class ProductModel {
     this.sortOrder,
     this.createdAt,
     this.updatedAt,
+    this.categoryNames,
   });
 
   final int? id;
@@ -28,6 +29,9 @@ class ProductModel {
   final String? createdAt;
   final String? updatedAt;
 
+  /// Comma-separated category names from list query (display only).
+  final String? categoryNames;
+
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       id: map[ProductsSchema.colId] as int?,
@@ -41,6 +45,7 @@ class ProductModel {
       sortOrder: map[ProductsSchema.colSortOrder] as int?,
       createdAt: map[ProductsSchema.colCreatedAt] as String?,
       updatedAt: map[ProductsSchema.colUpdatedAt] as String?,
+      categoryNames: map['category_names'] as String?,
     );
   }
 

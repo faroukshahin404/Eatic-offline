@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
 import '../../core/widgets/custom_padding.dart';
@@ -36,7 +37,13 @@ class AddNewBranchScreen extends StatelessWidget {
             } else if (state is AddNewBranchError) {
               return CustomFailedWidget(message: state.message);
             }
-            return const AddNewBranchFormWidget();
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.greyE6E9EA),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const AddNewBranchFormWidget(),
+            );
           },
         ),
       ),

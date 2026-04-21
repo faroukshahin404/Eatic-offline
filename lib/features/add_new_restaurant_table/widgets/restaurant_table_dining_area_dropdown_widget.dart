@@ -104,6 +104,7 @@ class RestaurantTableDiningAreaDropdownWidget extends StatelessWidget {
           onChanged: cubit.setSelectedDiningArea,
           itemLabelBuilder: (d) => d.name ?? '-',
           label: 'add_restaurant_table_form.dining_area'.tr(),
+          leadingIcon: Icons.dining_outlined,
           validator: (v) => v == null ? 'validation.required'.tr() : null,
           hideWhenEmpty: false,
           emptyMessage: 'add_restaurant_table_form.no_dining_areas'.tr(),

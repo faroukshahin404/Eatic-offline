@@ -34,12 +34,15 @@ class AddNewCategoryCubit extends Cubit<AddNewCategoryState> {
     category = cat;
     if (cat != null) {
       nameController.text = cat.name ?? '';
+    } else {
+      nameController.clear();
+      selectedParent = null;
     }
   }
 
   /// Load categories list for parent dropdown (from CategoriesOfflineRepository).
   Future<void> loadCategories() async {
-    emit(AddNewCategoryLoading());
+    emit(AddNewCategoryLoadingCategories());
     final result = await _categoriesRepo.getAll();
     result.fold(
       (f) => emit(AddNewCategoryError(f.failureMessage ?? 'Error')),
@@ -48,8 +51,6 @@ class AddNewCategoryCubit extends Cubit<AddNewCategoryState> {
         if (category != null) {
           final idx = list.indexWhere((c) => c.id == category!.parentId);
           selectedParent = idx >= 0 ? list[idx] : null;
-        } else if (selectedParent == null) {
-          selectedParent = null;
         }
         emit(AddNewCategoryCategoriesLoaded());
       },
@@ -79,7 +80,7 @@ class AddNewCategoryCubit extends Cubit<AddNewCategoryState> {
       createdAt: category?.createdAt,
       updatedAt: now,
     );
-    emit(AddNewCategoryLoading());
+    emit(AddNewCategorySaving());
     final isUpdate = category?.id != null;
     final result = isUpdate
         ? await _addNewCategoryRepo.update(model)

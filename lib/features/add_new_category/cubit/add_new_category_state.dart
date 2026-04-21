@@ -4,7 +4,11 @@ sealed class AddNewCategoryState {}
 
 final class AddNewCategoryInitial extends AddNewCategoryState {}
 
-final class AddNewCategoryLoading extends AddNewCategoryState {}
+/// Loading parent options from the local repository.
+final class AddNewCategoryLoadingCategories extends AddNewCategoryState {}
+
+/// Persisting create or update.
+final class AddNewCategorySaving extends AddNewCategoryState {}
 
 final class AddNewCategoryCategoriesLoaded extends AddNewCategoryState {}
 

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
 import '../../core/widgets/custom_padding.dart';
@@ -10,6 +11,7 @@ import '../dining_areas/model/dining_area_model.dart';
 import 'cubit/add_new_dining_area_cubit.dart';
 import 'widgets/add_new_dining_area_form_widget.dart';
 
+/// Standalone dining area form (e.g. legacy bottom sheet). Prefer inline flow on [DiningAreasScreen].
 class AddNewDiningAreaScreen extends StatelessWidget {
   const AddNewDiningAreaScreen({super.key, this.diningArea});
   final DiningAreaModel? diningArea;
@@ -29,12 +31,11 @@ class AddNewDiningAreaScreen extends StatelessWidget {
             if (state is AddNewDiningAreaSaved) {
               final messenger = ScaffoldMessenger.of(context);
               Navigator.of(context).pop<bool>(true);
-              final message = state.isUpdate
-                  ? 'add_dining_area_form.update_success'.tr()
-                  : 'add_dining_area_form.success'.tr();
-              messenger.showSnackBar(
-                SnackBar(content: Text(message)),
-              );
+              final message =
+                  state.isUpdate
+                      ? 'add_dining_area_form.update_success'.tr()
+                      : 'add_dining_area_form.success'.tr();
+              messenger.showSnackBar(SnackBar(content: Text(message)));
             }
           },
           builder: (context, state) {
@@ -44,11 +45,20 @@ class AddNewDiningAreaScreen extends StatelessWidget {
             if (state is AddNewDiningAreaError) {
               return CustomFailedWidget(
                 message: state.message,
-                onRetry: () =>
-                    context.read<AddNewDiningAreaCubit>().loadBranches(),
+                onRetry:
+                    () => context.read<AddNewDiningAreaCubit>().loadBranches(),
               );
             }
-            return const AddNewDiningAreaFormWidget();
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.greyE6E9EA),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(12),
+                child: AddNewDiningAreaFormWidget(),
+              ),
+            );
           },
         ),
       ),

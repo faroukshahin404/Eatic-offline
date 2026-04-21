@@ -25,12 +25,14 @@ class AddNewProductPriceCellWithApply extends StatefulWidget {
 
 class _AddNewProductPriceCellWithApplyState
     extends State<AddNewProductPriceCellWithApply> {
-  late TextEditingController _controller;
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: _formatNumber(widget.value));
+    _focusNode = FocusNode();
   }
 
   static String _formatNumber(double value) {
@@ -38,11 +40,30 @@ class _AddNewProductPriceCellWithApplyState
     return n == 0 ? '' : n.toString();
   }
 
-    static double _parseNumber(String text) =>
-        (int.tryParse(text) ?? 0).toDouble();
+  static double _parseNumber(String text) =>
+      (int.tryParse(text) ?? 0).toDouble();
+
+  /// Sync from parent when not editing, or when parent diverges (e.g. apply-all).
+  bool _shouldSyncControllerFromParent(double newValue) {
+    if (!_focusNode.hasFocus) return true;
+    final fromField = _parseNumber(_controller.text);
+    return (newValue - fromField).abs() > 1e-9;
+  }
+
+  @override
+  void didUpdateWidget(AddNewProductPriceCellWithApply oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value == widget.value) return;
+    if (!_shouldSyncControllerFromParent(widget.value)) return;
+    final next = _formatNumber(widget.value);
+    if (_controller.text != next) {
+      _controller.text = next;
+    }
+  }
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -55,11 +76,11 @@ class _AddNewProductPriceCellWithApplyState
       children: [
         TextField(
           controller: _controller,
+          focusNode: _focusNode,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onChanged: (v) {
-            final val = double.parse(v) ?? 0.0;
-            widget.onChanged(val);
+            widget.onChanged(_parseNumber(v));
           },
           decoration: const InputDecoration(
             isDense: true,

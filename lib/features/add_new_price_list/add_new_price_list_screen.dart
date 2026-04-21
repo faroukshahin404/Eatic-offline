@@ -11,6 +11,7 @@ import '../price_lists/model/price_list_model.dart';
 import 'cubit/add_new_price_list_cubit.dart';
 import 'widgets/add_new_price_list_form_widget.dart';
 
+/// Standalone price list form (e.g. legacy bottom sheet). Prefer inline flow on the price lists screen.
 class AddNewPriceListScreen extends StatelessWidget {
   const AddNewPriceListScreen({super.key, this.priceList});
   final PriceListModel? priceList;
@@ -33,7 +34,7 @@ class AddNewPriceListScreen extends StatelessWidget {
               messenger.showSnackBar(
                 SnackBar(
                   content: Text(
-                    priceList != null
+                    state.isUpdate
                         ? 'add_price_list_form.update_success'.tr()
                         : 'add_price_list_form.success'.tr(),
                   ),
@@ -46,9 +47,14 @@ class AddNewPriceListScreen extends StatelessWidget {
               return const CustomLoading();
             }
             if (state is AddNewPriceListError) {
-              return CustomFailedWidget(message: state.message);
+              return CustomFailedWidget(
+                message: state.message,
+                onRetry:
+                    () =>
+                        context.read<AddNewPriceListCubit>().loadCurrencies(),
+              );
             }
-            if (state is AddNewPriceListLoading) {
+            if (state is AddNewPriceListSaving) {
               return const CustomLoading();
             }
             return const AddNewPriceListFormWidget();

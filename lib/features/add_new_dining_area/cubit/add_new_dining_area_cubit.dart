@@ -10,7 +10,7 @@ part 'add_new_dining_area_state.dart';
 
 class AddNewDiningAreaCubit extends Cubit<AddNewDiningAreaState> {
   AddNewDiningAreaCubit(this._branchesRepo, this._diningRepo)
-      : super(AddNewDiningAreaInitial());
+    : super(AddNewDiningAreaInitial());
 
   final BranchesOfflineRepository _branchesRepo;
   final AddNewDiningAreaOfflineRepository _diningRepo;
@@ -34,6 +34,8 @@ class AddNewDiningAreaCubit extends Cubit<AddNewDiningAreaState> {
     diningArea = area;
     if (area != null) {
       nameController.text = area.name ?? '';
+    } else {
+      nameController.clear();
     }
   }
 
@@ -45,8 +47,7 @@ class AddNewDiningAreaCubit extends Cubit<AddNewDiningAreaState> {
       (list) {
         branches = list;
         if (list.isNotEmpty && diningArea != null) {
-          final idx =
-              list.indexWhere((b) => b.id == diningArea!.branchId);
+          final idx = list.indexWhere((b) => b.id == diningArea!.branchId);
           selectedBranch = idx >= 0 ? list[idx] : list.first;
         } else if (list.isNotEmpty && selectedBranch == null) {
           selectedBranch = list.first;
@@ -79,15 +80,14 @@ class AddNewDiningAreaCubit extends Cubit<AddNewDiningAreaState> {
     );
     emit(AddNewDiningAreaLoading());
     final isUpdate = diningArea?.id != null;
-    final result = isUpdate
-        ? await _diningRepo.update(model)
-        : await _diningRepo.insert(model);
+    final result =
+        isUpdate
+            ? await _diningRepo.update(model)
+            : await _diningRepo.insert(model);
     result.fold(
       (f) => emit(AddNewDiningAreaError(f.failureMessage ?? 'Error')),
-      (id) => emit(AddNewDiningAreaSaved(
-        diningArea?.id ?? id,
-        isUpdate: isUpdate,
-      )),
+      (id) =>
+          emit(AddNewDiningAreaSaved(diningArea?.id ?? id, isUpdate: isUpdate)),
     );
   }
 }

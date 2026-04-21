@@ -21,6 +21,7 @@ class DiningAreaBranchDropdownWidget extends StatelessWidget {
           onChanged: cubit.setSelectedBranch,
           itemLabelBuilder: (b) => b.name,
           label: 'add_dining_area_form.branch'.tr(),
+          leadingIcon: Icons.store_mall_directory_outlined,
           validator: (v) => v == null ? 'validation.required'.tr() : null,
         );
       },

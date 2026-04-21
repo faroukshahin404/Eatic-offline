@@ -6,6 +6,7 @@ import '../../../../core/error/offline_error.dart';
 import '../../../../services_locator/service_locator.dart';
 import '../../../add_new_product/model/product_model.dart';
 import '../../../add_new_product/repos/offline/products_schema.dart';
+import '../../../categories/repos/offline/categories_schema.dart';
 
 abstract class ProductsOfflineRepository {
   DbCall<List<ProductModel>> getAllProducts();
@@ -22,6 +23,16 @@ class ProductsOfflineRepoImpl implements ProductsOfflineRepository {
     return getProductsByCategoryId(null);
   }
 
+  static String _categoryNamesSubquery(String productAlias) {
+    return '''
+(SELECT GROUP_CONCAT(c.${CategoriesSchema.colName}, ', ')
+ FROM ${ProductsSchema.tableCategoryProduct} cp
+ INNER JOIN ${CategoriesSchema.tableCategories} c
+   ON c.${CategoriesSchema.colId} = cp.${ProductsSchema.colCategoryId}
+ WHERE cp.${ProductsSchema.colProductId} = $productAlias.${ProductsSchema.colId}
+) AS category_names''';
+  }
+
   @override
   Future<Either<OfflineFailure, List<ProductModel>>> getProductsByCategoryId(
     int? categoryId,
@@ -29,18 +40,21 @@ class ProductsOfflineRepoImpl implements ProductsOfflineRepository {
     try {
       final List<Map<String, dynamic>> rows;
       if (categoryId == null) {
-        rows = await _db.query(
-          ProductsSchema.tableProducts,
-          orderBy:
-              '${ProductsSchema.colSortOrder} ASC, ${ProductsSchema.colId} ASC',
+        rows = await _db.rawQuery(
+          '''
+          SELECT p.*, ${_categoryNamesSubquery('p')}
+          FROM ${ProductsSchema.tableProducts} p
+          ORDER BY p.${ProductsSchema.colSortOrder} ASC, p.${ProductsSchema.colId} ASC
+          ''',
         );
       } else {
         rows = await _db.rawQuery(
           '''
-          SELECT p.* FROM ${ProductsSchema.tableProducts} p
-          INNER JOIN ${ProductsSchema.tableCategoryProduct} cp
-            ON p.${ProductsSchema.colId} = cp.${ProductsSchema.colProductId}
-          WHERE cp.${ProductsSchema.colCategoryId} = ?
+          SELECT p.*, ${_categoryNamesSubquery('p')}
+          FROM ${ProductsSchema.tableProducts} p
+          INNER JOIN ${ProductsSchema.tableCategoryProduct} cpf
+            ON p.${ProductsSchema.colId} = cpf.${ProductsSchema.colProductId}
+          WHERE cpf.${ProductsSchema.colCategoryId} = ?
           ORDER BY p.${ProductsSchema.colSortOrder} ASC, p.${ProductsSchema.colId} ASC
           ''',
           [categoryId],

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-import '../../core/constants/app_fonts.dart';
 import '../../core/services/flutter_secure_storage.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../users/session_user_holder.dart';
 import '../../core/widgets/custom_padding.dart';
-import '../../core/widgets/custom_text.dart';
 import '../../routes/app_paths.dart';
 import 'widgets/list_of_settings_widget.dart';
 
@@ -36,22 +35,18 @@ class SettingScreen extends StatelessWidget {
         child: Column(
           children: [
             Expanded(child: ListOfSettings(settings: settings)),
-            const SizedBox(height: 20),
-            TextButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(
-                  const Color.fromARGB(255, 255, 78, 75),
-                ),
-              ),
-              onPressed: () async {
+            const SizedBox(height: 16),
+            SettingsTile(
+              label: 'logout'.tr(),
+              icon: Icons.logout_rounded,
+              iconColor: Colors.red.shade600,
+              textColor: Colors.red.shade600,
+              trailingColor: Colors.red.shade400,
+              onTap: () async {
                 SessionUserHolder.clear();
                 await SecureLocalStorageService.deleteAllSecureData();
                 if (context.mounted) context.go(AppPaths.splash);
               },
-              child: CustomText(
-                text: 'logout',
-                style: AppFonts.styleBold20.copyWith(color: Colors.white),
-              ),
             ),
           ],
         ),

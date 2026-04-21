@@ -29,7 +29,15 @@ class AddNewPaymentMethodCubit extends Cubit<AddNewPaymentMethodState> {
     this.paymentMethod = paymentMethod;
     if (paymentMethod != null) {
       nameController.text = paymentMethod.name ?? '';
+    } else {
+      nameController.clear();
     }
+    emit(AddNewPaymentMethodInitial());
+  }
+
+  /// Clears error UI and returns to the form (same as initial).
+  void dismissError() {
+    emit(AddNewPaymentMethodInitial());
   }
 
   /// Reads stored user from secure storage. Returns null if not found or invalid.
@@ -64,7 +72,9 @@ class AddNewPaymentMethodCubit extends Cubit<AddNewPaymentMethodState> {
 
   Future<void> updatePaymentMethod() async {
     if (paymentMethod == null || paymentMethod!.id == null) {
-      emit(AddNewPaymentMethodError('Payment method id is required for update'));
+      emit(
+        AddNewPaymentMethodError('Payment method id is required for update'),
+      );
       return;
     }
     if (formKey.currentState?.validate() != true) return;

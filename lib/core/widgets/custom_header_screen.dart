@@ -25,31 +25,43 @@ class CustomHeaderScreen extends StatelessWidget {
     return FittedBox(
       fit: BoxFit.scaleDown,
       alignment: AlignmentDirectional.centerStart,
-      child: InkWell(
-        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-        onTap: () {
-          context.read<MainCubit>().setCurrentScreen(
-                screen: path,
-              );
-        },
-        child: Row(
-          spacing: 5,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.arrow_back_rounded,
-              color: AppColors.oppositeColor,
-              size: 35,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          overlayColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.hovered)) {
+              return AppColors.secondary.withValues(alpha: 0.35);
+            }
+            return Colors.transparent;
+          }),
+          onTap: () {
+            context.read<MainCubit>().setCurrentScreen(
+                  screen: path,
+                );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+            child: Row(
+              spacing: 8,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.arrow_back_rounded,
+                  color: AppColors.oppositeColor,
+                  size: 28,
+                ),
+                Text(
+                  title,
+                  style: AppFonts.styleBold40.copyWith(
+                    color: AppColors.oppositeColor,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            Text(
-              title,
-              style: AppFonts.styleBold40.copyWith(
-                color: AppColors.oppositeColor,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+          ),
         ),
       ),
     );

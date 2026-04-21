@@ -26,6 +26,7 @@ class BranchDropdown extends StatelessWidget {
       onChanged: cubit.setSelectedBranch,
       itemLabelBuilder: (b) => b?.name ?? 'add_user_form.branch_hint'.tr(),
       label: 'add_user_form.branch'.tr(),
+      leadingIcon: Icons.store_mall_directory_outlined,
       validator: (v) => v == null ? 'validation.required'.tr() : null,
       hideWhenEmpty: true,
     );

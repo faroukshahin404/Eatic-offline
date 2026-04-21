@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/widgets/custom_button_widget.dart';
-import '../../../core/widgets/custom_text.dart';
+import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/custom_text_field.dart';
+import '../../../core/widgets/pos_crud_ui.dart';
 import '../../../routes/app_paths.dart';
 import '../cubit/add_user_cubit.dart';
 import 'branch_dropdown.dart';
@@ -29,56 +29,85 @@ class ListFormUserWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CustomTextField(
-              title: 'add_user_form.code'.tr(),
-              hint: 'add_user_form.code'.tr(),
-              controller: cubit.codeController,
-              isOnlyNumbers: true,
-
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'validation.required'.tr()
-                  : null,
-            ),
-            const SizedBox(height: 16),
-            CustomTextField(
-              title: 'add_user_form.name'.tr(),
-              hint: 'add_user_form.name'.tr(),
-              controller: cubit.nameController,
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'validation.required'.tr()
-                  : null,
-            ),
-            if (userId == null) ...[
-              const SizedBox(height: 16),
-
-              CustomTextField(
-                title: 'add_user_form.password'.tr(),
-                hint: 'add_user_form.password'.tr(),
-                controller: cubit.passwordController,
-                maxLines: 1,
-                isPassword: true,
-                validator: (v) => (v == null || v.trim().isEmpty)
-                    ? 'validation.required'.tr()
-                    : null,
+            PosCrudSectionCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  CustomTextField(
+                    title: 'add_user_form.code'.tr(),
+                    hint: 'add_user_form.code'.tr(),
+                    controller: cubit.codeController,
+                    isOnlyNumbers: true,
+                    prefix: const Padding(
+                      padding: EdgeInsetsDirectional.only(start: 10, end: 8),
+                      child: Icon(Icons.badge_outlined),
+                    ),
+                    validator:
+                        (v) =>
+                            (v == null || v.trim().isEmpty)
+                                ? 'validation.required'.tr()
+                                : null,
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    title: 'add_user_form.name'.tr(),
+                    hint: 'add_user_form.name'.tr(),
+                    controller: cubit.nameController,
+                    prefix: const Padding(
+                      padding: EdgeInsetsDirectional.only(start: 10, end: 8),
+                      child: Icon(Icons.person_outline_rounded),
+                    ),
+                    validator:
+                        (v) =>
+                            (v == null || v.trim().isEmpty)
+                                ? 'validation.required'.tr()
+                                : null,
+                  ),
+                  if (userId == null) ...[
+                    const SizedBox(height: 16),
+                    CustomTextField(
+                      title: 'add_user_form.password'.tr(),
+                      hint: 'add_user_form.password'.tr(),
+                      controller: cubit.passwordController,
+                      maxLines: 1,
+                      isPassword: true,
+                      prefix: const Padding(
+                        padding: EdgeInsetsDirectional.only(start: 10, end: 8),
+                        child: Icon(Icons.lock_outline_rounded),
+                      ),
+                      validator:
+                          (v) =>
+                              (v == null || v.trim().isEmpty)
+                                  ? 'validation.required'.tr()
+                                  : null,
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  RoleDropdown(cubit: cubit),
+                  const SizedBox(height: 16),
+                  BranchDropdown(cubit: cubit),
+                ],
               ),
-            ],
-            const SizedBox(height: 16),
-            RoleDropdown(cubit: cubit),
-            const SizedBox(height: 16),
-            BranchDropdown(cubit: cubit),
-            const SizedBox(height: 24),
-            CustomButtonWidget(
-              text: isEdit ? 'add_user_form.update' : 'add_user_form.save',
+            ),
+            const SizedBox(height: 20),
+            PosCrudActionButton(
+              label:
+                  (isEdit ? 'add_user_form.update' : 'add_user_form.save').tr(),
+              icon: isEdit ? Icons.edit_rounded : Icons.save_outlined,
               onPressed: () => _submit(context, cubit, isEdit),
             ),
             if (userId != null) ...[
               const SizedBox(height: 16),
-
-              TextButton(
+              PosCrudActionButton(
+                label: 'reset_password.title'.tr(),
+                icon: Icons.lock_reset_rounded,
+                isPrimary: false,
+                backgroundColor: const Color(0xFFFFF1F1),
+                foregroundColor: AppColors.validationError,
+                borderColor: const Color(0xFFFFD9D9),
                 onPressed: () {
                   context.push(AppPaths.resetPassword, extra: userId);
                 },
-                child: CustomText(text: 'reset_password.title'),
               ),
             ],
           ],

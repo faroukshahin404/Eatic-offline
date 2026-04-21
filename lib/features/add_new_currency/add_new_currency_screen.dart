@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
@@ -20,6 +21,7 @@ class AddNewCurrencyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFA),
       appBar: CustomAppBar(title: 'add_currency'),
       body: CustomPadding(
         child: BlocProvider<AddNewCurrencyCubit>(
@@ -34,12 +36,11 @@ class AddNewCurrencyScreen extends StatelessWidget {
               if (state is AddNewCurrencySaved) {
                 final messenger = ScaffoldMessenger.of(context);
                 context.pop<bool>(true);
-                final message = state.isUpdate
-                    ? 'add_currency_form.update_success'.tr()
-                    : 'add_currency_form.success'.tr();
-                messenger.showSnackBar(
-                  SnackBar(content: Text(message)),
-                );
+                final message =
+                    state.isUpdate
+                        ? 'add_currency_form.update_success'.tr()
+                        : 'add_currency_form.success'.tr();
+                messenger.showSnackBar(SnackBar(content: Text(message)));
               }
             },
             builder: (context, state) {
@@ -52,7 +53,13 @@ class AddNewCurrencyScreen extends StatelessWidget {
                   onRetry: () => context.read<AddNewCurrencyCubit>().load(),
                 );
               }
-              return const AddNewCurrencyFormWidget();
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.greyE6E9EA),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const AddNewCurrencyFormWidget(),
+              );
             },
           ),
         ),

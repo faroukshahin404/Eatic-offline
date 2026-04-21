@@ -46,8 +46,11 @@ class AddNewRestaurantTableCubit extends Cubit<AddNewRestaurantTableState> {
 
   void setRestaurantTable(RestaurantTableModel? table) {
     restaurantTable = table;
+    _diningAreaPrefilled = false;
     if (table != null) {
       nameController.text = table.name ?? '';
+    } else {
+      nameController.clear();
     }
   }
 
@@ -161,9 +164,10 @@ class AddNewRestaurantTableCubit extends Cubit<AddNewRestaurantTableState> {
     );
     emit(AddNewRestaurantTableSaving());
     final isUpdate = restaurantTable?.id != null;
-    final result = isUpdate
-        ? await _restaurantTableRepo.update(model)
-        : await _restaurantTableRepo.insert(model);
+    final result =
+        isUpdate
+            ? await _restaurantTableRepo.update(model)
+            : await _restaurantTableRepo.insert(model);
     result.fold(
       (f) => emit(AddNewRestaurantTableError(f.failureMessage ?? 'Error')),
       (id) => emit(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
@@ -20,6 +21,7 @@ class AddNewZoneScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFA),
       appBar: CustomAppBar(title: 'add_zone'),
       body: CustomPadding(
         child: BlocProvider<AddNewZoneCubit>(
@@ -34,12 +36,11 @@ class AddNewZoneScreen extends StatelessWidget {
               if (state is AddNewZoneSaved) {
                 final messenger = ScaffoldMessenger.of(context);
                 context.pop<bool>(true);
-                final message = state.isUpdate
-                    ? 'add_zone_form.update_success'.tr()
-                    : 'add_zone_form.success'.tr();
-                messenger.showSnackBar(
-                  SnackBar(content: Text(message)),
-                );
+                final message =
+                    state.isUpdate
+                        ? 'add_zone_form.update_success'.tr()
+                        : 'add_zone_form.success'.tr();
+                messenger.showSnackBar(SnackBar(content: Text(message)));
               }
             },
             builder: (context, state) {
@@ -52,7 +53,13 @@ class AddNewZoneScreen extends StatelessWidget {
                   onRetry: () => context.read<AddNewZoneCubit>().loadBranches(),
                 );
               }
-              return const AddNewZoneFormWidget();
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.greyE6E9EA),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const AddNewZoneFormWidget(),
+              );
             },
           ),
         ),

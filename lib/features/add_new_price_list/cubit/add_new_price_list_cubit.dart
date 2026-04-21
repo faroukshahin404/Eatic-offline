@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,6 +33,9 @@ class AddNewPriceListCubit extends Cubit<AddNewPriceListState> {
     priceList = value;
     if (value != null) {
       nameController.text = value.name ?? '';
+    } else {
+      nameController.clear();
+      selectedCurrency = null;
     }
   }
 
@@ -63,6 +67,7 @@ class AddNewPriceListCubit extends Cubit<AddNewPriceListState> {
 
   void selectCurrency(CurrencyModel? value) {
     selectedCurrency = value;
+    emit(AddNewPriceListReady());
   }
 
   Future<void> savePriceList() async {
@@ -70,7 +75,7 @@ class AddNewPriceListCubit extends Cubit<AddNewPriceListState> {
     final name = nameController.text.trim();
     final currencyId = selectedCurrency?.id;
     if (currencyId == null) {
-      emit(AddNewPriceListError('Please select a currency'));
+      emit(AddNewPriceListError('validation.required'.tr()));
       return;
     }
 
@@ -79,11 +84,13 @@ class AddNewPriceListCubit extends Cubit<AddNewPriceListState> {
         name: name,
         currencyId: currencyId,
       );
-      emit(AddNewPriceListLoading());
+      emit(AddNewPriceListSaving());
       final result = await _priceListRepo.update(updated);
       result.fold(
         (f) => emit(AddNewPriceListError(f.failureMessage ?? 'Error')),
-        (_) => emit(AddNewPriceListSaved(id: priceList!.id)),
+        (_) => emit(
+          AddNewPriceListSaved(id: priceList!.id, isUpdate: true),
+        ),
       );
     } else {
       final newModel = PriceListModel(
@@ -91,11 +98,11 @@ class AddNewPriceListCubit extends Cubit<AddNewPriceListState> {
         currencyId: currencyId,
         name: name,
       );
-      emit(AddNewPriceListLoading());
+      emit(AddNewPriceListSaving());
       final result = await _priceListRepo.insert(newModel);
       result.fold(
         (f) => emit(AddNewPriceListError(f.failureMessage ?? 'Error')),
-        (id) => emit(AddNewPriceListSaved(id: id)),
+        (id) => emit(AddNewPriceListSaved(id: id, isUpdate: false)),
       );
     }
   }
