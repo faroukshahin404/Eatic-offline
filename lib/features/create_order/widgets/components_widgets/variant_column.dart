@@ -8,22 +8,19 @@ import 'variant_option_tile.dart';
 
 /// Single variant column: header (title + required chip) + list of radio options.
 class VariantColumn extends StatelessWidget {
-  const VariantColumn({
-    super.key,
-    required this.group,
-    required this.cubit,
-  });
+  const VariantColumn({super.key, required this.group, required this.cubit});
 
   final CreateOrderVariableGroup group;
   final CreateOrderCubit cubit;
 
   @override
   Widget build(BuildContext context) {
-    final isInvalid = cubit.validationRequested &&
+    final isInvalid =
+        cubit.validationRequested &&
         cubit.invalidVariableIds.contains(group.variableId);
 
     return Container(
-      constraints: const BoxConstraints(minWidth: 160, maxWidth: 220),
+      constraints: const BoxConstraints(minWidth: 140, maxWidth: 190),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -40,23 +37,24 @@ class VariantColumn extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             VariantColumnHeader(name: group.name),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             ...group.options.map(
               (option) => VariantOptionTile(
                 option: option,
                 selectedValueId: cubit.selectedValueIds[group.variableId],
                 priceModifier: option.priceModifier,
                 isInvalid: isInvalid,
-                onTap: () => cubit.setSelectedVariableValue(
-                  group.variableId,
-                  option.valueId,
-                ),
+                onTap:
+                    () => cubit.setSelectedVariableValue(
+                      group.variableId,
+                      option.valueId,
+                    ),
               ),
             ),
           ],

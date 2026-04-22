@@ -1,5 +1,6 @@
 import '../repos/offline/orders_schema.dart';
 import 'order_line_model.dart';
+
 /// Order entity for persistence. order_type: 0 = dine in, 1 = takeaway, 2 = delivery.
 /// [paymentMethodId] null means Cash (fallback when no payment method selected or list empty).
 class OrderModel {
@@ -19,6 +20,7 @@ class OrderModel {
     this.total = 0,
     this.createdAt,
     this.isPending = 1,
+    this.isPrinted = 0,
     this.isPrintedToCustomer = 0,
     this.isPrintedToKitchen = 0,
     required this.selectedPriceListId,
@@ -41,6 +43,7 @@ class OrderModel {
   final double total;
   final String? createdAt;
   final int isPending;
+  final int isPrinted;
   final int isPrintedToCustomer;
   final int isPrintedToKitchen;
   final List<OrderLineModel>? items;
@@ -63,37 +66,39 @@ class OrderModel {
       OrdersSchema.colCreatedAt: createdAt ?? now,
       OrdersSchema.colSelectedPriceListId: selectedPriceListId,
       OrdersSchema.colIsPending: isPending,
+      OrdersSchema.colIsPrinted: isPrinted,
       OrdersSchema.colIsPrintedToCustomer: isPrintedToCustomer,
       OrdersSchema.colIsPrintedToKitchen: isPrintedToKitchen,
     };
   }
 
   factory OrderModel.fromMap(
-  Map<String, dynamic> map, {
-  List<OrderLineModel>? items,
-}) {
-  return OrderModel(
-    id: map[OrdersSchema.colId] as int?,
-    custodyId: map[OrdersSchema.colCustodyId] as int,
-    cashierId: map[OrdersSchema.colCashierId] as int,
-    orderType: map[OrdersSchema.colOrderType] as int,
-    tableId: map[OrdersSchema.colTableId] as int?,
-    tableNumber: map[OrdersSchema.colTableNumber] as String?,
-    waiterId: map[OrdersSchema.colWaiterId] as int?,
-    customerId: map[OrdersSchema.colCustomerId] as int?,
-    addressId: map[OrdersSchema.colAddressId] as int?,
-    paymentMethodId: map[OrdersSchema.colPaymentMethodId] as int?,
-    subtotal: (map[OrdersSchema.colSubtotal] as num?)?.toDouble() ?? 0,
-    discountAmount: (map[OrdersSchema.colDiscountAmount] as num?)?.toDouble() ?? 0,
-    total: (map[OrdersSchema.colTotal] as num?)?.toDouble() ?? 0,
-    createdAt: map[OrdersSchema.colCreatedAt] as String?,
-    selectedPriceListId: map[OrdersSchema.colSelectedPriceListId] as int,
-    isPending: map[OrdersSchema.colIsPending] as int? ?? 1,
-    isPrintedToCustomer:
-        map[OrdersSchema.colIsPrintedToCustomer] as int? ?? 0,
-    isPrintedToKitchen:
-        map[OrdersSchema.colIsPrintedToKitchen] as int? ?? 0,
-    items: items,
-  );
-}
+    Map<String, dynamic> map, {
+    List<OrderLineModel>? items,
+  }) {
+    return OrderModel(
+      id: map[OrdersSchema.colId] as int?,
+      custodyId: map[OrdersSchema.colCustodyId] as int,
+      cashierId: map[OrdersSchema.colCashierId] as int,
+      orderType: map[OrdersSchema.colOrderType] as int,
+      tableId: map[OrdersSchema.colTableId] as int?,
+      tableNumber: map[OrdersSchema.colTableNumber] as String?,
+      waiterId: map[OrdersSchema.colWaiterId] as int?,
+      customerId: map[OrdersSchema.colCustomerId] as int?,
+      addressId: map[OrdersSchema.colAddressId] as int?,
+      paymentMethodId: map[OrdersSchema.colPaymentMethodId] as int?,
+      subtotal: (map[OrdersSchema.colSubtotal] as num?)?.toDouble() ?? 0,
+      discountAmount:
+          (map[OrdersSchema.colDiscountAmount] as num?)?.toDouble() ?? 0,
+      total: (map[OrdersSchema.colTotal] as num?)?.toDouble() ?? 0,
+      createdAt: map[OrdersSchema.colCreatedAt] as String?,
+      selectedPriceListId: map[OrdersSchema.colSelectedPriceListId] as int,
+      isPending: map[OrdersSchema.colIsPending] as int? ?? 1,
+      isPrinted: map[OrdersSchema.colIsPrinted] as int? ?? 0,
+      isPrintedToCustomer:
+          map[OrdersSchema.colIsPrintedToCustomer] as int? ?? 0,
+      isPrintedToKitchen: map[OrdersSchema.colIsPrintedToKitchen] as int? ?? 0,
+      items: items,
+    );
+  }
 }

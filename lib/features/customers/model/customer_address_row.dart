@@ -5,6 +5,7 @@ class CustomerAddressRow {
     required this.name,
     required this.phone,
     this.secondPhone,
+    required this.zoneId,
     required this.zoneName,
     this.buildingNumber,
     this.floor,
@@ -17,6 +18,7 @@ class CustomerAddressRow {
   final String? name;
   final String phone;
   final String? secondPhone;
+  final int zoneId;
   final String zoneName;
   final String? buildingNumber;
   final String? floor;
@@ -32,6 +34,7 @@ class CustomerAddressRow {
       name: map['name'] as String?,
       phone: (map['phone'] ?? '').toString(),
       secondPhone: map['second_phone'] as String?,
+      zoneId: _readInt(map, 'zone_id'),
       zoneName: (map['zone_name'] ?? '').toString(),
       buildingNumber: map['building_number'] as String?,
       floor: map['floor'] as String?,

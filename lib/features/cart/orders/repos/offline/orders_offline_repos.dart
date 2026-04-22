@@ -52,6 +52,12 @@ abstract class OrdersOfflineRepository {
   );
 
   Future<Either<OfflineFailure, List<OrderTypeModel>>> getOrderTypes();
+
+  Future<Either<OfflineFailure, int>> updateOrderPrintFlags({
+    required int orderId,
+    required bool printedToCustomer,
+    required bool printedToKitchen,
+  });
 }
 
 class OrdersOfflineRepoImpl implements OrdersOfflineRepository {
@@ -63,6 +69,8 @@ class OrdersOfflineRepoImpl implements OrdersOfflineRepository {
       final orderMap = order.toInsertMap();
       // Any newly submitted order should be stored as pending for offline flows.
       orderMap[OrdersSchema.colIsPending] = 1;
+      // Newly submitted orders are not printed yet.
+      orderMap[OrdersSchema.colIsPrinted] = 0;
       // Newly submitted orders are not printed yet.
       orderMap[OrdersSchema.colIsPrintedToCustomer] = 0;
       orderMap[OrdersSchema.colIsPrintedToKitchen] = 0;
@@ -152,8 +160,7 @@ class OrdersOfflineRepoImpl implements OrdersOfflineRepository {
 
       CustomerAddressRow? selectedCustomer;
       if (order.addressId != null) {
-        final sql =
-            CustomerAddressesSchema.getCustomerAddressesSql(
+        final sql = CustomerAddressesSchema.getCustomerAddressesSql(
           'WHERE a.${CustomerAddressesSchema.colId} = ?',
         );
         final addressRows = await _db.rawQuery(sql, [order.addressId]);
@@ -301,6 +308,34 @@ class OrdersOfflineRepoImpl implements OrdersOfflineRepository {
       return Right(result.map(OrderTypeModel.fromMap).toList());
     } catch (e) {
       return Left(OfflineFailure.queryFailed(e));
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, int>> updateOrderPrintFlags({
+    required int orderId,
+    required bool printedToCustomer,
+    required bool printedToKitchen,
+  }) async {
+    try {
+      final count = await _db.update(
+        OrdersSchema.tableOrders,
+        {
+          // Once print flow is triggered, mark order as printed in Orders Status.
+          OrdersSchema.colIsPrinted: 1,
+          OrdersSchema.colIsPrintedToCustomer: printedToCustomer ? 1 : 0,
+          OrdersSchema.colIsPrintedToKitchen: printedToKitchen ? 1 : 0,
+        },
+        where: '${OrdersSchema.colId} = ?',
+        whereArgs: [orderId],
+      );
+      return Right(count);
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.updateFailed(e),
+      );
     }
   }
 }

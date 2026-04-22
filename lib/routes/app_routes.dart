@@ -43,6 +43,7 @@ import '../features/login/login_screen.dart';
 import '../features/reset_password/cubit/reset_password_cubit.dart';
 import '../features/reset_password/reset_password_screen.dart';
 import '../features/setting/setting_screen.dart';
+import '../features/general_settings/general_settings_screen.dart';
 import '../features/splash_screen.dart';
 import '../features/select_waiter/select_waiter_screen.dart';
 import '../features/select_waiter/cubit/select_waiter_cubit.dart';
@@ -117,10 +118,11 @@ class AppPages {
 
       _appRoute(
         path: AppPaths.login,
-        builder: (context, state) => BlocProvider<LoginCubit>(
-          create: (context) => getIt<LoginCubit>(),
-          child: const LoginScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<LoginCubit>(
+              create: (context) => getIt<LoginCubit>(),
+              child: const LoginScreen(),
+            ),
       ),
 
       _appRoute(
@@ -129,145 +131,168 @@ class AppPages {
       ),
 
       _appRoute(
+        path: AppPaths.generalSettings,
+        builder: (context, state) => const GeneralSettingsScreen(),
+      ),
+
+      _appRoute(
         path: AppPaths.users,
-        builder: (context, state) => BlocProvider<UsersCubit>(
-          create: (context) => getIt<UsersCubit>()..getUsers(),
-          child: UsersScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<UsersCubit>(
+              create: (context) => getIt<UsersCubit>()..getUsers(),
+              child: UsersScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.addUser,
-        builder: (context, state) => BlocProvider<AddUserCubit>(
-          create: (context) =>
-              getIt<AddUserCubit>()..getRoles(id: state.extra as int?),
-          child: AddUserScreen(userId: state.extra as int?),
-        ),
+        builder:
+            (context, state) => BlocProvider<AddUserCubit>(
+              create:
+                  (context) =>
+                      getIt<AddUserCubit>()..getRoles(id: state.extra as int?),
+              child: AddUserScreen(userId: state.extra as int?),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.addBranch,
-        builder: (context, state) => BlocProvider<AddNewBranchCubit>(
-          create: (context) => getIt<AddNewBranchCubit>(),
-          child: const AddNewBranchScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<AddNewBranchCubit>(
+              create: (context) => getIt<AddNewBranchCubit>(),
+              child: const AddNewBranchScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.branches,
-        builder: (context, state) => BlocProvider<BranchesCubit>(
-          create: (context) => getIt<BranchesCubit>()..getBranches(),
-          child: BranchesScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<BranchesCubit>(
+              create: (context) => getIt<BranchesCubit>()..getBranches(),
+              child: BranchesScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.deliveryMen,
-        builder: (context, state) => BlocProvider<DeliveryMenCubit>(
-          create: (context) => getIt<DeliveryMenCubit>()..getAll(),
-          child: const DeliveryMenScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<DeliveryMenCubit>(
+              create: (context) => getIt<DeliveryMenCubit>()..getAll(),
+              child: const DeliveryMenScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.addDelivery,
-        builder: (context, state) => BlocProvider<AddNewDeliveryCubit>(
-          create: (context) {
-            final cubit = getIt<AddNewDeliveryCubit>();
-            if (state.extra != null) {
-              cubit.setDeliveryIdForEdit(state.extra as int);
-            }
-            cubit.loadBranches();
-            return cubit;
-          },
-          child: AddNewDeliveryScreen(deliveryId: state.extra as int?),
-        ),
+        builder:
+            (context, state) => BlocProvider<AddNewDeliveryCubit>(
+              create: (context) {
+                final cubit = getIt<AddNewDeliveryCubit>();
+                if (state.extra != null) {
+                  cubit.setDeliveryIdForEdit(state.extra as int);
+                }
+                cubit.loadBranches();
+                return cubit;
+              },
+              child: AddNewDeliveryScreen(deliveryId: state.extra as int?),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.zones,
-        builder: (context, state) => BlocProvider<ZonesCubit>(
-          create: (context) => getIt<ZonesCubit>()..getAllZones(),
-          child: const ZonesScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<ZonesCubit>(
+              create: (context) => getIt<ZonesCubit>()..getAllZones(),
+              child: const ZonesScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.addZone,
-        builder: (context, state) =>
-            AddNewZoneScreen(zoneId: state.extra as int?),
+        builder:
+            (context, state) => AddNewZoneScreen(zoneId: state.extra as int?),
       ),
 
       _appRoute(
         path: AppPaths.currencies,
-        builder: (context, state) => BlocProvider<CurrenciesCubit>(
-          create: (context) => getIt<CurrenciesCubit>()..getAll(),
-          child: const CurrenciesScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<CurrenciesCubit>(
+              create: (context) => getIt<CurrenciesCubit>()..getAll(),
+              child: const CurrenciesScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.addCurrency,
-        builder: (context, state) =>
-            AddNewCurrencyScreen(currencyId: state.extra as int?),
+        builder:
+            (context, state) =>
+                AddNewCurrencyScreen(currencyId: state.extra as int?),
       ),
 
       _appRoute(
         path: AppPaths.paymentMethods,
-        builder: (context, state) => BlocProvider<PaymentMethodsCubit>(
-          create: (context) => getIt<PaymentMethodsCubit>()..getAll(),
-          child: const PaymentMethodsScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<PaymentMethodsCubit>(
+              create: (context) => getIt<PaymentMethodsCubit>()..getAll(),
+              child: const PaymentMethodsScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.diningAreas,
-        builder: (context, state) => BlocProvider<DiningAreasCubit>(
-          create: (context) => getIt<DiningAreasCubit>()..getAll(),
-          child: const DiningAreasScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<DiningAreasCubit>(
+              create: (context) => getIt<DiningAreasCubit>()..getAll(),
+              child: const DiningAreasScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.restaurantTables,
-        builder: (context, state) => BlocProvider<RestaurantTablesCubit>(
-          create: (context) => getIt<RestaurantTablesCubit>()..getAll(),
-          child: const RestaurantTablesScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<RestaurantTablesCubit>(
+              create: (context) => getIt<RestaurantTablesCubit>()..getAll(),
+              child: const RestaurantTablesScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.categories,
-        builder: (context, state) => BlocProvider<CategoriesCubit>(
-          create: (context) => getIt<CategoriesCubit>()..getAll(),
-          child: const CategoriesScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<CategoriesCubit>(
+              create: (context) => getIt<CategoriesCubit>()..getAll(),
+              child: const CategoriesScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.addons,
-        builder: (context, state) => BlocProvider<AddonsCubit>(
-          create: (context) => getIt<AddonsCubit>()..getAll(),
-          child: const AddonsScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<AddonsCubit>(
+              create: (context) => getIt<AddonsCubit>()..getAll(),
+              child: const AddonsScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.priceLists,
-        builder: (context, state) => BlocProvider<PriceListsCubit>(
-          create: (context) => getIt<PriceListsCubit>()..getAll(),
-          child: const PriceListsScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<PriceListsCubit>(
+              create: (context) => getIt<PriceListsCubit>()..getAll(),
+              child: const PriceListsScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.addProduct,
-        builder: (context, state) => BlocProvider<AddNewProductCubit>(
-          create: (context) =>
-              getIt<AddNewProductCubit>()
-                ..loadData(productId: state.extra as int?),
-          child: const AddNewProductScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<AddNewProductCubit>(
+              create:
+                  (context) =>
+                      getIt<AddNewProductCubit>()
+                        ..loadData(productId: state.extra as int?),
+              child: const AddNewProductScreen(),
+            ),
       ),
 
       _appRoute(
@@ -285,51 +310,60 @@ class AppPages {
       // ),
       _appRoute(
         path: AppPaths.selectWaiter,
-        builder: (context, state) => BlocProvider<SelectWaiterCubit>(
-          create: (context) => getIt<SelectWaiterCubit>()..getWaiters(),
-          child: const SelectWaiterScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<SelectWaiterCubit>(
+              create: (context) => getIt<SelectWaiterCubit>()..getWaiters(),
+              child: const SelectWaiterScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.selectTable,
-        builder: (context, state) => BlocProvider<SelectTableCubit>(
-          create: (context) => getIt<SelectTableCubit>()..loadTables(),
-          child: const SelectTableScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<SelectTableCubit>(
+              create: (context) => getIt<SelectTableCubit>()..loadTables(),
+              child: const SelectTableScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.customerSearch,
-        builder: (context, state) => BlocProvider<CustomerSearchCubit>(
-          create: (context) => getIt<CustomerSearchCubit>(),
-          child: const CustomerSearchScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<CustomerSearchCubit>(
+              create: (context) => getIt<CustomerSearchCubit>(),
+              child: const CustomerSearchScreen(),
+            ),
       ),
 
       _appRoute(
         path: AppPaths.addCustomer,
-        builder: (context, state) => BlocProvider<AddCustomerCubit>(
-          create: (context) {
-            return getIt<AddCustomerCubit>()
-              ..loadZones(customerId: state.extra as int?);
-          },
-          child: const AddCustomerScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<AddCustomerCubit>(
+              create: (context) {
+                return getIt<AddCustomerCubit>()
+                  ..loadZones(customerId: state.extra as int?);
+              },
+              child: const AddCustomerScreen(),
+            ),
       ),
       _appRoute(
         path: AppPaths.resetPassword,
-        builder: (context, state) => BlocProvider<ResetPasswordCubit>(
-          create: (context) => getIt<ResetPasswordCubit>(),
-          child: const ResetPasswordScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<ResetPasswordCubit>(
+              create: (context) => getIt<ResetPasswordCubit>(),
+              child: const ResetPasswordScreen(),
+            ),
       ),
       _appRoute(
         path: AppPaths.allCurrencies,
-        builder: (context, state) => BlocProvider<ShiftDetailsCubit>(
-          create: (context) => getIt<ShiftDetailsCubit>()..getAll(custodyId: state.extra as int?),
-          child: const AllCurrenciesScreen(),
-        ),
+        builder:
+            (context, state) => BlocProvider<ShiftDetailsCubit>(
+              create:
+                  (context) =>
+                      getIt<ShiftDetailsCubit>()
+                        ..getAll(custodyId: state.extra as int?),
+              child: const AllCurrenciesScreen(),
+            ),
       ),
       _appRoute(
         path: AppPaths.shiftDetails,

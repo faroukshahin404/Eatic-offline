@@ -26,7 +26,9 @@ class _CartScreenState extends State<CartScreen> {
     context.read<CartCubit>()
       ..loadOrderTypes()
       ..refreshHasOpenCustody()
-      ..loadPaymentMethods();
+      ..loadPaymentMethods()
+      ..loadCustomerZones()
+      ..loadOrderPriceLists();
   }
 
   @override
@@ -45,13 +47,13 @@ class _CartScreenState extends State<CartScreen> {
         return Align(
           alignment: Alignment.topLeft,
           child: Container(
-            padding: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 6),
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: AppColors.greyE6E9EA),
             ),
             child: Column(
-              spacing: 16,
+              spacing: 8,
               children: [
                 const CartHeader(),
                 const CartOrderTypeSelector(),

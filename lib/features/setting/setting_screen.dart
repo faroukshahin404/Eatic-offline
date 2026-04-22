@@ -13,6 +13,7 @@ class SettingScreen extends StatelessWidget {
   SettingScreen({super.key});
 
   final List<String> settings = [
+    "general-settings",
     "users",
     "branches",
     "delivery-men",
@@ -32,9 +33,10 @@ class SettingScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: "settings"),
       body: CustomPadding(
-        child: Column(
+        child: ListView(
+          shrinkWrap: true,
           children: [
-            Expanded(child: ListOfSettings(settings: settings)),
+            ListOfSettings(settings: settings),
             const SizedBox(height: 16),
             SettingsTile(
               label: 'logout'.tr(),

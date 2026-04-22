@@ -10,11 +10,8 @@ class CartWaiterTableSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
-      spacing: 16,
-      children: [
-        CartActionButtons(),
-        CartOrderInfoWidget(),
-      ],
+      spacing: 8,
+      children: [CartActionButtons(), CartOrderInfoWidget()],
     );
   }
 }

@@ -16,9 +16,11 @@ class CartChooseTableButton extends StatelessWidget {
     return Expanded(
       child: CustomButtonWidget(
         text: 'cart.choose_table'.tr(),
-        onPressed: () => context.read<MainCubit>().setCurrentScreen(
+        onPressed:
+            () => context.read<MainCubit>().setCurrentScreen(
               screen: AppPaths.selectTable,
             ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),

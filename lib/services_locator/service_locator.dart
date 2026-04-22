@@ -72,6 +72,7 @@ import '../features/reset_password/cubit/reset_password_cubit.dart';
 import '../features/reset_password/repos/offline/reset_password_offline_repos.dart';
 import '../features/users/cubit/users_cubit.dart';
 import '../features/users/repos/offline/user_offline_repos.dart';
+import '../features/general_settings/repos/offline/general_settings_offline_repos.dart';
 
 final getIt = GetIt.instance;
 
@@ -325,6 +326,12 @@ Future<void> setupDI() async {
       getIt<OrdersOfflineRepository>(),
       getIt<PaymentMethodsOfflineRepository>(),
       getIt<RestaurantTablesOfflineRepository>(),
+      getIt<GeneralSettingsOfflineRepository>(),
+      getIt<BranchesOfflineRepository>(),
+      getIt<CustomersOfflineRepository>(),
+      getIt<ZonesOfflineRepository>(),
+      getIt<PriceListsOfflineRepository>(),
+      getIt<CreateOrderOfflineRepository>(),
     ),
   );
 
@@ -370,5 +377,9 @@ Future<void> setupDI() async {
       getIt<OrdersOfflineRepository>(),
       getIt<PriceListsOfflineRepository>(),
     ),
+  );
+
+  getIt.registerLazySingleton<GeneralSettingsOfflineRepository>(
+    () => GeneralSettingsOfflineRepoImpl(),
   );
 }

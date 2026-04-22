@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_fonts.dart';
@@ -11,25 +10,20 @@ class OrdersStatusTableWidget extends StatelessWidget {
   const OrdersStatusTableWidget({
     super.key,
     required this.orders,
-    required this.onUpdatePrintedStatus,
+    required this.onPrintOrder,
     required this.onOpenOrderInCart,
   });
 
   final List<OrderStatusRowModel> orders;
-  final void Function(
-    int orderId,
-    int isPrintedToCustomer,
-    int isPrintedToKitchen,
-  )
-  onUpdatePrintedStatus;
+  final Future<void> Function(int orderId) onPrintOrder;
   final Future<void> Function(int orderId) onOpenOrderInCart;
 
   static String _formatCreatedAt(String? value) {
     if (value == null || value.isEmpty) return '-';
     try {
       final dt = DateTime.parse(value);
-      final datePart = DateFormat('yyyy-MM-dd', 'en').format(dt);
-      final timePart = DateFormat('HH:mm:ss', 'en').format(dt);
+      final datePart = DateFormat('yyyy-MM-dd').format(dt);
+      final timePart = DateFormat('HH:mm:ss').format(dt);
       return '$datePart\n$timePart';
     } catch (_) {
       return value;
@@ -49,18 +43,11 @@ class OrdersStatusTableWidget extends StatelessWidget {
     );
   }
 
-  ButtonStyle _invoiceButtonStyle({
-    required Color borderColor,
-    required Color backgroundColor,
-    required bool isPrinted,
-  }) {
+  ButtonStyle _printButtonStyle() {
     return OutlinedButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      side: BorderSide(
-        color: isPrinted ? borderColor : AppColors.greyE6E9EA,
-        width: 1.5,
-      ),
-      backgroundColor: isPrinted ? backgroundColor : Colors.transparent,
+      side: const BorderSide(color: AppColors.deepPrimary, width: 1.5),
+      backgroundColor: AppColors.secondary,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
@@ -76,8 +63,7 @@ class OrdersStatusTableWidget extends StatelessWidget {
       );
     }
 
-    final customerInvoiceText = 'orders_status.customer_print'.tr();
-    final kitchenInvoiceText = 'orders_status.kitchen_print'.tr();
+    final printText = 'orders_status.print'.tr();
     final editText = 'actions.edit'.tr();
 
     return LayoutBuilder(
@@ -207,59 +193,18 @@ class OrdersStatusTableWidget extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 OutlinedButton(
-                                  style: _invoiceButtonStyle(
-                                    borderColor: Colors.amber.shade700,
-                                    backgroundColor: Colors.amber.shade100,
-                                    isPrinted:
-                                        entry.value.isPrintedToCustomer == 1,
-                                  ),
-                                  onPressed: () {
-                                    onUpdatePrintedStatus(
-                                      entry.value.id,
-                                      1,
-                                      entry.value.isPrintedToKitchen,
-                                    );
+                                  style: _printButtonStyle(),
+                                  onPressed: () async {
+                                    await onPrintOrder(entry.value.id);
                                   },
                                   child: Text(
-                                    customerInvoiceText,
+                                    printText,
                                     style: AppFonts.styleMedium14.copyWith(
                                       fontFamily:
                                           AppFonts.getCurrentFontFamilyBasedOnText(
-                                            customerInvoiceText,
+                                            printText,
                                           ),
-                                      color:
-                                          entry.value.isPrintedToCustomer == 1
-                                              ? AppColors.deepPrimary
-                                              : AppColors.greyA4ACAD,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                OutlinedButton(
-                                  style: _invoiceButtonStyle(
-                                    borderColor: AppColors.deepPrimary,
-                                    backgroundColor: AppColors.secondary,
-                                    isPrinted:
-                                        entry.value.isPrintedToKitchen == 1,
-                                  ),
-                                  onPressed: () {
-                                    onUpdatePrintedStatus(
-                                      entry.value.id,
-                                      entry.value.isPrintedToCustomer,
-                                      1,
-                                    );
-                                  },
-                                  child: Text(
-                                    kitchenInvoiceText,
-                                    style: AppFonts.styleMedium14.copyWith(
-                                      fontFamily:
-                                          AppFonts.getCurrentFontFamilyBasedOnText(
-                                            kitchenInvoiceText,
-                                          ),
-                                      color:
-                                          entry.value.isPrintedToKitchen == 1
-                                              ? AppColors.deepPrimary
-                                              : AppColors.greyA4ACAD,
+                                      color: AppColors.deepPrimary,
                                     ),
                                   ),
                                 ),

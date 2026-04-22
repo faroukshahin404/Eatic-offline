@@ -9,10 +9,12 @@ class CurrentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      
       child: BlocBuilder<MainCubit, MainState>(
-        buildWhen: (previous, current) =>
-            previous.runtimeType != current.runtimeType,
+        buildWhen:
+            (previous, current) =>
+                previous.runtimeType != current.runtimeType ||
+                previous.customerInfoPanelVisible !=
+                    current.customerInfoPanelVisible,
         builder: (context, state) {
           return context.read<MainCubit>().getCurrentScreen();
         },

@@ -56,9 +56,10 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
   }
 
   /// Display label for a price list in the dropdown.
-  String priceListLabel(PriceListModel pl) => pl.name?.isNotEmpty == true
-      ? pl.name!
-      : 'create_order.price_list_id'.tr(namedArgs: {'id': '${pl.id}'});
+  String priceListLabel(PriceListModel pl) =>
+      pl.name?.isNotEmpty == true
+          ? pl.name!
+          : 'create_order.price_list_id'.tr(namedArgs: {'id': '${pl.id}'});
 
   /// Loads product by id; if found, loads its variants and addons and emits [CreateOrderProductLoaded].
   Future<void> loadProductById(int productId) async {
@@ -97,9 +98,10 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     variants = variantsList;
     addons = addonsList;
 
+    _applyDefaultVariationSelection();
+
     if (productVal.hasVariants != true) {
-      final pricesResult =
-          await _repo.getProductPriceListPrices(productId);
+      final pricesResult = await _repo.getProductPriceListPrices(productId);
       productPriceListPrices = pricesResult.fold(
         (_) => <int, double>{},
         (map) => map,
@@ -109,6 +111,31 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     }
 
     emit(CreateOrderProductLoaded());
+  }
+
+  /// Selects default variation values on first load:
+  /// - Variable groups mode: first option in each group.
+  /// - Legacy grid mode: first active variant.
+  void _applyDefaultVariationSelection() {
+    selectedValueIds.clear();
+    selectedVariant = null;
+
+    if (variableGroups.isNotEmpty) {
+      for (final group in variableGroups) {
+        if (group.options.isNotEmpty) {
+          selectedValueIds[group.variableId] = group.options.first.valueId;
+        }
+      }
+      selectedVariant = _resolveVariantFromSelection();
+      return;
+    }
+
+    for (final variant in variants) {
+      if (variant.isActive) {
+        selectedVariant = variant;
+        break;
+      }
+    }
   }
 
   /// Updates selected price list and notifies listeners so dropdown rebuilds.
@@ -235,8 +262,9 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
 
   /// Display label for the selected variant (e.g. "Large, Red").
   String? get selectedVariantLabel {
-    if (selectedVariant == null || selectedVariant!.variableLabels.isEmpty)
+    if (selectedVariant == null || selectedVariant!.variableLabels.isEmpty) {
       return null;
+    }
     return selectedVariant!.variableLabels.join(', ');
   }
 
@@ -246,17 +274,17 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
     for (final addon in addons) {
       final qty = getAddonQuantity(addon.addonId);
       if (qty <= 0) continue;
-      final unitPrice = selectedVariant != null
-          ? (selectedVariant!.addonPrices[addon.addonId] ?? addon.price)
-          : addon.price;
+      final unitPrice =
+          selectedVariant != null
+              ? (selectedVariant!.addonPrices[addon.addonId] ?? addon.price)
+              : addon.price;
       total += unitPrice * qty;
     }
     return total;
   }
 
   /// Grand total: unit price (variant or product) + selected addons total.
-  double get orderLineTotal =>
-      (selectedUnitPrice ?? 0) + selectedAddonsTotal;
+  double get orderLineTotal => (selectedUnitPrice ?? 0) + selectedAddonsTotal;
 
   /// Sets addon quantity (0 = remove). Persists for the next step.
   void setAddonQuantity(int addonId, int quantity) {
@@ -310,12 +338,31 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
       }
     }
 
+    final selectedAddons = <SelectedAddonOption>[];
+    for (final addon in addons) {
+      final qty = getAddonQuantity(addon.addonId);
+      if (qty <= 0) continue;
+      final unitPrice =
+          selectedVariant != null
+              ? (selectedVariant!.addonPrices[addon.addonId] ?? addon.price)
+              : addon.price;
+      selectedAddons.add(
+        SelectedAddonOption(
+          addonId: addon.addonId,
+          name: addon.name,
+          quantity: qty,
+          unitPrice: unitPrice,
+        ),
+      );
+    }
+
     return CreateOrderLineModel(
       productId: product!.id!,
       productName: product!.name,
       variantId: selectedVariant?.id,
       variantLabel: selectedVariantLabel,
       selectedOptions: selectedOptions,
+      selectedAddons: selectedAddons,
       notes: notesController.text.trim(),
       quantity: 1,
       priceListId: selectedPriceListId,
@@ -359,9 +406,10 @@ class CreateOrderCubit extends Cubit<CreateOrderState> {
 
   String priceListName(int id) {
     for (final pl in priceLists) {
-      if (pl.id == id)
+      if (pl.id == id) {
         return pl.name ??
             'create_order.price_list_id'.tr(namedArgs: {'id': '$id'});
+      }
     }
     return 'create_order.price_list_id'.tr(namedArgs: {'id': '$id'});
   }

@@ -19,13 +19,13 @@ class CartItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final modifiers = _modifiersText();
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.greyE6E9EA,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Column(
@@ -33,53 +33,60 @@ class CartItemCard extends StatelessWidget {
               children: [
                 Text(
                   line.productName ?? 'Product',
-                  style: AppFonts.styleBold16.copyWith(
+                  style: AppFonts.styleBold14.copyWith(
                     color: AppColors.oppositeColor,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 if (modifiers.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   Text(
-                    line.variantLabel ?? '',
-                    style: AppFonts.styleMedium14.copyWith(
+                    modifiers,
+                    style: AppFonts.styleRegular12.copyWith(
                       color: AppColors.greyA4ACAD,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ],
             ),
           ),
-          Column(
+          const SizedBox(width: 8),
+          Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CartQuantityButton(
-                    icon: Icons.remove,
-                    onPressed: () =>
-                        context.read<CartCubit>().decrementQuantity(index),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    '${line.quantity}',
-                    style: AppFonts.styleMedium16.copyWith(
-                      color: AppColors.oppositeColor,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  CartQuantityButton(
-                    icon: Icons.add,
-                    isFilled: true,
-                    onPressed: () =>
-                        context.read<CartCubit>().incrementQuantity(index),
-                  ),
-                ],
+              CartQuantityButton(
+                icon: Icons.add,
+                isFilled: true,
+                onPressed:
+                    () => context.read<CartCubit>().incrementQuantity(index),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(width: 6),
               Text(
-                '${line.lineTotal.toStringAsFixed(0)} ${'products.currency'.tr()}',
+                '${line.quantity}',
                 style: AppFonts.styleMedium14.copyWith(
                   color: AppColors.oppositeColor,
+                ),
+              ),
+              const SizedBox(width: 6),
+              CartQuantityButton(
+                icon: Icons.remove,
+                onPressed:
+                    () => context.read<CartCubit>().decrementQuantity(index),
+              ),
+              const SizedBox(width: 10),
+              SizedBox(
+                width: 78,
+                child: Text(
+                  '${line.lineTotal.toStringAsFixed(0)} ${'products.currency'.tr()}',
+                  textAlign: TextAlign.end,
+                  style: AppFonts.styleMedium14.copyWith(
+                    color: AppColors.oppositeColor,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -92,11 +99,11 @@ class CartItemCard extends StatelessWidget {
   String _modifiersText() {
     final parts = <String>[];
     if (line.variantLabel != null && line.variantLabel!.isNotEmpty) {
-      parts.add('+ ${line.variantLabel!}');
+      parts.add(line.variantLabel!);
     }
     for (final o in line.selectedOptions) {
-      parts.add('+ ${o.valueLabel}');
+      parts.add(o.valueLabel);
     }
-    return parts.join(' ');
+    return parts.join(' • ');
   }
 }

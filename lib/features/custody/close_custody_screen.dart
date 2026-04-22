@@ -21,7 +21,8 @@ class CloseCustodyScreen extends StatelessWidget {
     return BlocProvider<CustodyCubit>(
       create: (context) => getIt<CustodyCubit>(),
       child: BlocConsumer<CustodyCubit, CustodyState>(
-        listenWhen: (prev, next) => next is CustodyCloseSuccess,
+        listenWhen:
+            (prev, next) => next is CustodyCloseSuccess || next is CustodyError,
         listener: (context, state) {
           if (state is CustodyCloseSuccess) {
             context.read<CustodyCubit>().restoreAfterClose();
@@ -32,6 +33,16 @@ class CloseCustodyScreen extends StatelessWidget {
               ),
             );
             Navigator.of(context).pop(true);
+            return;
+          }
+          if (state is CustodyError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(context.tr(state.message)),
+                backgroundColor: Colors.red.shade700,
+              ),
+            );
+            context.read<CustodyCubit>().restoreAfterClose();
           }
         },
         builder: (context, state) {
@@ -48,48 +59,48 @@ class CloseCustodyScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(width: 24),
-                      Expanded(
-                        child: Text(
-                          context.tr('custody.close_confirm'),
-                          textAlign: TextAlign.center,
-                          style: AppFonts.styleBold18.copyWith(
-                            color: AppColors.oppositeColor,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(width: 24),
+                        Expanded(
+                          child: Text(
+                            context.tr('custody.close_confirm'),
+                            textAlign: TextAlign.center,
+                            style: AppFonts.styleBold18.copyWith(
+                              color: AppColors.oppositeColor,
+                            ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.of(context).pop(false),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(
-                          minWidth: 32,
-                          minHeight: 32,
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.of(context).pop(false),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(
+                            minWidth: 32,
+                            minHeight: 32,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustodyOutlinedButton(
-                        label: context.tr('custody.no'),
-                        onPressed: () => Navigator.of(context).pop(false),
-                      ),
-                      const SizedBox(width: 16),
-                      CustodyFilledButton(
-                        label: context.tr('custody.yes'),
-                        onPressed: () => _onYesPressed(context),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustodyOutlinedButton(
+                          label: context.tr('custody.no'),
+                          onPressed: () => Navigator.of(context).pop(false),
+                        ),
+                        const SizedBox(width: 16),
+                        CustodyFilledButton(
+                          label: context.tr('custody.yes'),
+                          onPressed: () => _onYesPressed(context),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
             ),
           );
         },

@@ -24,9 +24,10 @@ class VariantOptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = option.label;
-    final modifierText = priceModifier != null && priceModifier! != 0
-        ? ' (${priceModifier! > 0 ? '+' : ''}${priceModifier!.toInt()})'
-        : '';
+    final modifierText =
+        priceModifier != null && priceModifier! != 0
+            ? ' (${priceModifier! > 0 ? '+' : ''}${priceModifier!.toInt()})'
+            : '';
 
     return Material(
       color: Colors.transparent,
@@ -34,7 +35,7 @@ class VariantOptionTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(vertical: 4),
           child: Row(
             children: [
               SizedBox(

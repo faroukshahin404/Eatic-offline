@@ -23,18 +23,38 @@ import '../../shifts/shifts_screen.dart';
 part 'main_state.dart';
 
 class MainCubit extends Cubit<MainState> {
-  MainCubit() : super(MainInitial());
+  MainCubit() : super(const MainInitial(customerInfoPanelVisible: false));
 
   String currentScreen = AppPaths.home;
   dynamic data;
+  bool customerInfoPanelVisible = false;
 
   void setCurrentScreen({String? screen, dynamic data}) {
     if (screen == currentScreen) return;
-    emit(MainInitial());
+    emit(MainInitial(customerInfoPanelVisible: customerInfoPanelVisible));
 
     currentScreen = screen ?? AppPaths.home;
     this.data = data;
-    emit(MainScreenChanged());
+    emit(MainScreenChanged(customerInfoPanelVisible: customerInfoPanelVisible));
+  }
+
+  void toggleCustomerInfoPanel() {
+    customerInfoPanelVisible = !customerInfoPanelVisible;
+    emit(
+      MainCustomerInfoPanelChanged(
+        customerInfoPanelVisible: customerInfoPanelVisible,
+      ),
+    );
+  }
+
+  void setCustomerInfoPanelVisible(bool visible) {
+    if (customerInfoPanelVisible == visible) return;
+    customerInfoPanelVisible = visible;
+    emit(
+      MainCustomerInfoPanelChanged(
+        customerInfoPanelVisible: customerInfoPanelVisible,
+      ),
+    );
   }
 
   Widget getCurrentScreen() {
@@ -45,9 +65,25 @@ class MainCubit extends Cubit<MainState> {
         return const CartScreen();
       case AppPaths.createOrder:
         return BlocProvider<CreateOrderCubit>(
-          create:
-              (context) =>
-                  getIt<CreateOrderCubit>()..loadProductById(data as int),
+          create: (context) {
+            final payload = data;
+            int? productId;
+            int? priceListId;
+            if (payload is int) {
+              productId = payload;
+            } else if (payload is Map<String, dynamic>) {
+              final p = payload['productId'];
+              final pl = payload['priceListId'];
+              if (p is int) productId = p;
+              if (pl is int) priceListId = pl;
+            }
+            final cubit = getIt<CreateOrderCubit>();
+            cubit.setSelectedPriceListId(priceListId);
+            if (productId != null) {
+              cubit.loadProductById(productId);
+            }
+            return cubit;
+          },
           child: CreateOrderScreen(),
         );
       case AppPaths.selectWaiter:

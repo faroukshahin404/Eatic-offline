@@ -16,9 +16,11 @@ class CartChooseWaiterButton extends StatelessWidget {
     return Expanded(
       child: CustomButtonWidget(
         text: 'cart.choose_waiter'.tr(),
-        onPressed: () => context.read<MainCubit>().setCurrentScreen(
-          screen: AppPaths.selectWaiter,
-        ),
+        onPressed:
+            () => context.read<MainCubit>().setCurrentScreen(
+              screen: AppPaths.selectWaiter,
+            ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         backgroundColor: Colors.white,
         foregroundColor: AppColors.primary,
       ),

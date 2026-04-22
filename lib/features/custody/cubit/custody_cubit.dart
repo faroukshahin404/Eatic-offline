@@ -36,9 +36,7 @@ class CustodyCubit extends Cubit<CustodyState> {
   }
 
   /// Creates a new custody with [totalWhenCreate]. Saves current user id as createdBy.
-  Future<CustodyModel?> addNew({
-    required double totalWhenCreate,
-  }) async {
+  Future<CustodyModel?> addNew({required double totalWhenCreate}) async {
     final user = await getStoredUser();
     final custody = CustodyModel(
       totalWhenCreate: totalWhenCreate,
@@ -69,6 +67,12 @@ class CustodyCubit extends Cubit<CustodyState> {
     final result = await _repo.getLastOpenCustody();
     final existing = result.fold((_) => null, (v) => v);
     if (existing == null || existing.id == null) return false;
+    final hasUnprintedResult = await _repo.hasUnprintedOrders(existing.id!);
+    final hasUnprintedOrders = hasUnprintedResult.fold((_) => true, (v) => v);
+    if (hasUnprintedOrders) {
+      emit(CustodyError('custody.unprinted_orders_exist'));
+      return false;
+    }
     final updated = existing.copyWith(
       isClosed: true,
       closedBy: user?.id,
@@ -83,7 +87,6 @@ class CustodyCubit extends Cubit<CustodyState> {
   void restoreAfterClose() {
     emit(CustodyInitial());
   }
-
 
   // --- Amount dialog (keypad) state ---
 

@@ -6,6 +6,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../../../../core/data/sqLite/database_service.dart';
 import '../../../../core/error/offline_error.dart';
 import '../../../../services_locator/service_locator.dart';
+import '../../../cart/orders/repos/offline/orders_schema.dart';
 import '../../../users/repos/offline/users_schema.dart';
 import '../../model/custody_model.dart';
 import 'custody_schema.dart';
@@ -20,6 +21,9 @@ abstract class CustodyOfflineRepository {
 
   /// All custodies ordered by id DESC.
   DbCall<List<CustodyModel>> getAllCustodies();
+
+  /// Returns true when there are unprinted orders in a custody.
+  DbCall<bool> hasUnprintedOrders(int custodyId);
 }
 
 class CustodyOfflineRepoImpl implements CustodyOfflineRepository {
@@ -131,6 +135,27 @@ class CustodyOfflineRepoImpl implements CustodyOfflineRepository {
         custodies.add(CustodyModel.fromMap(rowMap));
       }
       return Right(custodies);
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, bool>> hasUnprintedOrders(int custodyId) async {
+    try {
+      final rows = await _db.query(
+        OrdersSchema.tableOrders,
+        columns: [OrdersSchema.colId],
+        where:
+            '${OrdersSchema.colCustodyId} = ? AND ${OrdersSchema.colIsPrinted} = ?',
+        whereArgs: [custodyId, 0],
+        limit: 1,
+      );
+      return Right(rows.isNotEmpty);
     } catch (e) {
       return Left(
         e is DatabaseException

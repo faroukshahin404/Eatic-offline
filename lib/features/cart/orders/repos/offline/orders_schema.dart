@@ -27,6 +27,7 @@ abstract class OrdersSchema {
   static const String colSelectedPriceListId = 'selected_price_list_id';
   static const String colCreatedAt = 'created_at';
   static const String colIsPending = 'is_pending';
+  static const String colIsPrinted = 'is_printed';
   static const String colIsPrintedToCustomer = 'is_printed_to_customer';
   static const String colIsPrintedToKitchen = 'is_printed_to_kitchen';
 
@@ -48,6 +49,7 @@ abstract class OrdersSchema {
       $colTotal REAL NOT NULL DEFAULT 0,
       $colCreatedAt TEXT,
       $colIsPending INTEGER NOT NULL DEFAULT 1,
+      $colIsPrinted INTEGER NOT NULL DEFAULT 0,
       $colIsPrintedToCustomer INTEGER NOT NULL DEFAULT 0,
       $colIsPrintedToKitchen INTEGER NOT NULL DEFAULT 0
     )
@@ -90,7 +92,6 @@ abstract class OrderLinesSchema {
     )
   ''';
 }
-
 
 abstract class OrderTypesSchema {
   OrderTypesSchema._();

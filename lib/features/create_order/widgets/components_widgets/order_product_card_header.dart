@@ -27,15 +27,13 @@ class OrderProductCardHeader extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       textDirection: ui.TextDirection.rtl,
       children: [
-        Expanded(
-          child: CustomHeaderScreen(title: title, path: path),
-        ),
-        const SizedBox(width: 16),
+        Expanded(child: CustomHeaderScreen(title: title, path: path)),
+        const SizedBox(width: 8),
         if (total != null && total! > 0) ...[
-          const SizedBox(width: 4),
+          const SizedBox(width: 2),
           Text(
             '$total',
-            style: AppFonts.styleBold22.copyWith(
+            style: AppFonts.styleBold16.copyWith(
               color: AppColors.oppositeColor,
             ),
             maxLines: 1,

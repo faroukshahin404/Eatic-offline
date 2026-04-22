@@ -45,6 +45,7 @@ class CustomButtonWidget extends StatelessWidget {
         elevation: const WidgetStatePropertyAll(0),
         shadowColor: const WidgetStatePropertyAll(Colors.transparent),
         surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+
         backgroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.disabled)) {
             return bg.withValues(alpha: 0.45);
@@ -112,8 +113,10 @@ class CustomButtonWidget extends StatelessWidget {
             if (text != null)
               FittedBox(
                 fit: BoxFit.scaleDown,
+                
                 child: CustomText(
                   text: text!,
+                  maxLines: 2,
                   style: AppFonts.styleSemiBold16.copyWith(color: fg),
                 ),
               ),

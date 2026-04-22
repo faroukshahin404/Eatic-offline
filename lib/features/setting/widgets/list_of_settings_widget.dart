@@ -32,6 +32,8 @@ class ListOfSettings extends StatelessWidget {
 
   IconData _resolveSettingIcon(String key) {
     switch (key) {
+      case "general-settings":
+        return Icons.tune_rounded;
       case "users":
         return Icons.group_outlined;
       case "branches":
@@ -91,7 +93,10 @@ class SettingsTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 2,
+          ),
           leading: Container(
             width: 36,
             height: 36,

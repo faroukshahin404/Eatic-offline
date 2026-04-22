@@ -12,7 +12,7 @@ class CartActionButtons extends StatelessWidget {
     return const Row(
       children: [
         CartChooseWaiterButton(),
-        SizedBox(width: 12),
+        SizedBox(width: 8),
         CartChooseTableButton(),
       ],
     );

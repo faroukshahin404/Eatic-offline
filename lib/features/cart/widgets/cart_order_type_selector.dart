@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_fonts.dart';
-import '../../../core/widgets/custom_padding.dart';
 import '../../_main/cubit/main_cubit.dart';
 import '../cubit/cart_cubit.dart';
 import '../cubit/cart_state.dart';
@@ -18,7 +17,7 @@ class CartOrderTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: BlocBuilder<CartCubit, CartState>(
         buildWhen:
             (p, c) => p.selectedOrderTypeIndex != c.selectedOrderTypeIndex,
@@ -28,7 +27,8 @@ class CartOrderTypeSelector extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             child: Row(
               children: List.generate(orderTypes.length, (index) {
-                final isSelected = state.selectedOrderTypeIndex == index;
+                final orderType = orderTypes[index];
+                final isSelected = state.selectedOrderTypeIndex == orderType.id;
                 return Expanded(
                   child: Material(
                     color:
@@ -36,16 +36,14 @@ class CartOrderTypeSelector extends StatelessWidget {
                     child: InkWell(
                       onTap: () {
                         context.read<MainCubit>().setCurrentScreen();
-                        context.read<CartCubit>().setOrderType(
-                          orderTypes[index].id,
-                        );
+                        context.read<CartCubit>().setOrderType(orderType.id);
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Text(
-                          context.tr(orderTypes[index].name),
+                          context.tr(orderType.name),
                           textAlign: TextAlign.center,
-                          style: AppFonts.styleMedium16.copyWith(
+                          style: AppFonts.styleMedium14.copyWith(
                             color:
                                 isSelected
                                     ? Colors.white

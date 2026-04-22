@@ -19,17 +19,16 @@ class CartQuantityButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: isFilled ? AppColors.primary : Colors.white,
-      shape: const CircleBorder(
-          side: BorderSide(color: AppColors.greyE6E9EA)),
+      shape: const CircleBorder(side: BorderSide(color: AppColors.greyE6E9EA)),
       child: InkWell(
         onTap: onPressed,
         customBorder: const CircleBorder(),
         child: SizedBox(
-          width: 32,
-          height: 32,
+          width: 26,
+          height: 26,
           child: Icon(
             icon,
-            size: 18,
+            size: 14,
             color: isFilled ? Colors.white : AppColors.oppositeColor,
           ),
         ),

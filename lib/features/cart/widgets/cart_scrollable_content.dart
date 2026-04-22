@@ -9,14 +9,15 @@ class CartScrollableContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          spacing: 16,
-          children: [const CartOrderTypeActions(), const CartItemsList()],
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: const [
+          CartOrderTypeActions(),
+          SizedBox(height: 8),
+          Expanded(child: CartItemsList(scrollable: true)),
+        ],
       ),
     );
   }

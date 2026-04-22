@@ -34,11 +34,50 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
     });
   }
 
-  void _navigateToCartForEdit(int orderId) async {
-    await context.read<CartCubit>().startEditOrder(orderId);
-    if (!context.mounted) return;
+  Future<void> _navigateToCartForEdit(int orderId) async {
+    final cartCubit = context.read<CartCubit>();
+    await cartCubit.startEditOrder(orderId);
+    if (!mounted) return;
+    final canOpenEdit =
+        cartCubit.state.isEditMode && cartCubit.state.editingOrderId == orderId;
+    if (!canOpenEdit) {
+      final errorMessage = cartCubit.state.submitError;
+      if (errorMessage != null && errorMessage.trim().isNotEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(errorMessage)));
+      }
+      return;
+    }
     context.read<MainCubit>().setCurrentScreen(screen: AppPaths.home);
     context.read<DrawerCubit>().changeSelectedDrawerCard(0);
+  }
+
+  Future<void> _printOrder(int orderId) async {
+    final cartCubit = context.read<CartCubit>();
+    await cartCubit.startEditOrder(orderId);
+    if (!mounted) return;
+    final canOpenEdit =
+        cartCubit.state.isEditMode && cartCubit.state.editingOrderId == orderId;
+    if (!canOpenEdit) {
+      final errorMessage = cartCubit.state.submitError;
+      if (errorMessage != null && errorMessage.trim().isNotEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(errorMessage)));
+      }
+      return;
+    }
+    await cartCubit.submitOrderAndPrint();
+    if (!mounted) return;
+
+    final errorMessage = cartCubit.state.submitError;
+    if (errorMessage != null && errorMessage.trim().isNotEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+    }
+    context.read<OrdersStatusCubit>().loadPendingOrders();
   }
 
   void _navigateToCartForCreate(int tableId, String? tableName) {
@@ -84,9 +123,7 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                       message: state.message,
                       onRetry: () {
                         if (_selectedTabIndex == 0) {
-                          context
-                              .read<OrdersStatusCubit>()
-                              .loadPendingOrders();
+                          context.read<OrdersStatusCubit>().loadPendingOrders();
                         } else {
                           context.read<OrdersStatusCubit>().loadTables();
                         }
@@ -98,16 +135,9 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                   if (_selectedTabIndex == 0) {
                     return OrdersStatusTableWidget(
                       orders: cubit.orders,
-                      onUpdatePrintedStatus:
-                          (orderId, isCustomer, isKitchen) {
-                        cubit.updatePrintedStatus(
-                          orderId: orderId,
-                          isPrintedToCustomer: isCustomer,
-                          isPrintedToKitchen: isKitchen,
-                        );
-                      },
+                      onPrintOrder: _printOrder,
                       onOpenOrderInCart: (orderId) async {
-                        _navigateToCartForEdit(orderId);
+                        await _navigateToCartForEdit(orderId);
                       },
                     );
                   }
@@ -119,13 +149,12 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                     },
                     onOccupiedTableTap: (table) async {
                       if (table.id == null) return;
-                      final orderId =
-                          await cubit.getPendingOrderIdByTableId(
+                      final orderId = await cubit.getPendingOrderIdByTableId(
                         table.id!,
                       );
                       if (!context.mounted) return;
                       if (orderId != null) {
-                        _navigateToCartForEdit(orderId);
+                        await _navigateToCartForEdit(orderId);
                       } else {
                         _navigateToCartForCreate(table.id!, table.name);
                       }

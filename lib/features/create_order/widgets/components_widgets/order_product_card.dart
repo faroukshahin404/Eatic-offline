@@ -15,10 +15,10 @@ class OrderProductCard extends StatelessWidget {
     final cubit = context.read<CreateOrderCubit>();
 
     return Card(
-      elevation: 10,
+      elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,

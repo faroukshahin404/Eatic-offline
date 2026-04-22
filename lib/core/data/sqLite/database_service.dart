@@ -201,5 +201,24 @@ class DatabaseService {
         }
       }
     }
+
+    if (oldVersion < 23) {
+      for (final sql in DatabaseUtils.migrationFrom22To23) {
+        await db.execute(sql);
+      }
+    }
+    if (oldVersion < 24) {
+      // Idempotent: add is_printed only if missing (avoids "duplicate column").
+      const columnName = 'is_printed';
+      final info = await db.rawQuery('PRAGMA table_info(orders)');
+      final hasColumn = info.any(
+        (row) => row['name']?.toString() == columnName,
+      );
+      if (!hasColumn) {
+        for (final sql in DatabaseUtils.migrationFrom23To24) {
+          await db.execute(sql);
+        }
+      }
+    }
   }
 }

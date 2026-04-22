@@ -14,6 +14,9 @@ import '../../model/order_status_row_model.dart';
 abstract class OrdersStatusOfflineRepository {
   DbCall<List<OrderStatusRowModel>> getPendingOrders();
 
+  /// Returns table IDs that currently have unprinted pending orders.
+  DbCall<List<int>> getTableIdsWithUnprintedOrders();
+
   /// Returns the order ID of the pending order linked to [tableId], or null.
   DbCall<int?> getPendingOrderIdByTableId(int tableId);
 
@@ -29,12 +32,13 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
 
   @override
   Future<Either<OfflineFailure, List<OrderStatusRowModel>>>
-      getPendingOrders() async {
+  getPendingOrders() async {
     try {
       final rows = await _db.query(
         OrdersSchema.tableOrders,
-        where: '${OrdersSchema.colIsPending} = ?',
-        whereArgs: [1],
+        where:
+            '${OrdersSchema.colIsPending} = ? AND ${OrdersSchema.colIsPrinted} = ?',
+        whereArgs: [1, 0],
         orderBy: '${OrdersSchema.colId} DESC',
       );
 
@@ -44,8 +48,8 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
         final rowMap = Map<String, dynamic>.from(row);
 
         // Resolve order type.
-        final orderTypeId = (rowMap[OrdersSchema.colOrderType] as num?)
-            ?.toInt();
+        final orderTypeId =
+            (rowMap[OrdersSchema.colOrderType] as num?)?.toInt();
         if (orderTypeId != null) {
           final typeRows = await _db.query(
             OrderTypesSchema.tableOrderTypes,
@@ -58,8 +62,7 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
         }
 
         // Resolve cashier user.
-        final cashierId =
-            (rowMap[OrdersSchema.colCashierId] as num?)?.toInt();
+        final cashierId = (rowMap[OrdersSchema.colCashierId] as num?)?.toInt();
         if (cashierId != null) {
           final userRows = await _db.query(
             UsersSchema.tableUsers,
@@ -126,6 +129,33 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
   }
 
   @override
+  Future<Either<OfflineFailure, List<int>>>
+  getTableIdsWithUnprintedOrders() async {
+    try {
+      final rows = await _db.query(
+        OrdersSchema.tableOrders,
+        columns: [OrdersSchema.colTableId],
+        where:
+            '${OrdersSchema.colIsPending} = ? AND ${OrdersSchema.colIsPrinted} = ? AND ${OrdersSchema.colTableId} IS NOT NULL',
+        whereArgs: [1, 0],
+      );
+      final ids =
+          rows
+              .map((row) => (row[OrdersSchema.colTableId] as num?)?.toInt())
+              .whereType<int>()
+              .toSet()
+              .toList();
+      return Right(ids);
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
+      );
+    }
+  }
+
+  @override
   Future<Either<OfflineFailure, int?>> getPendingOrderIdByTableId(
     int tableId,
   ) async {
@@ -134,8 +164,8 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
         OrdersSchema.tableOrders,
         columns: [OrdersSchema.colId],
         where:
-            '${OrdersSchema.colIsPending} = ? AND ${OrdersSchema.colTableId} = ?',
-        whereArgs: [1, tableId],
+            '${OrdersSchema.colIsPending} = ? AND ${OrdersSchema.colIsPrinted} = ? AND ${OrdersSchema.colTableId} = ?',
+        whereArgs: [1, 0, tableId],
         orderBy: '${OrdersSchema.colId} DESC',
         limit: 1,
       );
@@ -161,6 +191,7 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
         final count = await txn.update(
           OrdersSchema.tableOrders,
           {
+            OrdersSchema.colIsPrinted: 1,
             OrdersSchema.colIsPrintedToCustomer: isPrintedToCustomer,
             OrdersSchema.colIsPrintedToKitchen: isPrintedToKitchen,
           },
@@ -179,10 +210,9 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
 
         if (orderRows.isNotEmpty) {
           final orderRow = orderRows.first;
-          final orderType = (orderRow[OrdersSchema.colOrderType] as num?)
-              ?.toInt();
-          final tableId = (orderRow[OrdersSchema.colTableId] as num?)
-              ?.toInt();
+          final orderType =
+              (orderRow[OrdersSchema.colOrderType] as num?)?.toInt();
+          final tableId = (orderRow[OrdersSchema.colTableId] as num?)?.toInt();
 
           // 0 = dine-in (see OrderModel comment).
           if (orderType == 0 && tableId != null) {
@@ -212,4 +242,3 @@ class OrdersStatusOfflineRepoImpl implements OrdersStatusOfflineRepository {
     }
   }
 }
-

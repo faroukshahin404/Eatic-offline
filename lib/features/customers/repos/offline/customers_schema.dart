@@ -1,4 +1,3 @@
-
 import '../../../zones/repos/offline/zones_schema.dart';
 
 /// Schema for customers table (SQLite). id, phone, name, second_phone, created_at, updated_at.
@@ -64,6 +63,7 @@ abstract class CustomerAddressesSchema {
       c.${CustomersSchema.colName} AS name,
       c.${CustomersSchema.colPhone} AS phone,
       c.${CustomersSchema.colSecondPhone} AS second_phone,
+      a.${CustomerAddressesSchema.colZoneId} AS zone_id,
       z.${ZonesSchema.colName} AS zone_name,
       a.${CustomerAddressesSchema.colBuildingNumber} AS building_number,
       a.${CustomerAddressesSchema.colFloor} AS floor,
@@ -74,6 +74,6 @@ abstract class CustomerAddressesSchema {
     INNER JOIN ${CustomerAddressesSchema.tableCustomerAddresses} a ON a.${CustomerAddressesSchema.colCustomerId} = c.${CustomersSchema.colId}
     INNER JOIN ${ZonesSchema.tableZones} z ON z.${ZonesSchema.colId} = a.${CustomerAddressesSchema.colZoneId}
     $whereClause
-    ORDER BY c.${CustomersSchema.colId}, a.${CustomerAddressesSchema.colId}
+    ORDER BY c.${CustomersSchema.colId}, a.${CustomerAddressesSchema.colIsDefault} DESC, a.${CustomerAddressesSchema.colId}
   ''';
 }

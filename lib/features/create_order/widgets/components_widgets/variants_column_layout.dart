@@ -18,10 +18,10 @@ class VariantsColumnLayout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          padding: const EdgeInsets.only(left: 4, bottom: 6),
           child: Text(
             'create_order.variants_count'.tr(),
-            style: AppFonts.styleBold16.copyWith(
+            style: AppFonts.styleBold14.copyWith(
               color: AppColors.oppositeColor,
             ),
           ),
@@ -31,15 +31,16 @@ class VariantsColumnLayout extends StatelessWidget {
           child: IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: cubit.variableGroups.map((group) {
-                return Padding(
-                  padding: EdgeInsets.only(
-                    right: group == cubit.variableGroups.last ? 0 : 12,
-                    left: 10,
-                  ),
-                  child: VariantColumn(group: group, cubit: cubit),
-                );
-              }).toList(),
+              children:
+                  cubit.variableGroups.map((group) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        right: group == cubit.variableGroups.last ? 0 : 8,
+                        left: 8,
+                      ),
+                      child: VariantColumn(group: group, cubit: cubit),
+                    );
+                  }).toList(),
             ),
           ),
         ),

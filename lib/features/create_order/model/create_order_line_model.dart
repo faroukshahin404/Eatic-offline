@@ -13,6 +13,23 @@ class SelectedVariantOption {
   final String valueLabel;
 }
 
+/// Selected addon details for receipt and cart display.
+class SelectedAddonOption {
+  const SelectedAddonOption({
+    required this.addonId,
+    required this.name,
+    required this.quantity,
+    required this.unitPrice,
+  });
+
+  final int addonId;
+  final String name;
+  final int quantity;
+  final double unitPrice;
+
+  double get total => unitPrice * quantity;
+}
+
 /// Full order line data for a single product configuration, ready for cart/order usage.
 class CreateOrderLineModel {
   const CreateOrderLineModel({
@@ -21,6 +38,7 @@ class CreateOrderLineModel {
     this.variantId,
     this.variantLabel,
     this.selectedOptions = const [],
+    this.selectedAddons = const [],
     this.notes = '',
     this.quantity = 1,
     this.priceListId,
@@ -44,6 +62,9 @@ class CreateOrderLineModel {
 
   /// Selected option per variable (for cart rendering and persistence).
   final List<SelectedVariantOption> selectedOptions;
+
+  /// Selected addons with names and prices (used for receipt printing).
+  final List<SelectedAddonOption> selectedAddons;
 
   /// Customer notes for this line.
   final String notes;
@@ -72,6 +93,7 @@ class CreateOrderLineModel {
     int? variantId,
     String? variantLabel,
     List<SelectedVariantOption>? selectedOptions,
+    List<SelectedAddonOption>? selectedAddons,
     String? notes,
     int? quantity,
     int? priceListId,
@@ -89,6 +111,7 @@ class CreateOrderLineModel {
       variantId: variantId ?? this.variantId,
       variantLabel: variantLabel ?? this.variantLabel,
       selectedOptions: selectedOptions ?? this.selectedOptions,
+      selectedAddons: selectedAddons ?? this.selectedAddons,
       notes: notes ?? this.notes,
       quantity: q,
       priceListId: priceListId ?? this.priceListId,

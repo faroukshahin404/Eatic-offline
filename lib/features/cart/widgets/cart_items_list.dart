@@ -10,7 +10,9 @@ import 'cart_item_card.dart';
 
 /// Cart items section: header with count badge + list of cart item cards.
 class CartItemsList extends StatelessWidget {
-  const CartItemsList({super.key});
+  const CartItemsList({super.key, this.scrollable = false});
+
+  final bool scrollable;
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +26,8 @@ class CartItemsList extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  width: 24,
-                  height: 24,
+                  width: 20,
+                  height: 20,
                   decoration: const BoxDecoration(
                     color: AppColors.primary,
                     shape: BoxShape.circle,
@@ -33,35 +35,47 @@ class CartItemsList extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     '${items.length}',
-                    style: AppFonts.styleMedium14.copyWith(color: Colors.white),
+                    style: AppFonts.styleRegular12.copyWith(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 Text(
                   context.tr('cart.order_list'),
-                  style: AppFonts.styleBold16.copyWith(color: AppColors.oppositeColor),
+                  style: AppFonts.styleBold14.copyWith(
+                    color: AppColors.oppositeColor,
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             if (items.isEmpty)
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  'cart.no_items'.tr(),
-                  style: AppFonts.styleMedium14.copyWith(color: AppColors.greyA4ACAD),
-                  textAlign: TextAlign.center,
+              Expanded(
+                child: Center(
+                  child: Text(
+                    'cart.no_items'.tr(),
+                    style: AppFonts.styleMedium14.copyWith(
+                      color: AppColors.greyA4ACAD,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               )
             else
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: items.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  return CartItemCard(line: items[index], index: index);
-                },
+              Expanded(
+                child: ListView.separated(
+                  shrinkWrap: !scrollable,
+                  physics:
+                      scrollable
+                          ? const AlwaysScrollableScrollPhysics()
+                          : const NeverScrollableScrollPhysics(),
+                  itemCount: items.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 6),
+                  itemBuilder: (context, index) {
+                    return CartItemCard(line: items[index], index: index);
+                  },
+                ),
               ),
           ],
         );

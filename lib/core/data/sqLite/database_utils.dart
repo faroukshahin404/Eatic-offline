@@ -14,6 +14,7 @@ import '../../../../features/add_new_product/repos/offline/products_schema.dart'
 import '../../../../features/custody/repos/offline/custody_schema.dart';
 import '../../../features/customers/repos/offline/customers_schema.dart';
 import '../../../../features/cart/orders/repos/offline/orders_schema.dart';
+import '../../../../features/general_settings/repos/offline/general_settings_schema.dart';
 
 /// Central configuration for SQLite database.
 /// Aggregates createTableStatements from core/feature models. Roles first, then users, branches, delivery_men, zones, currencies.
@@ -21,7 +22,7 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 22;
+  static const int databaseVersion = 24;
 
   /// Run in order: roles, users, branches, ..., price_lists, products, category_product, product_variables, product_variable_values, product_variants, product_variant_values, product_addon, product_variant_addon, product_price_list_prices, product_variant_price_list_prices.
   static const List<String> createTableStatements = [
@@ -53,6 +54,7 @@ abstract class DatabaseUtils {
     OrdersSchema.createTableOrders,
     OrderLinesSchema.createTableOrderLines,
     OrderTypesSchema.createTableOrderTypes,
+    GeneralSettingsSchema.createTableAppSettings,
   ];
 
   /// Run after createTableStatements in onCreate (e.g. seed default roles).
@@ -157,7 +159,7 @@ abstract class DatabaseUtils {
   static List<String> get migrationFrom18To19 => [
     'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colSelectedPriceListId} INTEGER NOT NULL DEFAULT 0',
   ];
-  
+
   static List<String> get migrationFrom19To20 => [
     OrderTypesSchema.createTableOrderTypes,
     ...OrderTypesSchema.seedStatements,
@@ -171,5 +173,13 @@ abstract class DatabaseUtils {
   static List<String> get migrationFrom21To22 => [
     'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colIsPrintedToCustomer} INTEGER NOT NULL DEFAULT 0',
     'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colIsPrintedToKitchen} INTEGER NOT NULL DEFAULT 0',
+  ];
+
+  static List<String> get migrationFrom22To23 => [
+    GeneralSettingsSchema.createTableAppSettings,
+  ];
+
+  static List<String> get migrationFrom23To24 => [
+    'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colIsPrinted} INTEGER NOT NULL DEFAULT 0',
   ];
 }

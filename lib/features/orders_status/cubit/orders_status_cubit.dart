@@ -9,7 +9,7 @@ part 'orders_status_state.dart';
 
 class OrdersStatusCubit extends Cubit<OrdersStatusState> {
   OrdersStatusCubit(this._repo, this._tablesRepo)
-      : super(OrdersStatusInitial());
+    : super(OrdersStatusInitial());
 
   final OrdersStatusOfflineRepository _repo;
   final RestaurantTablesOfflineRepository _tablesRepo;
@@ -31,11 +31,28 @@ class OrdersStatusCubit extends Cubit<OrdersStatusState> {
 
   Future<void> loadTables() async {
     emit(OrdersStatusLoading());
-    final result = await _tablesRepo.getAll();
-    result.fold(
+    final tablesResult = await _tablesRepo.getAll();
+    final list = tablesResult.fold<List<RestaurantTableModel>>((f) {
+      emit(OrdersStatusError(message: f.failureMessage ?? 'Error'));
+      return const [];
+    }, (tables) => tables);
+    if (list.isEmpty && state is OrdersStatusError) return;
+
+    final occupiedResult = await _repo.getTableIdsWithUnprintedOrders();
+    occupiedResult.fold(
       (f) => emit(OrdersStatusError(message: f.failureMessage ?? 'Error')),
-      (list) {
-        tables = list;
+      (occupiedIds) {
+        final occupiedSet = occupiedIds.toSet();
+        tables =
+            list.map((table) {
+              final tableId = table.id;
+              if (tableId == null) {
+                return table.copyWith(isEmpty: 1);
+              }
+              return table.copyWith(
+                isEmpty: occupiedSet.contains(tableId) ? 0 : 1,
+              );
+            }).toList();
         emit(OrdersStatusLoaded());
       },
     );
@@ -64,4 +81,3 @@ class OrdersStatusCubit extends Cubit<OrdersStatusState> {
     );
   }
 }
-

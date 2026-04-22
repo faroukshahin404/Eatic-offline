@@ -24,6 +24,7 @@ class CustomText extends StatelessWidget {
         text.tr(),
         maxLines: maxLines,
         textAlign: textAlign,
+
         style: style,
       );
     }
@@ -32,6 +33,7 @@ class CustomText extends StatelessWidget {
       maxLines: maxLines,
       textAlign: textAlign,
       style: style,
+      softWrap: true,
       overflow: maxLines == 1 ? TextOverflow.ellipsis : null,
     );
   }
