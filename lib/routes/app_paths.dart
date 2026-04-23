@@ -1,5 +1,8 @@
 abstract class AppPaths {
   static const String splash = '/';
+  static const String installation = '/installation';
+  static const String setup = '/setup';
+  static const String syncing = '/syncing';
   static const String login = '/login';
   static const String main = '/main';
   static const String settings = '/settings';

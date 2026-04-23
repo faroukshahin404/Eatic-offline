@@ -9,7 +9,6 @@ import '../../core/widgets/custom_failed_widget.dart';
 import '../../core/widgets/custom_loading.dart';
 import '../../core/widgets/custom_padding.dart';
 import 'cubit/shift_details_cubit.dart';
-import 'widgets/item_details_widget.dart';
 
 class ShiftDetailsScreen extends StatelessWidget {
   const ShiftDetailsScreen({super.key});
@@ -18,58 +17,101 @@ class ShiftDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'shift_details'),
-      body: BlocBuilder<ShiftDetailsCubit, ShiftDetailsState>(
-        builder: (context, state) {
-          if (state is ShiftDetailsLoading) {
-            return const CustomLoading();
+      body: BlocConsumer<ShiftDetailsCubit, ShiftDetailsState>(
+        listenWhen: (previous, current) => current is ShiftDetailsError,
+        listener: (context, state) {
+          if (state is ShiftDetailsError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red.shade700,
+              ),
+            );
           }
+        },
+        builder: (context, state) {
+          if (state is ShiftDetailsLoading) return const CustomLoading();
+
+          if (state is ShiftDetailsLoaded || state is ShiftDetailsPrinting) {
+            final receiptPreview =
+                state is ShiftDetailsLoaded
+                    ? state.receiptPreview
+                    : (state as ShiftDetailsPrinting).receiptPreview;
+            final isPrinting = state is ShiftDetailsPrinting;
+            return CustomPadding(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed:
+                        isPrinting
+                            ? null
+                            : () async {
+                              final printed =
+                                  await context
+                                      .read<ShiftDetailsCubit>()
+                                      .printCustodyReviewReceipt();
+                              if (printed && context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'shift_details_report.print_success'.tr(),
+                                    ),
+                                    backgroundColor: Colors.green.shade700,
+                                  ),
+                                );
+                              } else if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'shift_details_report.print_failed'.tr(),
+                                    ),
+                                    backgroundColor: Colors.red.shade700,
+                                  ),
+                                );
+                              }
+                            },
+                    icon:
+                        isPrinting
+                            ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : const Icon(Icons.print_rounded),
+                    label: Text('shift_details_report.print'.tr()),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: AppColors.greyA4ACAD),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        child: Text(
+                          receiptPreview,
+                          style: AppFonts.styleMedium16.copyWith(
+                            fontFamily: 'monospace',
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
           if (state is ShiftDetailsError) {
             return CustomFailedWidget(message: state.message);
           }
-          final cubit = context.read<ShiftDetailsCubit>();
-          return CustomPadding(
-            child: ListView.separated(
-              itemCount: cubit.paymentMethods.length,
-              separatorBuilder:
-                  (context, index) => Divider(
-                    height: 40,
-                    color: AppColors.greyA4ACAD,
-                    thickness: 1,
-                  ),
-              itemBuilder: (context, paymentMethodIndex) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  spacing: 10,
-                  children: [
-                    Text(
-                      cubit.paymentMethods[paymentMethodIndex].name ?? '',
-                      style: AppFonts.styleBold24.copyWith(
-                        fontFamily: AppFonts.enFamily,
-                      ),
-                    ),
-                    ListView.separated(
-                      itemCount: cubit.orderTypes.length,
-                      separatorBuilder:
-                          (context, index) => SizedBox(height: 10),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, orderTypeIndex) {
-                        return ItemDetailsWidget(
-                          orderTypeName:
-                              "${cubit.orderTypes[orderTypeIndex].name.tr()} (${cubit.paymentMethods[paymentMethodIndex].name ?? ''})",
 
-                          paymentMethodId:
-                              cubit.paymentMethods[paymentMethodIndex].id ?? 0,
-                          orderType: cubit.orderTypes[orderTypeIndex].id ?? 0,
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          );
+          return const SizedBox.shrink();
         },
       ),
     );

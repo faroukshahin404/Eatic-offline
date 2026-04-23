@@ -38,9 +38,11 @@ class CustodyCubit extends Cubit<CustodyState> {
   /// Creates a new custody with [totalWhenCreate]. Saves current user id as createdBy.
   Future<CustodyModel?> addNew({required double totalWhenCreate}) async {
     final user = await getStoredUser();
+    final nowIso = DateTime.now().toIso8601String();
     final custody = CustodyModel(
       totalWhenCreate: totalWhenCreate,
-      createdAt: DateTime.now().toIso8601String(),
+      createdAt: nowIso,
+      shiftStartedAt: nowIso,
       createdBy: user?.id,
       isClosed: false,
     );
@@ -76,6 +78,7 @@ class CustodyCubit extends Cubit<CustodyState> {
     final updated = existing.copyWith(
       isClosed: true,
       closedBy: user?.id,
+      shiftEndedAt: DateTime.now().toIso8601String(),
       totalWhenClose: totalWhenClose,
     );
     final ok = await updateCustody(updated);

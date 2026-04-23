@@ -254,7 +254,7 @@ class _CustomTextFieldState extends State<CustomTextField>
                   obscureText: _obscure,
                   cursorColor: AppColors.mainColor,
                   onTap: widget.onTap,
-                  maxLines: widget.maxLines,
+                  maxLines:widget.isPassword ? 1 : widget.maxLines,
                   maxLength: widget.maxLength,
                   textAlign: fieldAlign,
                   inputFormatters:

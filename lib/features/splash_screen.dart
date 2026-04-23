@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/constants/app_assets.dart';
-import '../core/services/flutter_secure_storage.dart';
-import '../core/utils/app_utils.dart';
 import '../core/widgets/custom_assets_image.dart';
+import '../features/activation/services/activation_launch_service.dart';
 import '../routes/app_paths.dart';
+import '../services_locator/service_locator.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,11 +22,23 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Future.delayed(duration, () async {
-        final user = await SecureLocalStorageService.readSecureData("user");
-        if (user.isNotEmpty) {
-          AppUtils.navigatorKey.currentContext?.go(AppPaths.main);
-        } else {
-          AppUtils.navigatorKey.currentContext?.go(AppPaths.login);
+        final launchService = getIt<ActivationLaunchService>();
+        final destination = await launchService.resolveNextDestination();
+        if (!mounted) return;
+
+        switch (destination) {
+          case ActivationLaunchDestination.installation:
+            context.go(AppPaths.installation);
+            break;
+          case ActivationLaunchDestination.login:
+            context.go(AppPaths.login);
+            break;
+          case ActivationLaunchDestination.setup:
+            context.go(AppPaths.setup);
+            break;
+          case ActivationLaunchDestination.syncing:
+            context.go(AppPaths.syncing);
+            break;
         }
       });
     });
@@ -39,13 +51,14 @@ class _SplashScreenState extends State<SplashScreen> {
         child: TweenAnimationBuilder(
           tween: Tween<double>(begin: 0, end: 1),
           duration: duration,
-          builder: (context, value, child) => Opacity(
-            opacity: value,
-            child: Hero(
-              tag: 'logo',
-              child: CustomAssetImage(image: AppAssets.logo, height: 200),
-            ),
-          ),
+          builder:
+              (context, value, child) => Opacity(
+                opacity: value,
+                child: Hero(
+                  tag: 'logo',
+                  child: CustomAssetImage(image: AppAssets.logo, height: 200),
+                ),
+              ),
         ),
       ),
     );

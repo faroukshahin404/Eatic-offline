@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/custom_button_widget.dart';
@@ -47,11 +46,6 @@ class _ShiftsFilterWidgetState extends State<ShiftsFilterWidget> {
         cubit.updateToDate(picked);
       }
     });
-  }
-
-  static String _formatDate(DateTime? date) {
-    if (date == null) return '---';
-    return DateFormat('d MMM yyyy', 'en').format(date);
   }
 
   // ── Build ──────────────────────────────────────────────────────────────

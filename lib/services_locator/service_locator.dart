@@ -1,4 +1,8 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../core/data/sqLite/database_service.dart';
 import '../features/_main/cubit/main_cubit.dart';
@@ -24,6 +28,11 @@ import '../features/shifts/cubit/shifts_cubit.dart';
 import '../features/home/cubit/home_cubit.dart';
 import '../features/add_new_zone/cubit/add_new_zone_cubit.dart';
 import '../features/add_new_zone/repos/offline/add_new_zone_offline_repos.dart';
+import '../features/activation/repos/activation_repository.dart';
+import '../features/activation/services/activation_dio_request.dart';
+import '../features/activation/services/activation_launch_service.dart';
+import '../features/activation/services/activation_storage_service.dart';
+import '../features/activation/services/device_signature_service.dart';
 import '../features/add_new_currency/cubit/add_new_currency_cubit.dart';
 import '../features/add_new_currency/repos/offline/add_new_currency_offline_repos.dart';
 import '../features/currencies/cubit/currencies_cubit.dart';
@@ -73,10 +82,63 @@ import '../features/reset_password/repos/offline/reset_password_offline_repos.da
 import '../features/users/cubit/users_cubit.dart';
 import '../features/users/repos/offline/user_offline_repos.dart';
 import '../features/general_settings/repos/offline/general_settings_offline_repos.dart';
+import '../features/installation/cubit/installation_cubit.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> setupDI() async {
+  getIt.registerLazySingleton<Dio>(() {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: 'https://eatic.inote-tech.com',
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
+      ),
+    );
+
+    dio.interceptors.add(
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseHeader: false,
+        responseBody: true,
+        error: true,
+        compact: true,
+        enabled: kDebugMode,
+      ),
+    );
+    return dio;
+  });
+  getIt.registerLazySingleton<Connectivity>(() => Connectivity());
+
+  getIt.registerLazySingleton<ActivationStorageService>(
+    () => ActivationStorageService(),
+  );
+  getIt.registerLazySingleton<DeviceSignatureService>(
+    () => DeviceSignatureService(),
+  );
+  getIt.registerLazySingleton<ActivationDioRequest>(
+    () => ActivationDioRequest(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<ActivationRepository>(
+    () => ActivationRepositoryImpl(
+      getIt<ActivationDioRequest>(),
+      getIt<DeviceSignatureService>(),
+      getIt<ActivationStorageService>(),
+    ),
+  );
+  getIt.registerLazySingleton<ActivationLaunchService>(
+    () => ActivationLaunchService(
+      getIt<ActivationStorageService>(),
+      getIt<DeviceSignatureService>(),
+    ),
+  );
+  getIt.registerFactory<InstallationCubit>(
+    () =>
+        InstallationCubit(getIt<ActivationRepository>(), getIt<Connectivity>()),
+  );
+
   getIt.registerSingleton<DatabaseService>(DatabaseService());
   getIt.registerSingleton<DrawerCubit>(DrawerCubit());
   getIt.registerSingleton<MainCubit>(MainCubit());
@@ -373,9 +435,10 @@ Future<void> setupDI() async {
 
   getIt.registerFactory<ShiftDetailsCubit>(
     () => ShiftDetailsCubit(
-      getIt<PaymentMethodsOfflineRepository>(),
       getIt<OrdersOfflineRepository>(),
       getIt<PriceListsOfflineRepository>(),
+      getIt<CustodyOfflineRepository>(),
+      getIt<GeneralSettingsOfflineRepository>(),
     ),
   );
 

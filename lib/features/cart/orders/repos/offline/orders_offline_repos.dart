@@ -36,6 +36,10 @@ abstract class OrdersOfflineRepository {
     required int paymentMethodId,
   });
 
+  Future<Either<OfflineFailure, List<OrderModel>>> getOrdersByCustodyId(
+    int custodyId,
+  );
+
   /// Loads a single order by id with its lines and resolves related entities
   /// needed to prefill the Cart in edit mode.
   Future<Either<OfflineFailure, OrderForCartEditModel>> getOrderForCartEdit(
@@ -286,6 +290,35 @@ class OrdersOfflineRepoImpl implements OrdersOfflineRepository {
         e is DatabaseException
             ? OfflineFailure.fromSqliteException(e)
             : OfflineFailure.insertFailed(e),
+      );
+    }
+  }
+
+  @override
+  Future<Either<OfflineFailure, List<OrderModel>>> getOrdersByCustodyId(
+    int custodyId,
+  ) async {
+    try {
+      final result = await _db.query(
+        OrdersSchema.tableOrders,
+        where: '${OrdersSchema.colCustodyId} = ?',
+        whereArgs: [custodyId],
+        orderBy: '${OrdersSchema.colCreatedAt} ASC',
+      );
+
+      final orders = <OrderModel>[];
+      for (final row in result) {
+        final orderId = row[OrdersSchema.colId] as int;
+        final items = await _getOrderLinesByOrderId(orderId);
+        orders.add(OrderModel.fromMap(row, items: items));
+      }
+
+      return Right(orders);
+    } catch (e) {
+      return Left(
+        e is DatabaseException
+            ? OfflineFailure.fromSqliteException(e)
+            : OfflineFailure.queryFailed(e),
       );
     }
   }

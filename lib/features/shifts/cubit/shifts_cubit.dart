@@ -73,9 +73,11 @@ class ShiftsCubit extends Cubit<ShiftsState> {
         if (!name.contains(cashierName.toLowerCase())) return false;
       }
 
-      if (c.createdAt != null) {
+      if (c.shiftStartedAt != null || c.createdAt != null) {
         try {
-          final date = DateTime.parse(c.createdAt!);
+          final shiftStartedAt = c.shiftStartedAt ?? c.createdAt;
+          if (shiftStartedAt == null) return true;
+          final date = DateTime.parse(shiftStartedAt);
           if (from != null) {
             final startOfDay = DateTime(from.year, from.month, from.day);
             if (date.isBefore(startOfDay)) return false;

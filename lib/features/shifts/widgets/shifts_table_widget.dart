@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../custody/model/custody_model.dart';
@@ -42,6 +41,22 @@ class _ShiftsTableWidgetState extends State<ShiftsTableWidget> {
     }
   }
 
+  static String _formatShiftDurationHours(CustodyModel custody) {
+    final shiftStartedAt = custody.shiftStartedAt ?? custody.createdAt;
+    final shiftEndedAt = custody.shiftEndedAt;
+    if (shiftStartedAt == null || shiftEndedAt == null) return '-';
+    try {
+      final start = DateTime.parse(shiftStartedAt);
+      final end = DateTime.parse(shiftEndedAt);
+      if (end.isBefore(start)) return '-';
+      final duration = end.difference(start);
+      final hours = duration.inMinutes / 60;
+      return '${hours.toStringAsFixed(2)} h';
+    } catch (_) {
+      return '-';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.custodies.isEmpty) {
@@ -75,7 +90,9 @@ class _ShiftsTableWidgetState extends State<ShiftsTableWidget> {
                     columns: [
                       DataColumn(label: Text('table.id'.tr())),
                       DataColumn(label: Text('table.name'.tr())),
-                      DataColumn(label: Text('shifts.time'.tr())),
+                      DataColumn(label: Text('shifts.started_at'.tr())),
+                      DataColumn(label: Text('shifts.ended_at'.tr())),
+                      DataColumn(label: Text('shifts.total_hours'.tr())),
                       DataColumn(label: Text('table.actions'.tr())),
                     ],
                     rows: [
@@ -90,7 +107,22 @@ class _ShiftsTableWidgetState extends State<ShiftsTableWidget> {
                               Text(widget.custodies[i].userModel?.name ?? '-'),
                             ),
                             DataCell(
-                              Text(_formatTime(widget.custodies[i].createdAt)),
+                              Text(
+                                _formatTime(
+                                  widget.custodies[i].shiftStartedAt ??
+                                      widget.custodies[i].createdAt,
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Text(
+                                _formatTime(widget.custodies[i].shiftEndedAt),
+                              ),
+                            ),
+                            DataCell(
+                              Text(
+                                _formatShiftDurationHours(widget.custodies[i]),
+                              ),
                             ),
                             DataCell(
                               TextButton(

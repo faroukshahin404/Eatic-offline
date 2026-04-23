@@ -220,5 +220,21 @@ class DatabaseService {
         }
       }
     }
+    if (oldVersion < 25) {
+      const shiftStartColumnName = 'shift_started_at';
+      const shiftEndColumnName = 'shift_ended_at';
+      final info = await db.rawQuery('PRAGMA table_info(custody)');
+      final hasShiftStartColumn = info.any(
+        (row) => row['name']?.toString() == shiftStartColumnName,
+      );
+      final hasShiftEndColumn = info.any(
+        (row) => row['name']?.toString() == shiftEndColumnName,
+      );
+      if (!hasShiftStartColumn || !hasShiftEndColumn) {
+        for (final sql in DatabaseUtils.migrationFrom24To25) {
+          await db.execute(sql);
+        }
+      }
+    }
   }
 }

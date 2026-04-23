@@ -46,7 +46,7 @@ class SettingScreen extends StatelessWidget {
               trailingColor: Colors.red.shade400,
               onTap: () async {
                 SessionUserHolder.clear();
-                await SecureLocalStorageService.deleteAllSecureData();
+                await SecureLocalStorageService.deleteSecureData('user');
                 if (context.mounted) context.go(AppPaths.splash);
               },
             ),

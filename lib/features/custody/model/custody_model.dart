@@ -7,9 +7,11 @@ class CustodyModel {
     this.id,
     this.totalWhenCreate = 0,
     this.createdAt,
+    this.shiftStartedAt,
     this.createdBy,
     this.isClosed = false,
     this.closedBy,
+    this.shiftEndedAt,
     this.totalWhenClose,
     this.userModel,
   });
@@ -17,9 +19,11 @@ class CustodyModel {
   final int? id;
   final double totalWhenCreate;
   final String? createdAt;
+  final String? shiftStartedAt;
   final int? createdBy;
   final bool isClosed;
   final int? closedBy;
+  final String? shiftEndedAt;
   final double? totalWhenClose;
 
   /// Resolved user who created this custody. Not persisted — populated at runtime via [createdBy].
@@ -36,9 +40,11 @@ class CustodyModel {
       totalWhenCreate:
           (map[CustodySchema.colTotalWhenCreate] as num?)?.toDouble() ?? 0,
       createdAt: map[CustodySchema.colCreatedAt] as String?,
+      shiftStartedAt: map[CustodySchema.colShiftStartedAt] as String?,
       createdBy: map[CustodySchema.colCreatedBy] as int?,
       isClosed: (map[CustodySchema.colIsClosed] as int?) == 1,
       closedBy: map[CustodySchema.colClosedBy] as int?,
+      shiftEndedAt: map[CustodySchema.colShiftEndedAt] as String?,
       totalWhenClose:
           (map[CustodySchema.colTotalWhenClose] as num?)?.toDouble(),
       userModel: resolvedUser,
@@ -49,9 +55,11 @@ class CustodyModel {
     final map = <String, dynamic>{
       CustodySchema.colTotalWhenCreate: totalWhenCreate,
       CustodySchema.colCreatedAt: createdAt,
+      CustodySchema.colShiftStartedAt: shiftStartedAt,
       CustodySchema.colCreatedBy: createdBy,
       CustodySchema.colIsClosed: isClosed ? 1 : 0,
       CustodySchema.colClosedBy: closedBy,
+      CustodySchema.colShiftEndedAt: shiftEndedAt,
       CustodySchema.colTotalWhenClose: totalWhenClose,
     };
     if (id != null) map[CustodySchema.colId] = id;
@@ -62,9 +70,11 @@ class CustodyModel {
     int? id,
     double? totalWhenCreate,
     String? createdAt,
+    String? shiftStartedAt,
     int? createdBy,
     bool? isClosed,
     int? closedBy,
+    String? shiftEndedAt,
     double? totalWhenClose,
     UserModel? userModel,
   }) {
@@ -72,9 +82,11 @@ class CustodyModel {
       id: id ?? this.id,
       totalWhenCreate: totalWhenCreate ?? this.totalWhenCreate,
       createdAt: createdAt ?? this.createdAt,
+      shiftStartedAt: shiftStartedAt ?? this.shiftStartedAt,
       createdBy: createdBy ?? this.createdBy,
       isClosed: isClosed ?? this.isClosed,
       closedBy: closedBy ?? this.closedBy,
+      shiftEndedAt: shiftEndedAt ?? this.shiftEndedAt,
       totalWhenClose: totalWhenClose ?? this.totalWhenClose,
       userModel: userModel ?? this.userModel,
     );

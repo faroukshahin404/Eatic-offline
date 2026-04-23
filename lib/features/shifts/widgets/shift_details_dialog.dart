@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../custody/model/custody_model.dart';
 
@@ -31,6 +30,7 @@ class ShiftDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shiftStartedAt = custody.shiftStartedAt ?? custody.createdAt;
     return AlertDialog(
       title: Text('shifts.details'.tr()),
       content: Column(
@@ -41,7 +41,11 @@ class ShiftDetailsDialog extends StatelessWidget {
           const SizedBox(height: 8),
           Text('${'table.name'.tr()}: ${custody.userModel?.name ?? '-'}'),
           const SizedBox(height: 8),
-          Text('${'shifts.time'.tr()}: ${_formatTime(custody.createdAt)}'),
+          Text('${'shifts.started_at'.tr()}: ${_formatTime(shiftStartedAt)}'),
+          const SizedBox(height: 8),
+          Text(
+            '${'shifts.ended_at'.tr()}: ${_formatTime(custody.shiftEndedAt)}',
+          ),
         ],
       ),
       actions: [

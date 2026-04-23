@@ -45,10 +45,11 @@ class _ShiftsScreenState extends State<ShiftsScreen> {
                 if (state is ShiftsLoaded) {
                   return ShiftsTableWidget(
                     custodies: state.custodies,
-                    onShow:
-                        (custody) {
-                          context.push(AppPaths.allCurrencies, extra: custody.id);
-                        },
+                    onShow: (custody) {
+                      final custodyId = custody.id;
+                      if (custodyId == null) return;
+                      context.push(AppPaths.shiftDetails, extra: custodyId);
+                    },
                   );
                 }
                 return const SizedBox.shrink();

@@ -22,7 +22,7 @@ abstract class DatabaseUtils {
   DatabaseUtils._();
 
   static const String databaseName = 'eatic.db';
-  static const int databaseVersion = 24;
+  static const int databaseVersion = 25;
 
   /// Run in order: roles, users, branches, ..., price_lists, products, category_product, product_variables, product_variable_values, product_variants, product_variant_values, product_addon, product_variant_addon, product_price_list_prices, product_variant_price_list_prices.
   static const List<String> createTableStatements = [
@@ -181,5 +181,11 @@ abstract class DatabaseUtils {
 
   static List<String> get migrationFrom23To24 => [
     'ALTER TABLE ${OrdersSchema.tableOrders} ADD COLUMN ${OrdersSchema.colIsPrinted} INTEGER NOT NULL DEFAULT 0',
+  ];
+
+  static List<String> get migrationFrom24To25 => [
+    'ALTER TABLE ${CustodySchema.tableCustody} ADD COLUMN ${CustodySchema.colShiftStartedAt} TEXT',
+    'ALTER TABLE ${CustodySchema.tableCustody} ADD COLUMN ${CustodySchema.colShiftEndedAt} TEXT',
+    'UPDATE ${CustodySchema.tableCustody} SET ${CustodySchema.colShiftStartedAt} = ${CustodySchema.colCreatedAt} WHERE ${CustodySchema.colShiftStartedAt} IS NULL',
   ];
 }

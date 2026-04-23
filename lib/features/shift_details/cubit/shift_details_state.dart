@@ -6,20 +6,21 @@ final class ShiftDetailsInitial extends ShiftDetailsState {}
 
 final class ShiftDetailsLoading extends ShiftDetailsState {}
 
-final class ShiftDetailsLoaded extends ShiftDetailsState {}
+final class ShiftDetailsLoaded extends ShiftDetailsState {
+  ShiftDetailsLoaded({required this.report, required this.receiptPreview});
+
+  final CustodyReviewReportModel report;
+  final String receiptPreview;
+}
 
 final class ShiftDetailsError extends ShiftDetailsState {
   final String message;
   ShiftDetailsError({required this.message});
 }
 
-final class ShiftDetailsOrdersLoading extends ShiftDetailsState {}
+final class ShiftDetailsPrinting extends ShiftDetailsState {
+  ShiftDetailsPrinting({required this.report, required this.receiptPreview});
 
-final class ShiftDetailsOrdersLoaded extends ShiftDetailsState {
-  ShiftDetailsOrdersLoaded();
-}
-
-final class ShiftDetailsOrdersError extends ShiftDetailsState {
-  final String message;
-  ShiftDetailsOrdersError({required this.message});
+  final CustodyReviewReportModel report;
+  final String receiptPreview;
 }
